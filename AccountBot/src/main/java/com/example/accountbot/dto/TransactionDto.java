@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionDto {
 
-//    @JsonProperty("")
     private Integer type;
 
     private String category;
