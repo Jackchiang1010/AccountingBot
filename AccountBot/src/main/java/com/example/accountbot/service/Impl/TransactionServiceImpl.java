@@ -1,7 +1,6 @@
 package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.CategoryCostDto;
-import com.example.accountbot.dto.GetTransactionDto;
 import com.example.accountbot.dto.TransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
 import com.example.accountbot.service.TransactionService;
@@ -15,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -67,12 +68,8 @@ public class TransactionServiceImpl implements TransactionService {
                 throw new IllegalArgumentException("Invalid time parameter");
         }
 
-        // 定義日期格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        // 將 LocalDate 轉換為 String
-        String startDateStr = startDate.format(formatter);
-        String endDateStr = endDate.format(formatter);
+        String startDateStr = dateToString(startDate);
+        String endDateStr = dateToString(endDate);
 
         List<CategoryCostDto> getTransactionDto = transactionRepository.getTransaction(type, category, startDateStr, endDateStr);
 
@@ -80,5 +77,30 @@ public class TransactionServiceImpl implements TransactionService {
         result.put("data", getTransactionDto);
 
         return result;
+    }
+
+    @Override
+    public void createTransaction(Integer type, String category, Integer cost, String description, String date, String lineUserId) {
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setType(type);
+        transactionDto.setCategory(category);
+        transactionDto.setCost(cost);
+        transactionDto.setDescription(description);
+        transactionDto.setDate(date);
+        transactionDto.setLineUserId(lineUserId);
+
+        record(transactionDto);
+    }
+
+    @Override
+    public String dateToString(LocalDate date) {
+        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        // 定義日期格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // 將 LocalDate 轉換為 String
+        String dateStr = date.format(formatter);
+        return dateStr;
     }
 }

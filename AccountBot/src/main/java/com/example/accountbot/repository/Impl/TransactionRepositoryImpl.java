@@ -38,14 +38,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         map.put("type", transactionDto.getType());
 
         //TODO category_id 要從 category 轉成 id
-        Integer categoryId = getCategoryId(transactionDto.getCategory(), "Ua02e56c6d64140246d51c93a2961cf52");
+        Integer categoryId = getCategoryId(transactionDto.getCategory(), transactionDto.getLineUserId());
         map.put("category_id", categoryId);
 
         map.put("cost", transactionDto.getCost());
         map.put("description", transactionDto.getDescription());
         map.put("date", transactionDto.getDate());
         //TODO lineuser_id 要從 handler 拿
-        map.put("lineuser_id", "Ua02e56c6d64140246d51c93a2961cf52");
+        map.put("lineuser_id", transactionDto.getLineUserId());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -68,11 +68,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", categoryName);
-        map.put("lineuser_id", "Ua02e56c6d64140246d51c93a2961cf52");
+        map.put("lineuser_id", lineUserId);
 
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
         }catch (DataAccessException e){
+            log.info("error : " + e.getMessage());
             throw new RuntimeException("Failed to get categoryId", e);
         }
     }
