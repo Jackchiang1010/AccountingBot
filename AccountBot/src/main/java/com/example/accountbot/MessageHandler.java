@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +53,7 @@ public class MessageHandler {
 
         lastUserMessage = receivedText;
 
-        // 如果用戶輸入以 "+" 開頭，則回應 Flex Message
+        // 如果用戶輸入以 "$" 開頭，則回應 Flex Message
         if (receivedText != null && receivedText.matches("\\$.*")) {
 
             String flexMessageJson = """
@@ -120,6 +122,77 @@ public class MessageHandler {
                 e.printStackTrace();
             }
         }
+
+        // 如果用戶輸入以 "+" 開頭，則回應 Flex Message
+        if (receivedText != null && receivedText.matches("\\+.*")) {
+
+            String flexMessageJson = """
+                            {
+                              "type": "bubble",
+                              "body": {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                  {
+                                    "type": "button",
+                                    "action": {
+                                      "type": "postback",
+                                      "label": "薪水",
+                                      "data": "薪水",
+                                      "displayText": "test1"
+                                    },
+                                    "position": "relative"
+                                  },
+                                  {
+                                    "type": "button",
+                                    "action": {
+                                      "type": "postback",
+                                      "label": "獎金",
+                                      "data": "獎金",
+                                      "displayText": "test2"
+                                    },
+                                    "position": "relative"
+                                  },
+                                  {
+                                    "type": "button",
+                                    "action": {
+                                      "type": "postback",
+                                      "label": "兼職",
+                                      "data": "兼職",
+                                      "displayText": "test3"
+                                    },
+                                    "position": "relative"
+                                  },
+                                  {
+                                    "type": "button",
+                                    "action": {
+                                      "type": "postback",
+                                      "label": "投資",
+                                      "data": "投資",
+                                      "displayText": "test4"
+                                    },
+                                    "position": "relative"
+                                  }
+                                ]
+                              }
+                            }
+                    """;
+
+            try {
+                // 將 JSON 字串轉換為 FlexContainer
+                FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
+
+                // 建立 FlexMessage
+                FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
+
+                // 發送 Flex Message
+                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+
+            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @EventMapping
@@ -127,23 +200,37 @@ public class MessageHandler {
         String userId = event.getSource().getUserId();
         String postbackData = event.getPostbackContent().getData();
 
+        Integer type = -1;
+
         try {
-            if ("飲食".equals(postbackData)) {
-                // 處理“飲食”類別選擇
-                TextMessage replyMessage = new TextMessage("支出分類選擇:飲食類別");
+            // Map for storing category messages and types
+            Map<String, String> categoryMessages = new HashMap<>();
+            categoryMessages.put("飲食", "支出分類選擇:飲食類別");
+            categoryMessages.put("娛樂", "支出分類選擇:娛樂類別");
+            categoryMessages.put("交通", "支出分類選擇:交通類別");
+            categoryMessages.put("藥妝", "支出分類選擇:藥妝類別");
+            categoryMessages.put("薪水", "支出分類選擇:薪水類別");
+            categoryMessages.put("獎金", "支出分類選擇:獎金類別");
+            categoryMessages.put("兼職", "支出分類選擇:兼職類別");
+            categoryMessages.put("投資", "支出分類選擇:投資類別");
+
+            // Determine the type based on the category
+            Map<String, Integer> categoryTypes = new HashMap<>();
+            categoryTypes.put("飲食", 1);
+            categoryTypes.put("娛樂", 1);
+            categoryTypes.put("交通", 1);
+            categoryTypes.put("藥妝", 1);
+            categoryTypes.put("薪水", 0);
+            categoryTypes.put("獎金", 0);
+            categoryTypes.put("兼職", 0);
+            categoryTypes.put("投資", 0);
+
+            // Check if the postbackData is in the map
+            if (categoryMessages.containsKey(postbackData)) {
+                String replyText = categoryMessages.get(postbackData);
+                TextMessage replyMessage = new TextMessage(replyText);
                 lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
-            } else if ("娛樂".equals(postbackData)) {
-                // 處理“娛樂”類別選擇
-                TextMessage replyMessage = new TextMessage("支出分類選擇:娛樂類別");
-                lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
-            } else if ("交通".equals(postbackData)) {
-                // 處理“交通”類別選擇
-                TextMessage replyMessage = new TextMessage("支出分類選擇:交通類別");
-                lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
-            } else if ("藥妝".equals(postbackData)) {
-                // 處理“藥妝”類別選擇
-                TextMessage replyMessage = new TextMessage("支出分類選擇:藥妝類別");
-                lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
+                type = categoryTypes.get(postbackData);
             }
 
             // 預處理輸入字串：去除首尾空白並將多個空白字符替換為單個空格
@@ -152,32 +239,23 @@ public class MessageHandler {
             // 以空格分割字串，限制最多分成兩部分：金額和描述
             String[] parts = cleanedMessage.substring(1).trim().split("\\s+", 2);
 
-            // 解析金額部分
             String amountStr = parts[0].trim();
             log.info("amountStr: " + amountStr);
             int amount = Integer.parseInt(amountStr);
 
-            // 解析描述部分（如果有）
             String description = parts.length > 1 ? parts[1].trim() : "";
-            log.info("description: " + description);
 
             ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
             LocalDate today = LocalDate.now(taipeiZone);
             String todayStr = transactionService.dateToString(today);
 
-            log.info("postbackData : " + postbackData);
-            log.info("todayStr : " +  todayStr);
-            log.info("userId : " +  userId);
-
-            transactionService.createTransaction(1,postbackData, amount, description, todayStr, userId);
+            transactionService.createTransaction(type,postbackData, amount, description, todayStr, userId);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // 恢復中斷狀態
             e.printStackTrace();
-            // 可以考慮記錄錯誤或通知管理員
         } catch (ExecutionException e) {
             e.printStackTrace();
-            // 可以考慮記錄錯誤或通知管理員
         }
     }
 

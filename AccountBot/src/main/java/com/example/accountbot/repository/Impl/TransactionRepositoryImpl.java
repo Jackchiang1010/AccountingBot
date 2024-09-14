@@ -64,11 +64,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public Integer getCategoryId(String categoryName, String lineUserId) {
-        String sql = "SELECT id FROM category WHERE name = :name AND lineuser_id = :lineuser_id";
+        String sql = "SELECT id FROM category WHERE name = :name AND (lineuser_id = :lineuser_id OR lineuser_id = :share)";
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", categoryName);
         map.put("lineuser_id", lineUserId);
+        map.put("share", "share");
 
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
