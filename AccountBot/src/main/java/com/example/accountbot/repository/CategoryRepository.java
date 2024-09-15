@@ -13,4 +13,6 @@ public interface CategoryRepository {
 
     UpdateCategoryDto update(UpdateCategoryDto updateCategoryDto);
 
+    boolean delete(Integer id);
+
 }

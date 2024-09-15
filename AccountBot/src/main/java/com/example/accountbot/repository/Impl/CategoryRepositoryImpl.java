@@ -142,4 +142,22 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             throw new RuntimeException("Failed to update category", e);
         }
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        String sql = "DELETE FROM category WHERE id = :id AND lineuser_id != 'share';";
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", id);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        Integer result = namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        if(result > 0) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

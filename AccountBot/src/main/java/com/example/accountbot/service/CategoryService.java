@@ -13,4 +13,6 @@ public interface CategoryService {
 
     Map<String, Object> update(UpdateCategoryDto UpdateCategoryDto);
 
+    boolean delete(Integer id);
+
 }
