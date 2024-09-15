@@ -9,4 +9,6 @@ public interface CategoryService {
 
     Map<String, Object> create(CategoryDto categoryDto);
 
+    Map<String, Object> get(Integer type, String name, String lineUserId);
+
 }

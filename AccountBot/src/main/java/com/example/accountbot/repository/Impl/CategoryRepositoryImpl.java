@@ -2,6 +2,8 @@ package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.category.CategoryDto;
 import com.example.accountbot.repository.CategoryRepository;
+import com.example.accountbot.rowmapper.CategoryCostRowMapper;
+import com.example.accountbot.rowmapper.GetCategoryRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -42,6 +45,32 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         }catch (DataAccessException e){
             log.info("error : " + e.getMessage());
             throw new RuntimeException("Failed to create category", e);
+        }
+    }
+
+    @Override
+    public List<CategoryDto> get(Integer type, String name, String lineUserId) {
+        String sql;
+        Map<String, Object> map = new HashMap<>();
+
+        if(name.equals("all")){
+            sql = "SELECT * FROM category WHERE type = :type AND (lineuser_id = :lineUserId OR lineuser_id = 'share');";
+        }else {
+            sql = "SELECT * FROM category WHERE type = :type AND (lineuser_id = :lineUserId OR lineuser_id = 'share') AND name = :name;";
+
+            map.put("name", name);
+        }
+
+        map.put("type", type);
+        map.put("lineUserId", lineUserId);
+
+        try {
+            return namedParameterJdbcTemplate.query(sql, map, new GetCategoryRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get category", e);
         }
     }
 }
