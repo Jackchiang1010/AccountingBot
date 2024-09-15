@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -57,6 +58,28 @@ public class TransactionController {
             Map<String, Object> response = transactionService.update(updatetransactionDto);
 
             return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(ErrorResponseDto.error("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @DeleteMapping("/dalete")
+    public ResponseEntity<?> delete(@RequestBody UpdateTransactionDto updatetransactionDto) {
+
+        try {
+            boolean result = transactionService.delete(updatetransactionDto.getId());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", result);
+
+            if(result == true) {
+                return ResponseEntity.ok(response);
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
         }catch (RuntimeException e){
             return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception e){

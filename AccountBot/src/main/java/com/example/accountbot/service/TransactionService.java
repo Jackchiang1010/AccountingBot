@@ -16,4 +16,6 @@ public interface TransactionService {
 
     Map<String, Object> update(UpdateTransactionDto updatetransactionDto);
 
+    boolean delete(Integer id);
+
 }

@@ -113,4 +113,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         return result;
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        return transactionRepository.delete(id);
+    }
 }

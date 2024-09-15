@@ -167,4 +167,22 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             throw new RuntimeException("Failed to update transaction", e);
         }
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        String sql = "DELETE FROM transaction WHERE id = :id;";
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", id);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        Integer result = namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        if(result > 0) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

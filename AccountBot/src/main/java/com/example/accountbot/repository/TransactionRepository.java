@@ -14,4 +14,6 @@ public interface TransactionRepository {
     List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate);
 
     UpdateTransactionDto updateTransaction(UpdateTransactionDto updatetransactionDto);
+
+    boolean delete(Integer id);
 }
