@@ -77,7 +77,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate) {
+    public List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate, String lineUserId) {
 
         String sql;
         Map<String, Object> map = new HashMap<>();
@@ -89,7 +89,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
-                    "AND c.lineuser_id = t.lineuser_id " +
+                    "AND (c.lineuser_id = t.lineuser_id OR c.lineuser_id = 'share') " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
                     "GROUP BY c.name;";
         }else {
@@ -99,17 +99,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
-                    "AND c.lineuser_id = t.lineuser_id " +
+                    "AND (c.lineuser_id = t.lineuser_id OR c.lineuser_id = 'share') " +
                     "AND t.category_id = :category_id " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
                     "GROUP BY c.name;";
 
             //TODO category_id 要從 category 轉成 id
-            Integer categoryId = getCategoryId(category, "Ua02e56c6d64140246d51c93a2961cf52");
+            Integer categoryId = getCategoryId(category, lineUserId);
             map.put("category_id", categoryId);
         }
 
-        map.put("lineuser_id", "Ua02e56c6d64140246d51c93a2961cf52");
+        map.put("lineuser_id", lineUserId);
         map.put("start_date", startDate);
         map.put("end_date", endDate);
 

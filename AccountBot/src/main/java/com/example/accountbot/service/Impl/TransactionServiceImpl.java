@@ -35,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Map<String, Object> getTransaction(Integer type, String category, String time) {
+    public Map<String, Object> getTransaction(Integer type, String category, String time, String lineUserId) {
 
         ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
         LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
@@ -70,7 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
         String startDateStr = dateToString(startDate);
         String endDateStr = dateToString(endDate);
 
-        List<CategoryCostDto> getTransactionDto = transactionRepository.getTransaction(type, category, startDateStr, endDateStr);
+        List<CategoryCostDto> getTransactionDto = transactionRepository.getTransaction(type, category, startDateStr, endDateStr, lineUserId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", getTransactionDto);

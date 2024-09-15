@@ -11,7 +11,7 @@ public interface TransactionRepository {
     Integer recordTransaction(TransactionDto transactionDto);
     Integer getCategoryId(String categoryName, String lineUserId);
 
-    List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate);
+    List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate ,String lineUserId);
 
     UpdateTransactionDto updateTransaction(UpdateTransactionDto updatetransactionDto);
 

@@ -37,10 +37,11 @@ public class TransactionController {
     @GetMapping("/get")
     public ResponseEntity<?> getTransaction(@RequestParam(value = "type") Integer type,
                                             @RequestParam(value = "category") String category,
-                                            @RequestParam(value = "time") String time) {
+                                            @RequestParam(value = "time") String time,
+                                            @RequestParam(value = "lineUserId") String lineUserId) {
 
         try {
-            Map<String, Object> response = transactionService.getTransaction(type, category, time);
+            Map<String, Object> response = transactionService.getTransaction(type, category, time, lineUserId);
 
             return ResponseEntity.ok(response);
         }catch (RuntimeException e){
