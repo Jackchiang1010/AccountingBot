@@ -1,8 +1,8 @@
 package com.example.accountbot.repository;
 
-import com.example.accountbot.dto.CategoryCostDto;
-import com.example.accountbot.dto.GetTransactionDto;
-import com.example.accountbot.dto.TransactionDto;
+import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.TransactionDto;
+import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 
 import java.util.List;
 
@@ -13,4 +13,5 @@ public interface TransactionRepository {
 
     List<CategoryCostDto> getTransaction(Integer type, String category, String startDate, String endDate);
 
+    UpdateTransactionDto updateTransaction(UpdateTransactionDto updatetransactionDto);
 }

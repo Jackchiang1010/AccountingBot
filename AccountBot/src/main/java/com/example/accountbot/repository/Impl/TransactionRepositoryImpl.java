@@ -1,14 +1,15 @@
 package com.example.accountbot.repository.Impl;
 
-import com.example.accountbot.dto.CategoryCostDto;
-import com.example.accountbot.dto.GetTransactionDto;
-import com.example.accountbot.dto.TransactionDto;
+import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.TransactionDto;
+import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
 import com.example.accountbot.rowmapper.CategoryCostRowMapper;
+import com.example.accountbot.rowmapper.UpdateTransactionRowMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,17 +17,15 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
@@ -126,6 +125,46 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             log.info("error : " + e.getMessage());
 
             throw new RuntimeException("Failed to get transaction", e);
+        }
+    }
+
+    @Override
+    public UpdateTransactionDto updateTransaction(UpdateTransactionDto updatetransactionDto) {
+        String sql = "UPDATE transaction SET type = :type, category_id = :category_id, cost = :cost, " +
+                "description = :description, date = :date WHERE id = :id AND lineuser_id = :lineuser_id;";
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", updatetransactionDto.getType());
+
+        //TODO category_id 要從 category 轉成 id
+        Integer categoryId = getCategoryId(updatetransactionDto.getCategory(), updatetransactionDto.getLineUserId());
+        map.put("category_id", categoryId);
+
+        map.put("cost", updatetransactionDto.getCost());
+        map.put("description", updatetransactionDto.getDescription());
+        map.put("date", updatetransactionDto.getDate());
+
+        map.put("id", updatetransactionDto.getId());
+        //TODO lineuser_id 要從 handler 拿
+        map.put("lineuser_id", updatetransactionDto.getLineUserId());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        try {
+            namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+            String selectSql = "SELECT * FROM transaction WHERE id = :id;";
+            Map<String, Object> selectMap = new HashMap<String, Object>();
+            selectMap.put("id", updatetransactionDto.getId());
+
+            UpdateTransactionDto updatedTransaction = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateTransactionRowMapper());
+
+            return updatedTransaction;
+
+        }catch (DataAccessException e){
+            log.info("error : " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update transaction", e);
         }
     }
 }

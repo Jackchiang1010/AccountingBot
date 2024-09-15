@@ -1,4 +1,4 @@
-package com.example.accountbot.dto;
+package com.example.accountbot.dto.transaction;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

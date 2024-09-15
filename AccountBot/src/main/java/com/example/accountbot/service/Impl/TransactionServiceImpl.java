@@ -1,7 +1,8 @@
 package com.example.accountbot.service.Impl;
 
-import com.example.accountbot.dto.CategoryCostDto;
-import com.example.accountbot.dto.TransactionDto;
+import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.TransactionDto;
+import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
 import com.example.accountbot.service.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -102,5 +101,16 @@ public class TransactionServiceImpl implements TransactionService {
         // 將 LocalDate 轉換為 String
         String dateStr = date.format(formatter);
         return dateStr;
+    }
+
+    @Override
+    public Map<String, Object> update(UpdateTransactionDto updatetransactionDto) {
+
+        UpdateTransactionDto updatedTransaction = transactionRepository.updateTransaction(updatetransactionDto);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", updatedTransaction);
+
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.accountbot.dto;
+package com.example.accountbot.dto.category;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

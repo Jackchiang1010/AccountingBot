@@ -1,6 +1,6 @@
 package com.example.accountbot.rowmapper;
 
-import com.example.accountbot.dto.CategoryCostDto;
+import com.example.accountbot.dto.category.CategoryCostDto;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
