@@ -1,9 +1,8 @@
 package com.example.accountbot.service.Impl;
 
-import com.example.accountbot.dto.category.CategoryCostDto;
 import com.example.accountbot.dto.category.CategoryDto;
+import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.repository.CategoryRepository;
-import com.example.accountbot.repository.TransactionRepository;
 import com.example.accountbot.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +35,16 @@ public class CategoryServiceImpl implements CategoryService {
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", getTransactionDto);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> update(UpdateCategoryDto updateCategoryDto) {
+        UpdateCategoryDto updatedCategoryDto = categoryRepository.update(updateCategoryDto);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", updatedCategoryDto);
 
         return result;
     }

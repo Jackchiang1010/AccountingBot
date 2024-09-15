@@ -1,9 +1,10 @@
 package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.category.CategoryDto;
+import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.repository.CategoryRepository;
-import com.example.accountbot.rowmapper.CategoryCostRowMapper;
 import com.example.accountbot.rowmapper.GetCategoryRowMapper;
+import com.example.accountbot.rowmapper.UpdateCategoryRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -71,6 +72,74 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             log.info("error : " + e.getMessage());
 
             throw new RuntimeException("Failed to get category", e);
+        }
+    }
+
+    @Override
+    public UpdateCategoryDto update(UpdateCategoryDto updateCategoryDto) {
+
+        try {
+
+            Integer copyCategoryId = updateCategoryDto.getId();
+
+            if(updateCategoryDto.getId() <= 8){
+                String copySql = "INSERT INTO category (type, name, lineuser_id) " +
+                        "SELECT type, name, :lineuser_id FROM category " +
+                        "WHERE lineuser_id = 'share' AND id = :id;";
+
+                Map<String, Object> copyMap = new HashMap<String, Object>();
+                copyMap.put("id", updateCategoryDto.getId());
+                copyMap.put("lineuser_id", updateCategoryDto.getLineUserId());
+
+                KeyHolder copyKeyHolder = new GeneratedKeyHolder();
+
+                namedParameterJdbcTemplate.update(copySql, new MapSqlParameterSource(copyMap), copyKeyHolder);
+
+                copyCategoryId = copyKeyHolder.getKey().intValue();
+            }
+
+            String checkSql = "SELECT COUNT(*) FROM category WHERE lineuser_id = :lineuser_id AND name = :name";
+            Map<String, Object> params = new HashMap<>();
+            params.put("lineuser_id", updateCategoryDto.getLineUserId());
+            params.put("name", updateCategoryDto.getName());
+
+            int count = namedParameterJdbcTemplate.queryForObject(checkSql, params, Integer.class);
+
+            if (count > 0) {
+                // 分類名稱已存在
+                throw new IllegalArgumentException("分類名稱已存在，請選擇不同的名稱。");
+            } else {
+                // 分類名稱不存在
+                String updateSql = "UPDATE category SET type = :type, name = :name " +
+                        "WHERE lineuser_id = :lineuser_id AND id = :id;";
+
+
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("type", updateCategoryDto.getType());
+                map.put("name", updateCategoryDto.getName());
+
+                map.put("id", copyCategoryId);
+
+                //TODO lineuser_id 要從 handler 拿
+                map.put("lineuser_id", updateCategoryDto.getLineUserId());
+
+                KeyHolder keyHolder = new GeneratedKeyHolder();
+
+                namedParameterJdbcTemplate.update(updateSql, new MapSqlParameterSource(map), keyHolder);
+
+                String selectSql = "SELECT * FROM category WHERE id = :id;";
+                Map<String, Object> selectMap = new HashMap<String, Object>();
+                selectMap.put("id", copyCategoryId);
+
+                UpdateCategoryDto updatedCategory = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateCategoryRowMapper());
+
+                return updatedCategory;
+            }
+
+        }catch (DataAccessException e){
+            log.info("error : " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update category", e);
         }
     }
 }
