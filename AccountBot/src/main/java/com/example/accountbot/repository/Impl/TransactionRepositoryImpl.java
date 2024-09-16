@@ -183,14 +183,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public BalanceDto balance() {
+    public BalanceDto balance(String startDate, String endDate) {
 
         String sql = "SELECT " +
                 "SUM(CASE WHEN `type` = 1 THEN `cost` ELSE 0 END) AS total_expenses, " +
                 "SUM(CASE WHEN `type` = 0 THEN `cost` ELSE 0 END) AS total_income " +
-                "FROM `transaction`;";
+                "FROM `transaction` " +
+                "WHERE `date` BETWEEN :start_date AND :end_date ;";
 
         Map<String, Object> map = new HashMap<>();
+        map.put("start_date", startDate);
+        map.put("end_date", endDate);
 
         return namedParameterJdbcTemplate.queryForObject(sql, map, new BeanPropertyRowMapper<>(BalanceDto.class));
     }

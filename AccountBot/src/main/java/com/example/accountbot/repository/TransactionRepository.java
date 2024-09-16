@@ -18,5 +18,5 @@ public interface TransactionRepository {
 
     boolean delete(Integer id);
 
-    BalanceDto balance();
+    BalanceDto balance(String startDate, String endDate);
 }

@@ -122,8 +122,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public BalanceDto balance() {
+        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        LocalDate startDate = today.minusMonths(1);
+        LocalDate endDate = today; // 預設結束時間為今天
 
-        BalanceDto balanceDto = transactionRepository.balance();
+        String startDateStr = dateToString(startDate);
+        String endDateStr = dateToString(endDate);
+
+        BalanceDto balanceDto = transactionRepository.balance(startDateStr, endDateStr);
 
         return balanceDto;
     }
