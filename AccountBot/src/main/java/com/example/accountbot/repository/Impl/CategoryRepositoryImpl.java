@@ -105,48 +105,43 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
         try {
 
-            Integer copyCategoryId = updateCategoryDto.getId();
+            String updateSql = "UPDATE category SET type = :type, name = :name " +
+                    "WHERE lineuser_id = :lineuser_id AND id = :id;";
 
-            String checkSql = "SELECT COUNT(*) FROM category WHERE lineuser_id = :lineuser_id AND name = :name";
-            Map<String, Object> params = new HashMap<>();
-            params.put("lineuser_id", updateCategoryDto.getLineUserId());
-            params.put("name", updateCategoryDto.getName());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("type", updateCategoryDto.getType());
+            map.put("name", updateCategoryDto.getName());
+            map.put("id", updateCategoryDto.getId());
+            map.put("lineuser_id", updateCategoryDto.getLineUserId());
 
-            int count = namedParameterJdbcTemplate.queryForObject(checkSql, params, Integer.class);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
 
-            if (count > 0) {
-                // 分類名稱已存在
-                throw new IllegalArgumentException("分類名稱已存在，請選擇不同的名稱。");
-            } else {
-                // 分類名稱不存在
-                String updateSql = "UPDATE category SET type = :type, name = :name " +
-                        "WHERE lineuser_id = :lineuser_id AND id = :id;";
+            namedParameterJdbcTemplate.update(updateSql, new MapSqlParameterSource(map), keyHolder);
 
+            String selectSql = "SELECT * FROM category WHERE id = :id;";
+            Map<String, Object> selectMap = new HashMap<String, Object>();
+            selectMap.put("id", updateCategoryDto.getId());
 
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("type", updateCategoryDto.getType());
-                map.put("name", updateCategoryDto.getName());
-                map.put("id", copyCategoryId);
-                map.put("lineuser_id", updateCategoryDto.getLineUserId());
+            UpdateCategoryDto updatedCategory = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateCategoryRowMapper());
 
-                KeyHolder keyHolder = new GeneratedKeyHolder();
-
-                namedParameterJdbcTemplate.update(updateSql, new MapSqlParameterSource(map), keyHolder);
-
-                String selectSql = "SELECT * FROM category WHERE id = :id;";
-                Map<String, Object> selectMap = new HashMap<String, Object>();
-                selectMap.put("id", copyCategoryId);
-
-                UpdateCategoryDto updatedCategory = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateCategoryRowMapper());
-
-                return updatedCategory;
-            }
+            return updatedCategory;
 
         }catch (DataAccessException e){
             log.info("error : " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to update category", e);
         }
+    }
+
+    @Override
+    public boolean checkCategoryNameExists(String lineUserId, String name) {
+        String checkSql = "SELECT COUNT(*) FROM category WHERE lineuser_id = :lineuser_id AND name = :name";
+        Map<String, Object> params = new HashMap<>();
+        params.put("lineuser_id", lineUserId);
+        params.put("name", name);
+
+        int count = namedParameterJdbcTemplate.queryForObject(checkSql, params, Integer.class);
+        return count > 0;
     }
 
     @Override

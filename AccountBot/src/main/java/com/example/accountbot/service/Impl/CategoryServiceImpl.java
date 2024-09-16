@@ -21,6 +21,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Map<String, Object> create(CategoryDto categoryDto) {
+
+        if(categoryRepository.checkCategoryNameExists(categoryDto.getLineUserId(), categoryDto.getName())){
+            throw new RuntimeException("分類名稱已存在，請選擇不同的名稱。");
+        }
         Integer categoryId = categoryRepository.create(categoryDto);
 
         Map<String, Object> result = new HashMap<>();
@@ -44,6 +48,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Map<String, Object> update(UpdateCategoryDto updateCategoryDto) {
+
+        if(categoryRepository.checkCategoryNameExists(updateCategoryDto.getLineUserId(), updateCategoryDto.getName())){
+            throw new RuntimeException("分類名稱已存在，請選擇不同的名稱。");
+        }
         UpdateCategoryDto updatedCategoryDto = categoryRepository.update(updateCategoryDto);
 
         Map<String, Object> result = new HashMap<>();

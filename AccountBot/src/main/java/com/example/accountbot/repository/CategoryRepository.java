@@ -15,6 +15,8 @@ public interface CategoryRepository {
 
     UpdateCategoryDto update(UpdateCategoryDto updateCategoryDto);
 
+    boolean checkCategoryNameExists(String lineUserId, String name);
+
     boolean delete(Integer id);
 
 }
