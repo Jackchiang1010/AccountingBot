@@ -1,5 +1,6 @@
 package com.example.accountbot;
 
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.service.TransactionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -23,8 +25,6 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @LineMessageHandler
 @RequiredArgsConstructor
@@ -47,13 +47,13 @@ public class MessageHandler {
     }
 
     @EventMapping
-    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws ExecutionException, InterruptedException {
         String userId = event.getSource().getUserId();
         String receivedText = event.getMessage().getText();
 
         lastUserMessage = receivedText;
 
-        // 如果用戶輸入以 "$" 開頭，則回應 Flex Message
+        // 如果用戶輸入以 "$" 開頭
         if (receivedText != null && receivedText.matches("\\$.*")) {
 
             String flexMessageJson = """
@@ -69,7 +69,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "飲食",
                                       "data": "飲食",
-                                      "displayText": "test1"
+                                      "displayText": "支出分類選擇:飲食類別"
                                     },
                                     "position": "relative"
                                   },
@@ -79,7 +79,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "娛樂",
                                       "data": "娛樂",
-                                      "displayText": "test2"
+                                      "displayText": "支出分類選擇:娛樂類別"
                                     },
                                     "position": "relative"
                                   },
@@ -89,7 +89,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "交通",
                                       "data": "交通",
-                                      "displayText": "test3"
+                                      "displayText": "支出分類選擇:交通類別"
                                     },
                                     "position": "relative"
                                   },
@@ -99,7 +99,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "藥妝",
                                       "data": "藥妝",
-                                      "displayText": "test4"
+                                      "displayText": "支出分類選擇:藥妝類別"
                                     },
                                     "position": "relative"
                                   }
@@ -109,13 +109,11 @@ public class MessageHandler {
                     """;
 
             try {
-                // 將 JSON 字串轉換為 FlexContainer
+
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                // 建立 FlexMessage
                 FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
 
-                // 發送 Flex Message
                 lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
             } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
@@ -123,7 +121,7 @@ public class MessageHandler {
             }
         }
 
-        // 如果用戶輸入以 "+" 開頭，則回應 Flex Message
+        // 如果用戶輸入以 "+" 開頭
         if (receivedText != null && receivedText.matches("\\+.*")) {
 
             String flexMessageJson = """
@@ -139,7 +137,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "薪水",
                                       "data": "薪水",
-                                      "displayText": "test1"
+                                      "displayText": "收入分類選擇:薪水類別"
                                     },
                                     "position": "relative"
                                   },
@@ -149,7 +147,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "獎金",
                                       "data": "獎金",
-                                      "displayText": "test2"
+                                      "displayText": "收入分類選擇:獎金類別"
                                     },
                                     "position": "relative"
                                   },
@@ -159,7 +157,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "兼職",
                                       "data": "兼職",
-                                      "displayText": "test3"
+                                      "displayText": "收入分類選擇:兼職類別"
                                     },
                                     "position": "relative"
                                   },
@@ -169,7 +167,7 @@ public class MessageHandler {
                                       "type": "postback",
                                       "label": "投資",
                                       "data": "投資",
-                                      "displayText": "test4"
+                                      "displayText": "收入分類選擇:投資類別"
                                     },
                                     "position": "relative"
                                   }
@@ -179,13 +177,11 @@ public class MessageHandler {
                     """;
 
             try {
-                // 將 JSON 字串轉換為 FlexContainer
+
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                // 建立 FlexMessage
                 FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
 
-                // 發送 Flex Message
                 lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
             } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
@@ -193,8 +189,128 @@ public class MessageHandler {
             }
         }
 
+        // 如果用戶輸入以 "結餘" 開頭
+        if (receivedText != null && receivedText.matches("^結餘.*")) {
+
+            BalanceDto balanceDto = transactionService.balance();
+            int totalIncome = balanceDto.getTotalIncome();
+            int totalExpenses = balanceDto.getTotalExpenses();
+            int netBalance = totalIncome - totalExpenses;
+
+            String message = String.format(
+                    "本月結餘：收入(%d) - 支出(%d) = %d 元\n\n累積資產：%d 元",
+                    totalIncome, totalExpenses, netBalance, netBalance
+            );
+
+            TextMessage textMessage = new TextMessage(message);
+
+            lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
+
+            String flexMessageJson = """
+            {
+                "type": "bubble",
+                "hero": {
+                  "type": "image",
+                  "url": "https://developers-resource.landpress.line.me/fx/img/01_1_cafe.png",
+                  "size": "full",
+                  "aspectRatio": "20:13",
+                  "aspectMode": "cover",
+                  "action": {
+                    "type": "uri",
+                    "uri": "https://line.me/"
+                  }
+                },
+                "body": {
+                  "type": "box",
+                  "layout": "vertical",
+                  "contents": [
+                    {
+                      "type": "box",
+                      "layout": "horizontal",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "text": "收入",
+                          "align": "start"
+                        },
+                        {
+                          "type": "text",
+                          "text": "結餘",
+                          "align": "center"
+                        },
+                        {
+                          "type": "text",
+                          "text": "支出",
+                          "align": "end"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "box",
+                      "layout": "horizontal",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "text": "$",
+                          "align": "start"
+                        },
+                        {
+                          "type": "text",
+                          "text": "$",
+                          "align": "center"
+                        },
+                        {
+                          "type": "text",
+                          "text": "$",
+                          "align": "end"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+        """;
+
+            JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
+
+            flexMessageJsonObject.getJSONObject("body")
+                    .getJSONArray("contents")
+                    .getJSONObject(1)
+                    .getJSONArray("contents")
+                    .getJSONObject(0)
+                    .put("text", totalIncome);
+            flexMessageJsonObject.getJSONObject("body")
+                    .getJSONArray("contents")
+                    .getJSONObject(1)
+                    .getJSONArray("contents")
+                    .getJSONObject(1)
+                    .put("text", netBalance);
+            flexMessageJsonObject.getJSONObject("body")
+                    .getJSONArray("contents")
+                    .getJSONObject(1)
+                    .getJSONArray("contents")
+                    .getJSONObject(2)
+                    .put("text", totalExpenses);
+
+            String updatedFlexMessageJson = flexMessageJsonObject.toString();
+
+            try {
+
+                FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
+
+                FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
+
+                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+
+            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
+    //記帳，flexMessage 內放 postback
     @EventMapping
     public void handlePostbackEvent(PostbackEvent event) {
         String userId = event.getSource().getUserId();
@@ -209,10 +325,10 @@ public class MessageHandler {
             categoryMessages.put("娛樂", "支出分類選擇:娛樂類別");
             categoryMessages.put("交通", "支出分類選擇:交通類別");
             categoryMessages.put("藥妝", "支出分類選擇:藥妝類別");
-            categoryMessages.put("薪水", "支出分類選擇:薪水類別");
-            categoryMessages.put("獎金", "支出分類選擇:獎金類別");
-            categoryMessages.put("兼職", "支出分類選擇:兼職類別");
-            categoryMessages.put("投資", "支出分類選擇:投資類別");
+            categoryMessages.put("薪水", "收入分類選擇:薪水類別");
+            categoryMessages.put("獎金", "收入分類選擇:獎金類別");
+            categoryMessages.put("兼職", "收入分類選擇:兼職類別");
+            categoryMessages.put("投資", "收入分類選擇:投資類別");
 
             // Determine the type based on the category
             Map<String, Integer> categoryTypes = new HashMap<>();
