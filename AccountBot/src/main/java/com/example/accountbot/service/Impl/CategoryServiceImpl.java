@@ -31,6 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Map<String, Object> get(Integer type, String name, String lineUserId) {
+
+        categoryRepository.initializeDefaultCategories(lineUserId);
+
         List<CategoryDto> getCategoryDto = categoryRepository.get(type, name, lineUserId);
 
         Map<String, Object> result = new HashMap<>();

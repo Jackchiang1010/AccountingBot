@@ -75,6 +75,31 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         }
     }
 
+
+    // 檢查並插入預設分類
+    @Override
+    public void initializeDefaultCategories(String lineUserId) {
+        String checkSql = "SELECT COUNT(*) FROM category WHERE lineuser_id = :lineUserId";
+        Map<String, Object> checkMap = new HashMap<>();
+        checkMap.put("lineUserId", lineUserId);
+
+        Integer count = namedParameterJdbcTemplate.queryForObject(checkSql, checkMap, Integer.class);
+
+        if (count != null && count == 0) {
+            String insertSql = "INSERT INTO category (type, name, lineuser_id) VALUES " +
+                    "(1, '飲食', :lineUserId), " +
+                    "(1, '娛樂', :lineUserId), " +
+                    "(1, '交通', :lineUserId), " +
+                    "(1, '藥妝', :lineUserId), " +
+                    "(0, '薪水', :lineUserId), " +
+                    "(0, '獎金', :lineUserId), " +
+                    "(0, '兼職', :lineUserId), " +
+                    "(0, '投資', :lineUserId)";
+
+            namedParameterJdbcTemplate.update(insertSql, checkMap);
+        }
+    }
+
     @Override
     public UpdateCategoryDto update(UpdateCategoryDto updateCategoryDto) {
 

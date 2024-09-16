@@ -11,6 +11,8 @@ public interface CategoryRepository {
 
     List<CategoryDto> get(Integer type, String name, String lineUserId);
 
+    void initializeDefaultCategories(String lineUserId);
+
     UpdateCategoryDto update(UpdateCategoryDto updateCategoryDto);
 
     boolean delete(Integer id);
