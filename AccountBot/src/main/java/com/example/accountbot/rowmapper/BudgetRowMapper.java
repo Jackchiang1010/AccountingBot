@@ -1,0 +1,21 @@
+package com.example.accountbot.rowmapper;
+
+import com.example.accountbot.dto.budget.GetBudgetDto;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class BudgetRowMapper implements RowMapper<GetBudgetDto> {
+
+    @Override
+    public GetBudgetDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+        GetBudgetDto getBudgetDto = new GetBudgetDto();
+
+        getBudgetDto.setCategory(rs.getString("name"));
+        getBudgetDto.setPrice(rs.getInt("price"));
+
+        return getBudgetDto;
+    }
+
+}

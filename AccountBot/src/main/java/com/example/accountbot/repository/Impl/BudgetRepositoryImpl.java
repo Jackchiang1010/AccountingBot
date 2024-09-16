@@ -1,7 +1,9 @@
 package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.budget.BudgetDto;
+import com.example.accountbot.dto.budget.GetBudgetDto;
 import com.example.accountbot.repository.BudgetRepository;
+import com.example.accountbot.rowmapper.BudgetRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +29,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
         String sql = "INSERT INTO budget(category_id, price) VALUES (:category_id, :price);";
 
         Map<String, Object> map = new HashMap<String, Object>();
-        //TODO category_id 要從 category 轉成 id
+
         Integer categoryId = getCategoryId(budgetDto.getCategory(), budgetDto.getLineUserId());
         map.put("category_id", categoryId);
         map.put("price", budgetDto.getPrice());
@@ -64,32 +66,37 @@ public class BudgetRepositoryImpl implements BudgetRepository {
     }
 
     @Override
-    public List<BudgetDto> get(String category, String lineUserId) {
-//        String sql;
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(category.equals("all")){
-//            sql = "SELECT b.id, b.category_id, b.price " +
-//                    "FROM budget b " +
-//                    "JOIN category c ON b.category_id = c.id " +
-//                    "WHERE c.lineuser_id = :lineUserId;";
-//        }else {
-//            sql = "SELECT b.id, b.category_id, b.price " +
-//                    "FROM budget b " +
-//                    "JOIN category c ON b.category_id = c.id " +
-//                    "WHERE c.lineuser_id = :lineUserId;";
-//
-//            map.put("lineUserId", lineUserId);
-//        }
-//
-//        try {
-//            return namedParameterJdbcTemplate.query(sql, map, new GetCategoryRowMapper());
-//        }catch (DataAccessException e){
-//
-//            log.info("error : " + e.getMessage());
-//
-//            throw new RuntimeException("Failed to get category", e);
-//        }
-        return null;
+    public List<GetBudgetDto> get(String category, String lineUserId) {
+        String sql;
+        Map<String, Object> map = new HashMap<>();
+
+        if(category.equals("all")){
+            sql = "SELECT c.name, b.price " +
+                    "FROM budget b " +
+                    "JOIN category c ON b.category_id = c.id " +
+                    "WHERE c.type = 1 " +
+                    "AND c.lineuser_id = :lineUserId;";
+        }else {
+            sql = "SELECT c.name, b.price " +
+                    "FROM budget b " +
+                    "JOIN category c ON b.category_id = c.id " +
+                    "WHERE c.type = 1 " +
+                    "AND c.lineuser_id = :lineUserId " +
+                    "AND b.category_id = :category_id;";
+
+            Integer categoryId = getCategoryId(category, lineUserId);
+            map.put("category_id", categoryId);
+        }
+
+        map.put("lineUserId", lineUserId);
+
+        try {
+            return namedParameterJdbcTemplate.query(sql, map, new BudgetRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get budget", e);
+        }
     }
 }

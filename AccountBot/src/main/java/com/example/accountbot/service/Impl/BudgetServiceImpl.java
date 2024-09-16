@@ -1,7 +1,7 @@
 package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.budget.BudgetDto;
-import com.example.accountbot.dto.category.CategoryDto;
+import com.example.accountbot.dto.budget.GetBudgetDto;
 import com.example.accountbot.repository.BudgetRepository;
 import com.example.accountbot.service.BudgetService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public Map<String, Object> get(String category, String lineUserId) {
-        List<BudgetDto> getCategoryDto = budgetRepository.get(category, lineUserId);
+        List<GetBudgetDto> getCategoryDto = budgetRepository.get(category, lineUserId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", getCategoryDto);

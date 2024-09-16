@@ -1,7 +1,7 @@
 package com.example.accountbot.repository;
 
 import com.example.accountbot.dto.budget.BudgetDto;
-import com.example.accountbot.dto.category.CategoryDto;
+import com.example.accountbot.dto.budget.GetBudgetDto;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ public interface BudgetRepository {
 
     Integer getCategoryId(String categoryName, String lineUserId);
 
-    List<BudgetDto> get(String category, String lineUserId);
+    List<GetBudgetDto> get(String category, String lineUserId);
 
 }
