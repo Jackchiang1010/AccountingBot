@@ -55,9 +55,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         Map<String, Object> map = new HashMap<>();
 
         if(name.equals("all")){
-            sql = "SELECT * FROM category WHERE type = :type AND (lineuser_id = :lineUserId OR lineuser_id = 'share');";
+            sql = "SELECT * FROM category WHERE type = :type AND lineuser_id = :lineUserId;";
         }else {
-            sql = "SELECT * FROM category WHERE type = :type AND (lineuser_id = :lineUserId OR lineuser_id = 'share') AND name = :name;";
+            sql = "SELECT * FROM category WHERE type = :type AND lineuser_id = :lineUserId AND name = :name;";
 
             map.put("name", name);
         }
@@ -82,22 +82,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
             Integer copyCategoryId = updateCategoryDto.getId();
 
-            if(updateCategoryDto.getId() <= 8){
-                String copySql = "INSERT INTO category (type, name, lineuser_id) " +
-                        "SELECT type, name, :lineuser_id FROM category " +
-                        "WHERE lineuser_id = 'share' AND id = :id;";
-
-                Map<String, Object> copyMap = new HashMap<String, Object>();
-                copyMap.put("id", updateCategoryDto.getId());
-                copyMap.put("lineuser_id", updateCategoryDto.getLineUserId());
-
-                KeyHolder copyKeyHolder = new GeneratedKeyHolder();
-
-                namedParameterJdbcTemplate.update(copySql, new MapSqlParameterSource(copyMap), copyKeyHolder);
-
-                copyCategoryId = copyKeyHolder.getKey().intValue();
-            }
-
             String checkSql = "SELECT COUNT(*) FROM category WHERE lineuser_id = :lineuser_id AND name = :name";
             Map<String, Object> params = new HashMap<>();
             params.put("lineuser_id", updateCategoryDto.getLineUserId());
@@ -117,10 +101,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("type", updateCategoryDto.getType());
                 map.put("name", updateCategoryDto.getName());
-
                 map.put("id", copyCategoryId);
-
-                //TODO lineuser_id 要從 handler 拿
                 map.put("lineuser_id", updateCategoryDto.getLineUserId());
 
                 KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -145,7 +126,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public boolean delete(Integer id) {
-        String sql = "DELETE FROM category WHERE id = :id AND lineuser_id != 'share';";
+        String sql = "DELETE FROM category WHERE id = :id;";
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", id);

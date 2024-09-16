@@ -34,14 +34,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("type", transactionDto.getType());
 
-        //TODO category_id 要從 category 轉成 id
         Integer categoryId = getCategoryId(transactionDto.getCategory(), transactionDto.getLineUserId());
         map.put("category_id", categoryId);
 
         map.put("cost", transactionDto.getCost());
         map.put("description", transactionDto.getDescription());
         map.put("date", transactionDto.getDate());
-        //TODO lineuser_id 要從 handler 拿
         map.put("lineuser_id", transactionDto.getLineUserId());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -61,7 +59,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public Integer getCategoryId(String categoryName, String lineUserId) {
-        String sql = "SELECT id FROM category WHERE name = :name AND (lineuser_id = :lineuser_id OR lineuser_id = :share)";
+        String sql = "SELECT id FROM category WHERE name = :name AND lineuser_id = :lineuser_id ";
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", categoryName);
@@ -89,7 +87,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
-                    "AND (c.lineuser_id = t.lineuser_id OR c.lineuser_id = 'share') " +
+                    "AND c.lineuser_id = t.lineuser_id " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
                     "GROUP BY c.name;";
         }else {
@@ -99,12 +97,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
-                    "AND (c.lineuser_id = t.lineuser_id OR c.lineuser_id = 'share') " +
+                    "AND c.lineuser_id = t.lineuser_id " +
                     "AND t.category_id = :category_id " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
                     "GROUP BY c.name;";
 
-            //TODO category_id 要從 category 轉成 id
             Integer categoryId = getCategoryId(category, lineUserId);
             map.put("category_id", categoryId);
         }
@@ -134,7 +131,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("type", updatetransactionDto.getType());
 
-        //TODO category_id 要從 category 轉成 id
         Integer categoryId = getCategoryId(updatetransactionDto.getCategory(), updatetransactionDto.getLineUserId());
         map.put("category_id", categoryId);
 
@@ -143,7 +139,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         map.put("date", updatetransactionDto.getDate());
 
         map.put("id", updatetransactionDto.getId());
-        //TODO lineuser_id 要從 handler 拿
         map.put("lineuser_id", updatetransactionDto.getLineUserId());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
