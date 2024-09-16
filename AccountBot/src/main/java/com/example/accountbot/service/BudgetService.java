@@ -9,4 +9,6 @@ public interface BudgetService {
 
     Map<String, Object> create(BudgetDto budgetDto);
 
+    Map<String, Object> get(String categoryId, String lineUserId);
+
 }

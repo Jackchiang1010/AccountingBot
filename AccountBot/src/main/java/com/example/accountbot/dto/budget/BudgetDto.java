@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BudgetDto {
 
-    private String categoryId;
+    private String category;
 
     private String price;
+
+    private String lineUserId;
 
 }

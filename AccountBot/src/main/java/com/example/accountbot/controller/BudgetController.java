@@ -6,10 +6,7 @@ import com.example.accountbot.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,6 +22,22 @@ public class BudgetController {
 
         try {
             Map<String, Object> response = budgetService.create(budgetDto);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(ErrorResponseDto.error("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<?> get(@RequestParam(value = "category", defaultValue = "all") String categoryId,
+                                 @RequestParam(value = "lineUserId") String lineUserId) {
+
+        try {
+            Map<String, Object> response = budgetService.get(categoryId, lineUserId);
 
             return ResponseEntity.ok(response);
         }catch (RuntimeException e){

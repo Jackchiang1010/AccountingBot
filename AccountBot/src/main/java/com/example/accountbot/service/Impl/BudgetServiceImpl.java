@@ -1,6 +1,7 @@
 package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.budget.BudgetDto;
+import com.example.accountbot.dto.category.CategoryDto;
 import com.example.accountbot.repository.BudgetRepository;
 import com.example.accountbot.service.BudgetService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,10 +21,21 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public Map<String, Object> create(BudgetDto budgetDto) {
+
         Integer budgetId = budgetRepository.create(budgetDto);
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", budgetId);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> get(String category, String lineUserId) {
+        List<BudgetDto> getCategoryDto = budgetRepository.get(category, lineUserId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", getCategoryDto);
 
         return result;
     }
