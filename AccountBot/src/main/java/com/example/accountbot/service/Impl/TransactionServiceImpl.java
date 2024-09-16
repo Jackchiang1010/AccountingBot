@@ -1,6 +1,7 @@
 package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
@@ -117,5 +118,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public boolean delete(Integer id) {
         return transactionRepository.delete(id);
+    }
+
+    @Override
+    public BalanceDto balance() {
+
+        BalanceDto balanceDto = transactionRepository.balance();
+
+        return balanceDto;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.accountbot.repository;
 
 import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 
@@ -16,4 +17,6 @@ public interface TransactionRepository {
     UpdateTransactionDto updateTransaction(UpdateTransactionDto updatetransactionDto);
 
     boolean delete(Integer id);
+
+    BalanceDto balance();
 }

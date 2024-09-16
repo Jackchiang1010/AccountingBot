@@ -1,6 +1,8 @@
 package com.example.accountbot.repository.Impl;
 
+import com.example.accountbot.dto.budget.BudgetDto;
 import com.example.accountbot.dto.category.CategoryCostDto;
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
@@ -9,6 +11,7 @@ import com.example.accountbot.rowmapper.transaction.UpdateTransactionRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -177,5 +180,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public BalanceDto balance() {
+
+        String sql = "SELECT " +
+                "SUM(CASE WHEN `type` = 1 THEN `cost` ELSE 0 END) AS total_expenses, " +
+                "SUM(CASE WHEN `type` = 0 THEN `cost` ELSE 0 END) AS total_income " +
+                "FROM `transaction`;";
+
+        Map<String, Object> map = new HashMap<>();
+
+        return namedParameterJdbcTemplate.queryForObject(sql, map, new BeanPropertyRowMapper<>(BalanceDto.class));
     }
 }

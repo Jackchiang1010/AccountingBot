@@ -1,6 +1,7 @@
 package com.example.accountbot.controller;
 
 import com.example.accountbot.dto.ErrorResponseDto;
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.service.TransactionService;
@@ -67,7 +68,7 @@ public class TransactionController {
 
     }
 
-    @DeleteMapping("/dalete")
+    @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody UpdateTransactionDto updatetransactionDto) {
 
         try {
@@ -81,6 +82,21 @@ public class TransactionController {
             }else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(ErrorResponseDto.error("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("/balance")
+    public ResponseEntity<?> balance() {
+
+        try {
+            BalanceDto response = transactionService.balance();
+
+            return ResponseEntity.ok(response);
         }catch (RuntimeException e){
             return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception e){

@@ -1,5 +1,6 @@
 package com.example.accountbot.service;
 
+import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 
@@ -17,5 +18,7 @@ public interface TransactionService {
     Map<String, Object> update(UpdateTransactionDto updatetransactionDto);
 
     boolean delete(Integer id);
+
+    BalanceDto balance();
 
 }
