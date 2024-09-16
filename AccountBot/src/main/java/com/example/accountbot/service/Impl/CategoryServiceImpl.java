@@ -21,20 +21,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Map<String, Object> create(CategoryDto categoryDto) {
-        Integer transactionId = categoryRepository.create(categoryDto);
+        Integer categoryId = categoryRepository.create(categoryDto);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("data", transactionId);
+        result.put("data", categoryId);
 
         return result;
     }
 
     @Override
     public Map<String, Object> get(Integer type, String name, String lineUserId) {
-        List<CategoryDto> getTransactionDto = categoryRepository.get(type, name, lineUserId);
+        List<CategoryDto> getCategoryDto = categoryRepository.get(type, name, lineUserId);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("data", getTransactionDto);
+        result.put("data", getCategoryDto);
 
         return result;
     }
