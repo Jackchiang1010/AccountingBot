@@ -2,8 +2,11 @@ package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.budget.BudgetDto;
 import com.example.accountbot.dto.budget.GetBudgetDto;
+import com.example.accountbot.dto.budget.UpdateBudgetDto;
+import com.example.accountbot.dto.budget.UpdateBudgetResponseDto;
 import com.example.accountbot.repository.BudgetRepository;
-import com.example.accountbot.rowmapper.BudgetRowMapper;
+import com.example.accountbot.rowmapper.budget.BudgetRowMapper;
+import com.example.accountbot.rowmapper.budget.UpdateBudgetRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -82,10 +85,10 @@ public class BudgetRepositoryImpl implements BudgetRepository {
                     "JOIN category c ON b.category_id = c.id " +
                     "WHERE c.type = 1 " +
                     "AND c.lineuser_id = :lineUserId " +
-                    "AND b.category_id = :category_id;";
+                    "AND b.category_id = :categoryId;";
 
             Integer categoryId = getCategoryId(category, lineUserId);
-            map.put("category_id", categoryId);
+            map.put("categoryId", categoryId);
         }
 
         map.put("lineUserId", lineUserId);
@@ -97,6 +100,40 @@ public class BudgetRepositoryImpl implements BudgetRepository {
             log.info("error : " + e.getMessage());
 
             throw new RuntimeException("Failed to get budget", e);
+        }
+    }
+
+    @Override
+    public UpdateBudgetResponseDto update(UpdateBudgetDto updateBudgetDto) {
+        try {
+
+            String updateSql = "UPDATE budget SET price = :price, category_id = :categoryId WHERE id = :id;";
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            Integer categoryId = getCategoryId(updateBudgetDto.getCategory(), updateBudgetDto.getLineUserId());
+            map.put("price", updateBudgetDto.getPrice());
+            map.put("categoryId", categoryId);
+            map.put("id", updateBudgetDto.getId());
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            namedParameterJdbcTemplate.update(updateSql, new MapSqlParameterSource(map), keyHolder);
+
+            String selectSql = "SELECT b.id, c.name, b.price " +
+                    "FROM budget b " +
+                    "JOIN category c ON b.category_id = c.id " +
+                    "WHERE b.id = :id;";
+            Map<String, Object> selectMap = new HashMap<String, Object>();
+            selectMap.put("id", updateBudgetDto.getId());
+
+            UpdateBudgetResponseDto updatedBudgetResponse = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateBudgetRowMapper());
+
+            return updatedBudgetResponse;
+
+        }catch (DataAccessException e){
+            log.info("error : " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update budget", e);
         }
     }
 }

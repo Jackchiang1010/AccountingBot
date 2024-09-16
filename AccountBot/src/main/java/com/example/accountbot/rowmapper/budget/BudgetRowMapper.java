@@ -1,4 +1,4 @@
-package com.example.accountbot.rowmapper;
+package com.example.accountbot.rowmapper.budget;
 
 import com.example.accountbot.dto.budget.GetBudgetDto;
 import org.springframework.jdbc.core.RowMapper;

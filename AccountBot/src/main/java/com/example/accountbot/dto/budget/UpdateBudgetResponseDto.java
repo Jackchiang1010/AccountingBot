@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GetBudgetDto {
+public class UpdateBudgetResponseDto {
+
+    private Integer id;
 
     private String category;
 

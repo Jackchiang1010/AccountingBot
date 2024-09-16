@@ -5,10 +5,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GetBudgetDto {
+public class UpdateBudgetDto {
+
+    private Integer id;
 
     private String category;
 
     private Integer price;
+
+    private String lineUserId;
 
 }

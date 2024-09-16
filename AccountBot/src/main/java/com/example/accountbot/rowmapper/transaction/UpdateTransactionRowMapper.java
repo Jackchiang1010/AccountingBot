@@ -1,4 +1,4 @@
-package com.example.accountbot.rowmapper;
+package com.example.accountbot.rowmapper.transaction;
 
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import org.springframework.jdbc.core.RowMapper;

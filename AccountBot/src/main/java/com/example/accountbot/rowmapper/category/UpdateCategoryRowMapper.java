@@ -1,7 +1,6 @@
-package com.example.accountbot.rowmapper;
+package com.example.accountbot.rowmapper.category;
 
 import com.example.accountbot.dto.category.UpdateCategoryDto;
-import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
