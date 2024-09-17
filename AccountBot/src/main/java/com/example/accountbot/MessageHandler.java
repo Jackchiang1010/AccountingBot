@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import java.awt.*;
@@ -137,7 +138,7 @@ public class MessageHandler {
 
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
+                FlexMessage flexMessage = new FlexMessage("記支出", flexContainer);
 
                 lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
@@ -205,7 +206,7 @@ public class MessageHandler {
 
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
+                FlexMessage flexMessage = new FlexMessage("記收入", flexContainer);
 
                 lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
@@ -243,67 +244,19 @@ public class MessageHandler {
 
             String flexMessageJson = """
             {
-                "type": "bubble",
-                "hero": {
-                  "type": "image",
-                  "url": "%s",
-                  "size": "full",
-                  "aspectRatio": "2:1",
-                  "aspectMode": "fit",
-                  "action": {
-                    "type": "uri",
-                    "uri": "https://line.me/"
-                  }
-                },
-                "body": {
-                  "type": "box",
-                  "layout": "vertical",
-                  "contents": [
-                    {
-                      "type": "box",
-                      "layout": "horizontal",
-                      "contents": [
-                        {
-                          "type": "text",
-                          "text": "收入",
-                          "align": "start"
-                        },
-                        {
-                          "type": "text",
-                          "text": "結餘",
-                          "align": "center"
-                        },
-                        {
-                          "type": "text",
-                          "text": "支出",
-                          "align": "end"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "box",
-                      "layout": "horizontal",
-                      "contents": [
-                        {
-                          "type": "text",
-                          "text": "$",
-                          "align": "start"
-                        },
-                        {
-                          "type": "text",
-                          "text": "$",
-                          "align": "center"
-                        },
-                        {
-                          "type": "text",
-                          "text": "$",
-                          "align": "end"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
+                 "type": "bubble",
+                 "hero": {
+                   "type": "image",
+                   "size": "full",
+                   "aspectMode": "fit",
+                   "action": {
+                     "type": "uri",
+                     "uri": "https://line.me/"
+                   },
+                   "url": "%s.png",
+                   "aspectRatio": "2:1"
+                 }
+               }
         """;
 
             JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
@@ -313,7 +266,8 @@ public class MessageHandler {
 //            log.info("imageUrl : " + imageUrl);
 
             String filePath = imagePath; // 本地圖片路徑
-            String s3Key = "images/balance.png"; // 在 S3 上的路徑和檔案名稱
+            String uuid = UUID.randomUUID().toString();
+            String s3Key = "images/balance_" + uuid + ".png"; // 在 S3 上的路徑和檔案名稱
             String imageUrl = uploadImageToS3AndSendToLineBot(filePath, s3Key);
 
             log.info("imageUrl : " + imageUrl);
@@ -322,24 +276,6 @@ public class MessageHandler {
 //                    .put("url", "https://accountingbot.s3.ap-northeast-1.amazonaws.com/images/chart.png");
 //                    .put("url", imagePath);
                     .put("url", imageUrl);
-            flexMessageJsonObject.getJSONObject("body")
-                    .getJSONArray("contents")
-                    .getJSONObject(1)
-                    .getJSONArray("contents")
-                    .getJSONObject(0)
-                    .put("text", totalIncome);
-            flexMessageJsonObject.getJSONObject("body")
-                    .getJSONArray("contents")
-                    .getJSONObject(1)
-                    .getJSONArray("contents")
-                    .getJSONObject(1)
-                    .put("text", netBalance);
-            flexMessageJsonObject.getJSONObject("body")
-                    .getJSONArray("contents")
-                    .getJSONObject(1)
-                    .getJSONArray("contents")
-                    .getJSONObject(2)
-                    .put("text", totalExpenses);
 
             String updatedFlexMessageJson = flexMessageJsonObject.toString();
 
@@ -347,7 +283,7 @@ public class MessageHandler {
 
                 FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("Flex Message 標題", flexContainer);
+                FlexMessage flexMessage = new FlexMessage("本月結餘", flexContainer);
 
                 lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
