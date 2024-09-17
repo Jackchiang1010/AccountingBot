@@ -29,18 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import org.springframework.beans.factory.annotation.Value;
 
 @LineMessageHandler
 @RequiredArgsConstructor
@@ -255,12 +244,7 @@ public class MessageHandler {
 
             JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
-            String filePath = imagePath; // 本地圖片路徑
-            String uuid = UUID.randomUUID().toString();
-            String s3Key = "images/balance_" + uuid + ".png"; // 在 S3 上的路徑和檔案名稱
-            String imageUrl = uploadImageToS3(filePath, s3Key);
-
-            log.info("imageUrl : " + imageUrl);
+            String imageUrl = uploadImageToS3(imagePath);
 
             flexMessageJsonObject.getJSONObject("hero")
                     .put("url", imageUrl);
@@ -348,12 +332,10 @@ public class MessageHandler {
         }
     }
 
-    public String uploadImageToS3(String filePath, String s3Key) {
+    public String uploadImageToS3(String filePath) {
 
-        // 建立 S3 上傳器
-//        S3Uploader s3Uploader = new S3Uploader(accessKey, secretKey);
-
-        // 上傳圖片並取得 S3 上的 URL
+        String uuid = UUID.randomUUID().toString();
+        String s3Key = "images/balance_" + uuid + ".png"; // 在 S3 上的路徑和檔案名稱
         String imageUrl = s3Service.uploadFile(filePath, s3Key);
         log.info("Image uploaded to S3, URL: " + imageUrl);
 
