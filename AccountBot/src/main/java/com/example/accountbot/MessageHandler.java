@@ -1,6 +1,8 @@
 package com.example.accountbot;
 
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.service.ChartGenerateService;
+import com.example.accountbot.service.S3Service;
 import com.example.accountbot.service.TransactionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,19 +55,11 @@ public class MessageHandler {
 
     private final TransactionService transactionService;
 
-    @Value("${aws.accessKey}")
-    String accessKey;
-
-    @Value("${aws.secretKey}")
-    private String secretKey;
-
-    @Value("${aws.bucketName}")
-    private String bucketName;
-
-    @Value("${aws.region}")
-    private String region;
-
     private String lastUserMessage = "";
+
+    private final ChartGenerateService chartGenerateService;
+
+    private final S3Service s3Service;
 
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
@@ -232,7 +226,7 @@ public class MessageHandler {
 
             String outputFilePath = "src/main/resources/static/images/chart.png";
             // 生成長條圖
-            String imagePath = BarChartGenerator.generateBarChart(totalIncome, totalExpenses, netBalance, outputFilePath);
+            String imagePath = chartGenerateService.generateBarChart(totalIncome, totalExpenses, netBalance, outputFilePath);
 
             if (imagePath != null) {
                 log.info("圖片生成並儲存成功，路徑為: " + imagePath);
@@ -261,20 +255,14 @@ public class MessageHandler {
 
             JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
-//            String baseUrl = "http://localhost:8080"; // 如果是部署在伺服器上，請使用你的網域名稱
-//            String imageUrl = baseUrl + "/images/chart.png";
-//            log.info("imageUrl : " + imageUrl);
-
             String filePath = imagePath; // 本地圖片路徑
             String uuid = UUID.randomUUID().toString();
             String s3Key = "images/balance_" + uuid + ".png"; // 在 S3 上的路徑和檔案名稱
-            String imageUrl = uploadImageToS3AndSendToLineBot(filePath, s3Key);
+            String imageUrl = uploadImageToS3(filePath, s3Key);
 
             log.info("imageUrl : " + imageUrl);
 
             flexMessageJsonObject.getJSONObject("hero")
-//                    .put("url", "https://accountingbot.s3.ap-northeast-1.amazonaws.com/images/chart.png");
-//                    .put("url", imagePath);
                     .put("url", imageUrl);
 
             String updatedFlexMessageJson = flexMessageJsonObject.toString();
@@ -360,116 +348,13 @@ public class MessageHandler {
         }
     }
 
-    public class BarChartGenerator {
-
-        public static String generateBarChart(int income, int expense, int balance, String outputFilePath) throws IOException {
-            int width = 400;
-            int height = 200;
-
-            try {
-                // 取得檔案儲存目錄
-                File outputFile = new File(outputFilePath);
-                File outputDir = outputFile.getParentFile();
-
-                // 檢查並建立目錄
-                if (!outputDir.exists()) {
-                    boolean dirCreated = outputDir.mkdirs();
-                    if (dirCreated) {
-                        log.info("目錄建立成功: " + outputDir.getAbsolutePath());
-                    } else {
-                        log.info("目錄建立失敗: " + outputDir.getAbsolutePath());
-                    }
-                } else {
-                    log.info("目錄已存在: " + outputDir.getAbsolutePath());
-                }
-
-                BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2d = bufferedImage.createGraphics();
-
-                // 背景顏色
-                g2d.setColor(Color.decode("#F8E8C9"));
-                g2d.fillRoundRect(0, 0, width, height, 40, 40);
-
-                // 繪製長條圖背景
-                g2d.setColor(Color.decode("#FDEEDC"));
-                g2d.fillRoundRect(50, 50, 300, 30, 20, 20);
-
-                // 計算長條的比例
-                int total = income;
-                int expenseBarWidth = (int) ((double) expense / total * 300);
-
-                // 繪製支出長條
-                g2d.setColor(Color.decode("#E97777"));
-//                g2d.fillOval(50 + expenseBarWidth - 15, 40, 30, 30);
-                g2d.fillRoundRect(50, 50, expenseBarWidth, 30, 20, 20);
-
-                // 畫雞的圖案 (簡化為一個圓形)
-//                g2d.setColor(Color.WHITE);
-//                g2d.fillOval(expenseBarWidth, 50, 30, 30);
-
-                // 添加文字
-                g2d.setColor(Color.decode("#FF8B8B"));
-                g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-                g2d.drawString("支出", 50, 120);
-                g2d.drawString("$" + expense, 50, 150);
-
-                g2d.setColor(Color.decode("#917FB3"));
-                g2d.drawString("目前結餘", 160, 120);
-                g2d.drawString("$" + balance, 160, 150);
-
-                g2d.setColor(Color.decode("#52A26E"));
-                g2d.drawString("收入", 300, 120);
-                g2d.drawString("$" + income, 300, 150);
-
-                // 釋放圖形資源
-                g2d.dispose();
-
-                // 輸出圖片
-                ImageIO.write(bufferedImage, "png", outputFile);
-                log.info("圖片已成功儲存到: " + outputFile.getAbsolutePath());
-
-                return outputFile.getAbsolutePath();
-
-            } catch (IOException e) {
-                log.info("生成圖片時發生錯誤: " + e.getMessage());
-                e.printStackTrace();
-                return null;
-            } catch (Exception e) {
-                log.info("發生未知錯誤: " + e.getMessage());
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-    public class S3Uploader {
-        private AmazonS3 s3Client;
-
-        public S3Uploader(String accessKey, String secretKey) {
-            BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
-            this.s3Client = AmazonS3ClientBuilder.standard()
-                    .withRegion(region)
-//                    .withRegion("ap-northeast-1")
-                    .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-                    .build();
-        }
-
-        public String uploadFile(String filePath, String s3Key) {
-            File file = new File(filePath);
-            log.info("filePath" + filePath);
-            s3Client.putObject(new PutObjectRequest(bucketName, s3Key, file));
-            return s3Client.getUrl(bucketName, s3Key).toString();
-        }
-    }
-
-    public String uploadImageToS3AndSendToLineBot(String filePath, String s3Key) {
-
+    public String uploadImageToS3(String filePath, String s3Key) {
 
         // 建立 S3 上傳器
-        S3Uploader s3Uploader = new S3Uploader(accessKey, secretKey);
+//        S3Uploader s3Uploader = new S3Uploader(accessKey, secretKey);
 
         // 上傳圖片並取得 S3 上的 URL
-        String imageUrl = s3Uploader.uploadFile(filePath, s3Key);
+        String imageUrl = s3Service.uploadFile(filePath, s3Key);
         log.info("Image uploaded to S3, URL: " + imageUrl);
 
         return imageUrl;
