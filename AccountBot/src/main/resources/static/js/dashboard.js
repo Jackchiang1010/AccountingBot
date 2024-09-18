@@ -34,16 +34,28 @@ var ctx = document.getElementById('expenseChart').getContext('2d');
 var expenseChart = new Chart(ctx, {
     type: 'pie',
     data: {
-        labels: ['飲食', '娛樂', '交通', '投資', '生活', '保險'],
+        labels: [],
         datasets: [{
-            data: [100, 490, 1200, 4000, 500, 999],
+            data: [],
             backgroundColor: ['#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB', '#9966FF']
         }]
     },
     options: {
-        //響應式
         responsive: true,
-        //是否維持原始長寬比
         maintainAspectRatio: false
     }
 });
+
+// 從 API 獲取資料
+fetch('https://jacktest.site/api/1.0/transaction/get?type=1&category=all&time=week&lineUserId=U6f5de7e36ccc512ef1b72bf881e87e54')
+    .then(response => response.json())
+    .then(data => {
+        // 更新圖表的標籤和數據
+        const labels = data.data.map(item => item.category);
+        const dataValues = data.data.map(item => item.total_cost);
+
+        expenseChart.data.labels = labels;
+        expenseChart.data.datasets[0].data = dataValues;
+        expenseChart.update();
+    })
+    .catch(error => console.error('Error fetching data:', error));
