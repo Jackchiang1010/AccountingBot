@@ -22,14 +22,14 @@ jobs:
 
     - name: Build with Maven
       run: |
-        cd Accountbot
+        cd AccountBot
         mvn clean package
 
     - name: Deploy to EC2
       env:
         PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
       run: |
-        cd Accountbot
+        cd AccountBot
         # Save private key to a file
         echo "${PRIVATE_KEY}" > private_key.pem
         chmod 600 private_key.pem
