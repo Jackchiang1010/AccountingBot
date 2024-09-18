@@ -23,6 +23,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd AccountBot
+        mkdir -p ~/.ssh
         mvn clean package -DskipTests
 
     - name: Add EC2 to known_hosts
