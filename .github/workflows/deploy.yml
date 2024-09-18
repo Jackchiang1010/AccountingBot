@@ -21,7 +21,7 @@ jobs:
         distribution: 'adopt'
 
     - name: Build with Maven
-      run:
+      run: |
         cd Accountbot
         mvn clean package
 
@@ -46,4 +46,4 @@ jobs:
           fi
           rm app.log
           nohup java -jar ~/AccountBot-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-       
+        EOF
