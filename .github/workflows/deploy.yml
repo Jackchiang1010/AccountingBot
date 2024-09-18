@@ -22,7 +22,7 @@ jobs:
 
     - name: Build with Maven
       run: |
-        cd AccountingBot
+        cd AccountBot
         mvn clean package -DskipTests
 
     - name: Add EC2 to known_hosts
@@ -33,7 +33,7 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
       run: |
-        cd AccountingBot
+        cd AccountBot
         # Save private key to a file
         echo "${PRIVATE_KEY}" > private_key.pem
         chmod 600 private_key.pem
