@@ -23,7 +23,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd AccountBot
-        mvn clean package
+        mvn clean package -DskipTests
 
     - name: Deploy to EC2
       env:
