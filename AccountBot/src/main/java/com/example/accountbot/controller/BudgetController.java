@@ -49,7 +49,7 @@ public class BudgetController {
 
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody UpdateBudgetDto updateBudgetDto) {
 
         try {

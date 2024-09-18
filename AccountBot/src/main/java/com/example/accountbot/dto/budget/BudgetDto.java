@@ -12,7 +12,7 @@ public class BudgetDto {
 
     private Integer price;
 
-    @JsonProperty("lineuser_id")
+//    @JsonProperty("lineuser_id")
     private String lineUserId;
 
 }

@@ -64,6 +64,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
             return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
         }catch (DataAccessException e){
             log.info("error : " + e.getMessage());
+            log.info("categoryName : " + categoryName);
+            log.info("lineuser_id : " + lineUserId);
             throw new RuntimeException("Failed to get categoryId", e);
         }
     }
