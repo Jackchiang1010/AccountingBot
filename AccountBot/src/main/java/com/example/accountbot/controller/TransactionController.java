@@ -53,7 +53,7 @@ public class TransactionController {
 
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody UpdateTransactionDto updatetransactionDto) {
 
         try {

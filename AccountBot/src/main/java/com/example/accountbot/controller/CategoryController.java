@@ -54,7 +54,7 @@ public class CategoryController {
 
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody UpdateCategoryDto updateCategoryDto) {
 
         try {
