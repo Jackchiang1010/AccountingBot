@@ -239,7 +239,7 @@ public class MessageHandler {
                    "aspectMode": "fit",
                    "action": {
                      "type": "uri",
-                     "uri": "https://line.me/"
+                     "uri": "%s"
                    },
                    "url": "%s.png",
                    "aspectRatio": "2:1"
@@ -250,6 +250,10 @@ public class MessageHandler {
                 JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
                 String imageUrl = uploadImageToS3(imagePath);
+
+                flexMessageJsonObject.getJSONObject("hero")
+                        .getJSONObject("action")
+                        .put("uri", imageUrl);
 
                 flexMessageJsonObject.getJSONObject("hero")
                         .put("url", imageUrl);

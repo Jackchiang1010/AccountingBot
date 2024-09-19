@@ -17,8 +17,11 @@ import java.io.IOException;
 public class ChartGenerateServiceImpl implements ChartGenerateService {
 
     public String generateBarChart(int income, int expense, int balance, String outputFilePath) {
-        int width = 400;
-        int height = 200;
+        int width = 600;  // 圖片寬度
+        int height = 300; // 圖片高度
+        int barWidth = 100; // 每個長條圖的寬度
+        int barSpacing = 60; // 每個長條圖之間的間隔
+        int labelSpacing = 20; // 標籤與長條圖之間的間隔
 
         try {
             // 取得檔案儲存目錄
@@ -44,30 +47,48 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.setColor(Color.decode("#F8E8C9"));
             g2d.fillRoundRect(0, 0, width, height, 40, 40);
 
-            // 繪製長條圖背景
-            g2d.setColor(Color.decode("#FDEEDC"));
-            g2d.fillRoundRect(50, 50, 300, 30, 20, 20);
+            // 設置長條圖的起始位置
+            int startX = (width - (barWidth * 3 + barSpacing * 2)) / 2; // 確保長條圖在圖片中間
+            int baseY = height - 50; // 長條圖的底部位置
 
-            // 計算長條的比例
-            int total = income;
-            int expenseBarWidth = (int) ((double) expense / total * 300);
+            // 計算長條的高度
+            int maxAmount = Math.max(income, Math.max(expense, balance));  // 最大數值
+            int expenseBarHeight = (int) ((double) expense / maxAmount * (height - 100));
+            int incomeBarHeight = (int) ((double) income / maxAmount * (height - 100));
+            int balanceBarHeight = (int) ((double) balance / maxAmount * (height - 100));
 
             // 繪製支出長條
             g2d.setColor(Color.decode("#E97777"));
-            g2d.fillRoundRect(50, 50, expenseBarWidth, 30, 20, 20);
-
+            g2d.fillRoundRect(startX, baseY - expenseBarHeight, barWidth, expenseBarHeight, 20, 20);
             g2d.setColor(Color.decode("#FF8B8B"));
             g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-            g2d.drawString("支出", 50, 120);
-            g2d.drawString("$" + expense, 50, 150);
+            // 繪製支出標籤
+            g2d.setColor(Color.decode("#E97777")); // 文字顏色
+            String expenseLabel = "支出\n$" + expense;
+            int labelWidth = g2d.getFontMetrics().stringWidth(expenseLabel);
+            g2d.drawString(expenseLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
 
-            g2d.setColor(Color.decode("#917FB3"));
-            g2d.drawString("目前結餘", 160, 120);
-            g2d.drawString("$" + balance, 160, 150);
+            startX += barWidth + barSpacing;
 
+            // 繪製收入長條
             g2d.setColor(Color.decode("#52A26E"));
-            g2d.drawString("收入", 300, 120);
-            g2d.drawString("$" + income, 300, 150);
+            g2d.fillRoundRect(startX, baseY - incomeBarHeight, barWidth, incomeBarHeight, 20, 20);
+            g2d.setColor(Color.decode("#48A05F"));
+            // 繪製收入標籤
+            String incomeLabel = "收入\n$" + income;
+            labelWidth = g2d.getFontMetrics().stringWidth(incomeLabel);
+            g2d.drawString(incomeLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
+
+            startX += barWidth + barSpacing;
+
+            // 繪製結餘長條
+            g2d.setColor(Color.decode("#FFB547"));
+            g2d.fillRoundRect(startX, baseY - balanceBarHeight, barWidth, balanceBarHeight, 20, 20);
+            g2d.setColor(Color.decode("#F6A83D"));
+            // 繪製結餘標籤
+            String balanceLabel = "結餘\n$" + balance;
+            labelWidth = g2d.getFontMetrics().stringWidth(balanceLabel);
+            g2d.drawString(balanceLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
 
             // 釋放圖形資源
             g2d.dispose();
