@@ -2,6 +2,7 @@ package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.category.CategoryCostDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.dto.transaction.GetAllTransactionDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,5 +135,23 @@ public class TransactionServiceImpl implements TransactionService {
         BalanceDto balanceDto = transactionRepository.balance(startDateStr, endDateStr);
 
         return balanceDto;
+    }
+
+    @Override
+    public List<GetAllTransactionDto> getAllTransaction(String lineUserId) {
+        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+//        LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
+//        LocalDate endDate = today.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+        //TODO 測試用 本月報表 待塞8月假資料
+        LocalDate startDate = today.withDayOfMonth(1);
+        LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+
+        String startDateStr = dateToString(startDate);
+        String endDateStr = dateToString(endDate);
+
+        List<GetAllTransactionDto> getAllTransactionDto = transactionRepository.getAllTransaction(startDateStr, endDateStr, lineUserId);
+
+        return getAllTransactionDto;
     }
 }

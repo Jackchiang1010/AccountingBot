@@ -2,10 +2,12 @@ package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.category.CategoryCostDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.dto.transaction.GetAllTransactionDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.repository.TransactionRepository;
 import com.example.accountbot.rowmapper.category.CategoryCostRowMapper;
+import com.example.accountbot.rowmapper.transaction.GetAllTransactionRowMapper;
 import com.example.accountbot.rowmapper.transaction.UpdateTransactionRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -192,5 +194,28 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         map.put("end_date", endDate);
 
         return namedParameterJdbcTemplate.queryForObject(sql, map, new BeanPropertyRowMapper<>(BalanceDto.class));
+    }
+
+    @Override
+    public List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId) {
+        String sql = "SELECT t.type, c.name AS category, t.cost, t.description, t.date " +
+                "FROM `transaction` t " +
+                "JOIN `category` c ON t.category_id = c.id " +
+                "WHERE t.lineuser_id = :lineuser_id " +
+                "AND `date` BETWEEN :start_date AND :end_date ;";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("lineuser_id", lineUserId);
+        map.put("start_date", startDate);
+        map.put("end_date", endDate);
+
+        try {
+            return namedParameterJdbcTemplate.query(sql, map, new GetAllTransactionRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get all transaction", e);
+        }
     }
 }

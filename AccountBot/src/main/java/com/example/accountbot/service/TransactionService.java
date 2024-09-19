@@ -1,10 +1,12 @@
 package com.example.accountbot.service;
 
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.dto.transaction.GetAllTransactionDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public interface TransactionService {
@@ -20,5 +22,7 @@ public interface TransactionService {
     boolean delete(Integer id);
 
     BalanceDto balance();
+
+    List<GetAllTransactionDto> getAllTransaction(String lineUserId);
 
 }

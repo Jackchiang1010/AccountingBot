@@ -2,6 +2,7 @@ package com.example.accountbot.repository;
 
 import com.example.accountbot.dto.category.CategoryCostDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.dto.transaction.GetAllTransactionDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 
@@ -19,4 +20,6 @@ public interface TransactionRepository {
     boolean delete(Integer id);
 
     BalanceDto balance(String startDate, String endDate);
+
+    List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
 }

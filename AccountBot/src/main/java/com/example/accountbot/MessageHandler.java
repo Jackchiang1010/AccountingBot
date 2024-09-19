@@ -270,6 +270,17 @@ public class MessageHandler {
 
             }
 
+            // 如果用戶輸入以 "匯出上月報表" 開頭
+            if (receivedText != null && receivedText.matches("^匯出上月報表.*")) {
+
+                String message = s3Service.exportCsvFile(userId, transactionService.getAllTransaction(userId));
+
+                TextMessage textMessage = new TextMessage("請點擊網址下載上個月報表的 CSV 檔"+ "\n" + message);
+
+                lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
+
+            }
+
             //TODO 檢查額度
 
         }catch (Exception e){
