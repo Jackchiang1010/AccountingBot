@@ -1,6 +1,5 @@
 package com.example.accountbot.rowmapper.alert;
 
-import com.example.accountbot.dto.alert.AlertDto;
 import com.example.accountbot.dto.alert.GetAlertDto;
 import org.springframework.jdbc.core.RowMapper;
 

@@ -2,6 +2,7 @@ package com.example.accountbot.service.Impl;
 
 import com.example.accountbot.dto.alert.AlertDto;
 import com.example.accountbot.dto.alert.GetAlertDto;
+import com.example.accountbot.dto.alert.UpdateAlertDto;
 import com.example.accountbot.repository.AlertRepository;
 import com.example.accountbot.service.AlertService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,16 @@ public class AlertServiceImpl implements AlertService {
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", getAlertDto);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> update(UpdateAlertDto updateAlertDto) {
+        UpdateAlertDto updatedCategoryDto = alertRepository.update(updateAlertDto);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", updatedCategoryDto);
 
         return result;
     }

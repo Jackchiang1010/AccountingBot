@@ -2,9 +2,10 @@ package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.alert.AlertDto;
 import com.example.accountbot.dto.alert.GetAlertDto;
+import com.example.accountbot.dto.alert.UpdateAlertDto;
 import com.example.accountbot.repository.AlertRepository;
 import com.example.accountbot.rowmapper.alert.GetAlertRowMapper;
-import com.example.accountbot.rowmapper.category.GetCategoryRowMapper;
+import com.example.accountbot.rowmapper.alert.UpdateAlertRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -63,6 +64,38 @@ public class AlertRepositoryImpl implements AlertRepository {
             log.info("error : " + e.getMessage());
 
             throw new RuntimeException("Failed to get alert", e);
+        }
+    }
+
+    @Override
+    public UpdateAlertDto update(UpdateAlertDto updateAlertDto) {
+        try {
+
+            String updateSql = "UPDATE alert SET time = :time, description = :description " +
+                    "WHERE lineuser_id = :lineuser_id AND id = :id;";
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", updateAlertDto.getId());
+            map.put("time", updateAlertDto.getTime());
+            map.put("description", updateAlertDto.getDescription());
+            map.put("lineuser_id", updateAlertDto.getLineUserId());
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            namedParameterJdbcTemplate.update(updateSql, new MapSqlParameterSource(map), keyHolder);
+
+            String selectSql = "SELECT * FROM alert WHERE id = :id;";
+            Map<String, Object> selectMap = new HashMap<String, Object>();
+            selectMap.put("id", updateAlertDto.getId());
+
+            UpdateAlertDto updateAlert = namedParameterJdbcTemplate.queryForObject(selectSql, selectMap, new UpdateAlertRowMapper());
+
+            return updateAlert;
+
+        }catch (DataAccessException e){
+            log.info("error : " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update alert", e);
         }
     }
 }
