@@ -116,4 +116,20 @@ public class AlertRepositoryImpl implements AlertRepository {
             return false;
         }
     }
+
+    @Override
+    public List<UpdateAlertDto> getAllAlerts() {
+        String sql = "SELECT * FROM alert;";
+
+        Map<String, Object> map = new HashMap<>();
+
+        try {
+            return namedParameterJdbcTemplate.query(sql, map, new UpdateAlertRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get alert", e);
+        }
+    }
 }
