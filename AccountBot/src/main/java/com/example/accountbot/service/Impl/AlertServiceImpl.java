@@ -50,4 +50,9 @@ public class AlertServiceImpl implements AlertService {
 
         return result;
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        return alertRepository.delete(id);
+    }
 }

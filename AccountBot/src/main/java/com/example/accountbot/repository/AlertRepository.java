@@ -14,4 +14,6 @@ public interface AlertRepository {
 
     UpdateAlertDto update(UpdateAlertDto updateAlertDto);
 
+    boolean delete(Integer id);
+
 }

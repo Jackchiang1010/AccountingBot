@@ -13,4 +13,6 @@ public interface AlertService {
 
     Map<String, Object> update(UpdateAlertDto updateAlertDto);
 
+    boolean delete(Integer id);
+
 }
