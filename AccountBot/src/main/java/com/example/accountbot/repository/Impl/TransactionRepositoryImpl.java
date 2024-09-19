@@ -1,6 +1,5 @@
 package com.example.accountbot.repository.Impl;
 
-import com.example.accountbot.dto.budget.BudgetDto;
 import com.example.accountbot.dto.category.CategoryCostDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
@@ -112,9 +111,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         map.put("lineuser_id", lineUserId);
         map.put("start_date", startDate);
         map.put("end_date", endDate);
-
-        log.info("startDate : " + startDate);
-        log.info("endDate : " + endDate);
 
         try {
             return namedParameterJdbcTemplate.query(sql, map, new CategoryCostRowMapper());

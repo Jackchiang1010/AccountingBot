@@ -1,6 +1,7 @@
 package com.example.accountbot;
 
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.service.BudgetService;
 import com.example.accountbot.service.ChartGenerateService;
 import com.example.accountbot.service.S3Service;
 import com.example.accountbot.service.TransactionService;
@@ -19,6 +20,7 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -50,6 +52,8 @@ public class MessageHandler {
 
     private final S3Service s3Service;
 
+    private final BudgetService budgetService;
+
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
         log.info("event: " + event);
@@ -62,10 +66,11 @@ public class MessageHandler {
 
         lastUserMessage = receivedText;
 
-        // 如果用戶輸入以 "$" 開頭
-        if (receivedText != null && receivedText.matches("\\$.*")) {
+        try {
+            // 如果用戶輸入以 "$" 開頭
+            if (receivedText != null && receivedText.matches("\\$.*")) {
 
-            String flexMessageJson = """
+                String flexMessageJson = """
                             {
                               "type": "bubble",
                               "body": {
@@ -117,23 +122,23 @@ public class MessageHandler {
                             }
                     """;
 
-            try {
+                try {
 
-                FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
+                    FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("記支出", flexContainer);
+                    FlexMessage flexMessage = new FlexMessage("記支出", flexContainer);
 
-                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+                    lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
-            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
-        // 如果用戶輸入以 "+" 開頭
-        if (receivedText != null && receivedText.matches("\\+.*")) {
+            // 如果用戶輸入以 "+" 開頭
+            if (receivedText != null && receivedText.matches("\\+.*")) {
 
-            String flexMessageJson = """
+                String flexMessageJson = """
                             {
                               "type": "bubble",
                               "body": {
@@ -185,47 +190,47 @@ public class MessageHandler {
                             }
                     """;
 
-            try {
+                try {
 
-                FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
+                    FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("記收入", flexContainer);
+                    FlexMessage flexMessage = new FlexMessage("記收入", flexContainer);
 
-                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+                    lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
-            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // 如果用戶輸入以 "本月結餘" 開頭
-        if (receivedText != null && receivedText.matches("^本月結餘.*")) {
-
-            BalanceDto balanceDto = transactionService.balance();
-            int totalIncome = balanceDto.getTotalIncome();
-            int totalExpenses = balanceDto.getTotalExpenses();
-            int netBalance = totalIncome - totalExpenses;
-
-            String message = String.format(
-                    "本月結餘：收入(%d) - 支出(%d) = %d 元\n\n累積資產：%d 元",
-                    totalIncome, totalExpenses, netBalance, netBalance
-            );
-
-            TextMessage textMessage = new TextMessage(message);
-
-            String outputFilePath = "src/main/resources/static/images/chart.png";
-            // 生成長條圖
-            String imagePath = chartGenerateService.generateBarChart(totalIncome, totalExpenses, netBalance, outputFilePath);
-
-            if (imagePath != null) {
-                log.info("圖片生成並儲存成功，路徑為: " + imagePath);
-            } else {
-                log.info("圖片生成失敗");
+                } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
 
-            lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
+            // 如果用戶輸入以 "本月結餘" 開頭
+            if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
-            String flexMessageJson = """
+                BalanceDto balanceDto = transactionService.balance();
+                int totalIncome = balanceDto.getTotalIncome();
+                int totalExpenses = balanceDto.getTotalExpenses();
+                int netBalance = totalIncome - totalExpenses;
+
+                String message = String.format(
+                        "本月結餘：收入(%d) - 支出(%d) = %d 元\n\n累積資產：%d 元",
+                        totalIncome, totalExpenses, netBalance, netBalance
+                );
+
+                TextMessage textMessage = new TextMessage(message);
+
+                String outputFilePath = "src/main/resources/static/images/chart.png";
+                // 生成長條圖
+                String imagePath = chartGenerateService.generateBarChart(totalIncome, totalExpenses, netBalance, outputFilePath);
+
+                if (imagePath != null) {
+                    log.info("圖片生成並儲存成功，路徑為: " + imagePath);
+                } else {
+                    log.info("圖片生成失敗");
+                }
+
+                lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
+
+                String flexMessageJson = """
             {
                  "type": "bubble",
                  "hero": {
@@ -242,27 +247,35 @@ public class MessageHandler {
                }
         """;
 
-            JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
+                JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
-            String imageUrl = uploadImageToS3(imagePath);
+                String imageUrl = uploadImageToS3(imagePath);
 
-            flexMessageJsonObject.getJSONObject("hero")
-                    .put("url", imageUrl);
+                flexMessageJsonObject.getJSONObject("hero")
+                        .put("url", imageUrl);
 
-            String updatedFlexMessageJson = flexMessageJsonObject.toString();
+                String updatedFlexMessageJson = flexMessageJsonObject.toString();
 
-            try {
+                try {
 
-                FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
+                    FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
 
-                FlexMessage flexMessage = new FlexMessage("本月結餘", flexContainer);
+                    FlexMessage flexMessage = new FlexMessage("本月結餘", flexContainer);
 
-                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+                    lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
-            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+
             }
 
+            //TODO 檢查額度
+
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("error: " + e.getMessage());
+            sendLineMessage(userId, "發生錯誤，請稍後再試");
         }
 
     }
@@ -313,7 +326,6 @@ public class MessageHandler {
             String[] parts = cleanedMessage.substring(1).trim().split("\\s+", 2);
 
             String amountStr = parts[0].trim();
-            log.info("amountStr: " + amountStr);
             int amount = Integer.parseInt(amountStr);
 
             String description = parts.length > 1 ? parts[1].trim() : "";
@@ -322,7 +334,9 @@ public class MessageHandler {
             LocalDate today = LocalDate.now(taipeiZone);
             String todayStr = transactionService.dateToString(today);
 
-            transactionService.createTransaction(type,postbackData, amount, description, todayStr, userId);
+            transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
+
+            budgetAlert(postbackData, userId, type);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // 恢復中斷狀態
@@ -342,5 +356,42 @@ public class MessageHandler {
         return imageUrl;
     }
 
+    public void budgetAlert(String category, String lineUserId, Integer type) {
+
+        try {
+            Map<String, Object> budgetData = budgetService.get(category, lineUserId);
+
+            Map<String, Object> transactionData = transactionService.getTransaction(type , category, "month", lineUserId);
+
+            JSONObject budgetObject = new JSONObject(budgetData);
+            JSONArray budgetArray = budgetObject.getJSONArray("data");
+            JSONObject budgetItem = budgetArray.getJSONObject(0);
+            Integer budgetPrice = budgetItem.getInt("price");
+
+            JSONObject transactionObject = new JSONObject(transactionData);
+            JSONArray transactionArray = transactionObject.getJSONArray("data");
+            JSONObject transactionItem = transactionArray.getJSONObject(0);
+            Integer totalCost = transactionItem.getInt("totalCost");
+
+            if (totalCost / budgetPrice >= 1) {
+                sendLineMessage(lineUserId, "已超出 " + category + " 一半預算");
+            } else if(totalCost / budgetPrice >= 2){
+                sendLineMessage(lineUserId, "已超出 " + category + " 預算");
+            } else {
+                //TODO 未超出一半預算
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.info("error: " + e.getMessage());
+        }
+
+
+    }
+
+    private void sendLineMessage(String lineUserId, String description) {
+        TextMessage textMessage = new TextMessage(description);
+        PushMessage pushMessage = new PushMessage(lineUserId, textMessage);
+        lineMessagingClient.pushMessage(pushMessage);
+    }
 
 }
