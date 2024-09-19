@@ -9,4 +9,6 @@ public interface AlertService {
 
     Map<String, Object> create(AlertDto alertDto);
 
+    Map<String, Object> get(String lineUserId);
+
 }

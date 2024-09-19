@@ -1,8 +1,10 @@
 package com.example.accountbot.repository.Impl;
 
 import com.example.accountbot.dto.alert.AlertDto;
-import com.example.accountbot.dto.category.CategoryDto;
+import com.example.accountbot.dto.alert.GetAlertDto;
 import com.example.accountbot.repository.AlertRepository;
+import com.example.accountbot.rowmapper.alert.GetAlertRowMapper;
+import com.example.accountbot.rowmapper.category.GetCategoryRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -13,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -46,4 +49,20 @@ public class AlertRepositoryImpl implements AlertRepository {
         }
     }
 
+    @Override
+    public List<GetAlertDto> get(String lineUserId) {
+        String sql = "SELECT * FROM alert WHERE lineuser_id = :lineUserId;";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("lineUserId", lineUserId);
+
+        try {
+            return namedParameterJdbcTemplate.query(sql, map, new GetAlertRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get alert", e);
+        }
+    }
 }
