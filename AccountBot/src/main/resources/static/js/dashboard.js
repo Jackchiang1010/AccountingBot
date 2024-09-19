@@ -20,7 +20,7 @@ window.onload = function() {
                     // 設置本地儲存，標記已經完成過初始化
                     localStorage.setItem('liffInitialized', 'true');
                     // 跳轉到指定頁面，附加 lineUserId
-                    window.location.href = `https://f617-2001-b011-3800-3b0e-14ac-161a-3b1b-1983.ngrok-free.app/dashboard.html?lineUserId=${userId}`;
+                    window.location.href = `https://64a5-59-120-11-125.ngrok-free.app/dashboard.html?lineUserId=${userId}`;
                 });
             }
         })
