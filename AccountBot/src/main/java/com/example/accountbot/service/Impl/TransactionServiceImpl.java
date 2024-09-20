@@ -139,7 +139,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public BalanceDto balance() {
+    public BalanceDto balance(String lineUserId) {
         ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
         LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
         LocalDate startDate = today.minusMonths(1);
@@ -148,7 +148,7 @@ public class TransactionServiceImpl implements TransactionService {
         String startDateStr = dateToString(startDate);
         String endDateStr = dateToString(endDate);
 
-        BalanceDto balanceDto = transactionRepository.balance(startDateStr, endDateStr);
+        BalanceDto balanceDto = transactionRepository.balance(startDateStr, endDateStr, lineUserId);
 
         return balanceDto;
     }

@@ -69,8 +69,117 @@ public class MessageHandler {
         lastUserMessage = receivedText;
 
         try {
+
+            // 如果用戶輸入以 "$$" 開頭
+            if (receivedText != null && receivedText.matches("^\\$\\$.*")) {
+
+                String outputFilePath = "src/main/resources/static/images/pieChart.png";
+                // 生成圓餅圖
+                String imagePath = chartGenerateService.generatePieChart(1, "month", outputFilePath, userId);
+
+                if (imagePath != null) {
+                    log.info("圖片生成並儲存成功，路徑為: " + imagePath);
+                } else {
+                    log.info("圖片生成失敗");
+                }
+
+                String flexMessageJson = """
+            {
+                                  "type": "bubble",
+                                  "size": "giga",
+                                  "hero": {
+                                    "type": "image",
+                                    "url": "%s",
+                                    "size": "full",
+                                    "aspectRatio": "20:13",
+                                    "aspectMode": "cover",
+                                    "action": {
+                                      "type": "uri",
+                                      "uri": "%s.png"
+                                    }
+                                  },
+                                  "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "postback",
+                                          "label": "昨日",
+                                          "data": "昨日",
+                                          "displayText": "$$:昨日"
+                                        }
+                                      },
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "postback",
+                                          "label": "本週",
+                                          "data": "本週",
+                                          "displayText": "$$:本週"
+                                        }
+                                      },
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "postback",
+                                          "label": "本月",
+                                          "data": "本月",
+                                          "displayText": "$$:本月"
+                                        }
+                                      },
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "postback",
+                                          "label": "半年",
+                                          "data": "半年",
+                                          "displayText": "$$:半年"
+                                        }
+                                      },
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "uri",
+                                          "label": "more",
+                                          "uri": "https://jacktest.site/dashboard.html"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+        """;
+
+                JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
+
+                String s3Key = "images/transaction/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
+                String imageUrl = uploadImageToS3(imagePath, s3Key);
+
+                flexMessageJsonObject.getJSONObject("hero")
+                        .getJSONObject("action")
+                        .put("uri", imageUrl);
+
+                flexMessageJsonObject.getJSONObject("hero")
+                        .put("url", imageUrl);
+
+                String updatedFlexMessageJson = flexMessageJsonObject.toString();
+
+                try {
+
+                    FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
+
+                    FlexMessage flexMessage = new FlexMessage("圖表分析", flexContainer);
+
+                    lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+
+                } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
             // 如果用戶輸入以 "$" 開頭
-            if (receivedText != null && receivedText.matches("\\$.*")) {
+            else if (receivedText != null && receivedText.matches("\\$.*")) {
 
                 String flexMessageJson = """
                             {
@@ -208,7 +317,7 @@ public class MessageHandler {
             // 如果用戶輸入以 "本月結餘" 開頭
             if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
-                BalanceDto balanceDto = transactionService.balance();
+                BalanceDto balanceDto = transactionService.balance(userId);
                 int totalIncome = balanceDto.getTotalIncome();
                 int totalExpenses = balanceDto.getTotalExpenses();
                 int netBalance = totalIncome - totalExpenses;
@@ -251,7 +360,8 @@ public class MessageHandler {
 
                 JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
-                String imageUrl = uploadImageToS3(imagePath);
+                String s3Key = "images/balance/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
+                String imageUrl = uploadImageToS3(imagePath, s3Key);
 
                 flexMessageJsonObject.getJSONObject("hero")
                         .getJSONObject("action")
@@ -298,6 +408,8 @@ public class MessageHandler {
 
             }
 
+
+
             //TODO 檢查 line token 額度
 
         }catch (Exception e){
@@ -317,6 +429,9 @@ public class MessageHandler {
         Integer type = -1;
 
         try {
+
+            //TODO 把死的寫成活的
+
             // Map for storing category messages and types
             Map<String, String> categoryMessages = new HashMap<>();
             categoryMessages.put("飲食", "支出分類選擇:飲食類別");
@@ -345,26 +460,27 @@ public class MessageHandler {
                 TextMessage replyMessage = new TextMessage(replyText);
                 lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
                 type = categoryTypes.get(postbackData);
+
+                // 預處理輸入字串：去除首尾空白並將多個空白字符替換為單個空格
+                String cleanedMessage = lastUserMessage.trim().replaceAll("\\s+", " ");
+
+                // 以空格分割字串，限制最多分成兩部分：金額和描述
+                String[] parts = cleanedMessage.substring(1).trim().split("\\s+", 2);
+
+                String amountStr = parts[0].trim();
+                int amount = Integer.parseInt(amountStr);
+
+                String description = parts.length > 1 ? parts[1].trim() : "";
+
+                ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+                LocalDate today = LocalDate.now(taipeiZone);
+                String todayStr = transactionService.dateToString(today);
+
+                transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
+
+                budgetAlert(postbackData, userId, type);
+
             }
-
-            // 預處理輸入字串：去除首尾空白並將多個空白字符替換為單個空格
-            String cleanedMessage = lastUserMessage.trim().replaceAll("\\s+", " ");
-
-            // 以空格分割字串，限制最多分成兩部分：金額和描述
-            String[] parts = cleanedMessage.substring(1).trim().split("\\s+", 2);
-
-            String amountStr = parts[0].trim();
-            int amount = Integer.parseInt(amountStr);
-
-            String description = parts.length > 1 ? parts[1].trim() : "";
-
-            ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
-            LocalDate today = LocalDate.now(taipeiZone);
-            String todayStr = transactionService.dateToString(today);
-
-            transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
-
-            budgetAlert(postbackData, userId, type);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // 恢復中斷狀態
@@ -374,10 +490,8 @@ public class MessageHandler {
         }
     }
 
-    public String uploadImageToS3(String filePath) {
+    public String uploadImageToS3(String filePath, String s3Key) {
 
-        String uuid = UUID.randomUUID().toString();
-        String s3Key = "images/balance_" + uuid + ".png"; // 在 S3 上的路徑和檔案名稱
         String imageUrl = s3Service.uploadFile(filePath, s3Key);
         log.info("Image uploaded to S3, URL: " + imageUrl);
 

@@ -19,7 +19,7 @@ public interface TransactionRepository {
 
     boolean delete(Integer id);
 
-    BalanceDto balance(String startDate, String endDate);
+    BalanceDto balance(String startDate, String endDate, String lineUserId);
 
     List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
 }

@@ -93,10 +93,10 @@ public class TransactionController {
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<?> balance() {
+    public ResponseEntity<?> balance(@RequestParam(value = "lineUserId") String lineUserId) {
 
         try {
-            BalanceDto response = transactionService.balance();
+            BalanceDto response = transactionService.balance(lineUserId);
 
             return ResponseEntity.ok(response);
         }catch (RuntimeException e){

@@ -21,7 +21,7 @@ public interface TransactionService {
 
     boolean delete(Integer id);
 
-    BalanceDto balance();
+    BalanceDto balance(String lineUserId);
 
     List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
 
