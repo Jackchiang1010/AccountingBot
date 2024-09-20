@@ -70,12 +70,15 @@ public class MessageHandler {
 
         try {
 
-            // 如果用戶輸入以 "$$" 開頭
-            if (receivedText != null && receivedText.matches("^\\$\\$.*")) {
+            // 如果用戶輸入以 "$$" 或 "++" 開頭
+            if (receivedText != null && (receivedText.startsWith("$$") || receivedText.startsWith("++"))) {
+
+                // 根據開頭決定第一個參數的值
+                int type = receivedText.startsWith("++") ? 0 : 1;
 
                 String outputFilePath = "src/main/resources/static/images/pieChart.png";
                 // 生成圓餅圖
-                String imagePath = chartGenerateService.generatePieChart(1, "month", outputFilePath, userId);
+                String imagePath = chartGenerateService.generatePieChart(type, "month", outputFilePath, userId);
 
                 if (imagePath != null) {
                     log.info("圖片生成並儲存成功，路徑為: " + imagePath);
@@ -83,73 +86,76 @@ public class MessageHandler {
                     log.info("圖片生成失敗");
                 }
 
-                String flexMessageJson = """
-            {
-                                  "type": "bubble",
-                                  "size": "giga",
-                                  "hero": {
-                                    "type": "image",
-                                    "url": "%s",
-                                    "size": "full",
-                                    "aspectRatio": "20:13",
-                                    "aspectMode": "cover",
-                                    "action": {
-                                      "type": "uri",
-                                      "uri": "%s.png"
-                                    }
-                                  },
-                                  "footer": {
-                                    "type": "box",
-                                    "layout": "horizontal",
-                                    "contents": [
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "postback",
-                                          "label": "昨日",
-                                          "data": "昨日",
-                                          "displayText": "$$:昨日"
-                                        }
-                                      },
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "postback",
-                                          "label": "本週",
-                                          "data": "本週",
-                                          "displayText": "$$:本週"
-                                        }
-                                      },
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "postback",
-                                          "label": "本月",
-                                          "data": "本月",
-                                          "displayText": "$$:本月"
-                                        }
-                                      },
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "postback",
-                                          "label": "半年",
-                                          "data": "半年",
-                                          "displayText": "$$:半年"
-                                        }
-                                      },
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "uri",
-                                          "label": "more",
-                                          "uri": "https://jacktest.site/dashboard.html"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                }
-        """;
+                // 根據開頭動態設置 displayText
+                String displayTextPrefix = receivedText.startsWith("++") ? "++" : "$$";
+
+                String flexMessageJson = String.format("""
+        {
+            "type": "bubble",
+            "size": "giga",
+            "hero": {
+                "type": "image",
+                "url": "%s",
+                "size": "full",
+                "aspectRatio": "20:13",
+                "aspectMode": "cover",
+                "action": {
+                    "type": "uri",
+                    "uri": "%s.png"
+                }
+            },
+            "footer": {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "postback",
+                            "label": "昨日",
+                            "data": "昨日",
+                            "displayText": "%s:昨日"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "postback",
+                            "label": "本週",
+                            "data": "本週",
+                            "displayText": "%s:本週"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "postback",
+                            "label": "本月",
+                            "data": "本月",
+                            "displayText": "%s:本月"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "postback",
+                            "label": "半年",
+                            "data": "半年",
+                            "displayText": "%s:半年"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "more",
+                            "uri": "https://jacktest.site/dashboard.html"
+                        }
+                    }
+                ]
+            }
+        }
+    """, "%s", "%s", displayTextPrefix, displayTextPrefix, displayTextPrefix, displayTextPrefix);
 
                 JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
@@ -166,18 +172,14 @@ public class MessageHandler {
                 String updatedFlexMessageJson = flexMessageJsonObject.toString();
 
                 try {
-
                     FlexContainer flexContainer = objectMapper.readValue(updatedFlexMessageJson, FlexContainer.class);
-
                     FlexMessage flexMessage = new FlexMessage("圖表分析", flexContainer);
-
                     lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
-
                 } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-
             }
+
             // 如果用戶輸入以 "$" 開頭
             else if (receivedText != null && receivedText.matches("\\$.*")) {
 
@@ -245,9 +247,8 @@ public class MessageHandler {
                     e.printStackTrace();
                 }
             }
-
             // 如果用戶輸入以 "+" 開頭
-            if (receivedText != null && receivedText.matches("\\+.*")) {
+            else if (receivedText != null && receivedText.matches("\\+.*")) {
 
                 String flexMessageJson = """
                             {

@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Random;
 import java.util.List;
 
 @Service
@@ -182,18 +181,13 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
                 total += value;
             }
 
-            // 畫圖開始角度
+            // 繪製圓環
             int startAngle = 0;
 
             for (int i = 0; i < values.length; i++) {
                 int angle = (int) Math.round((values[i] / total) * 360);
-
-                // 設置顏色
                 g2d.setColor(colors[i % colors.length]);
-                // 繪製圓環外圈部分
                 g2d.fillArc(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2, startAngle, angle);
-
-                // 更新開始角度
                 startAngle += angle;
             }
 
@@ -201,25 +195,29 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.setColor(new Color(255, 253, 234));
             g2d.fillOval(centerX - innerRadius, centerY - innerRadius, innerRadius * 2, innerRadius * 2);
 
-            // 繪製分類標籤
-            int legendX = centerX + outerRadius + 20; // 標籤的起始X坐標
-            int legendY = centerY - outerRadius; // 標籤的起始Y坐標
-            int legendSpacing = 35; // 調整標籤間距
-            int squareSize = 30; // 增加顏色方塊大小
+            // 繪製分類標籤，包括金額
+            int legendX = centerX + outerRadius + 20;
+            int legendY = centerY - outerRadius;
+            int legendSpacing = 35;
+            int squareSize = 30;
+
+            g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 14));
 
             for (int i = 0; i < values.length; i++) {
                 g2d.setColor(colors[i % colors.length]);
-                g2d.fillRect(legendX, legendY + i * legendSpacing, squareSize, squareSize); // 繪製顏色方塊
+                g2d.fillRect(legendX, legendY + i * legendSpacing, squareSize, squareSize);
                 g2d.setColor(Color.BLACK);
-                g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 20)); // 增加字體大小
-                g2d.drawString(labels[i] + " (" + String.format("%.1f%%", (values[i] / total) * 100) + ")", legendX + squareSize + 10, legendY + i * legendSpacing + squareSize / 2 + 10);
+
+                String amount = values[i] > 0 ? "$" + (int) values[i] : "$0";
+                g2d.drawString(labels[i] + " " + amount + " (" + (int) (values[i] / total * 100) + "%)",
+                        legendX + squareSize + 10, legendY + i * legendSpacing + squareSize / 2 + 5);
             }
 
             // 繪製合計文字
             g2d.setColor(Color.BLACK);
             g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 20));
             g2d.drawString("合計", centerX - 20, centerY - 20);
-            g2d.drawString("$" + String.format("%.2f", total), centerX - 40, centerY + 20);
+            g2d.drawString("$" + (int) total, centerX - 30, centerY + 20);
 
             // 釋放圖形資源
             g2d.dispose();
