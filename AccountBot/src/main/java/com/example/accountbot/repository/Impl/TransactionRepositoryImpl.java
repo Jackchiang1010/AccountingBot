@@ -91,6 +91,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
+                    "AND t.type = :type " +
                     "AND c.lineuser_id = t.lineuser_id " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
                     "GROUP BY c.name;";
@@ -101,6 +102,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     "FROM `transaction` t " +
                     "JOIN `category` c ON t.category_id = c.id " +
                     "WHERE t.lineuser_id = :lineuser_id " +
+                    "AND t.type = :type " +
                     "AND c.lineuser_id = t.lineuser_id " +
                     "AND t.category_id = :category_id " +
                     "AND t.date BETWEEN :start_date AND :end_date " +
@@ -110,6 +112,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             map.put("category_id", categoryId);
         }
 
+        map.put("type", type);
         map.put("lineuser_id", lineUserId);
         map.put("start_date", startDate);
         map.put("end_date", endDate);
