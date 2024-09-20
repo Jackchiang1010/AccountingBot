@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
@@ -45,29 +46,44 @@ public class TransactionServiceImpl implements TransactionService {
         LocalDate startDate = null;
         LocalDate endDate = today; // 預設結束時間為今天
 
-        switch (time) {
-            case "today":
-                startDate = today;
-                break;
-            case "yesterday":
-                startDate = today.minusDays(1);
-                endDate = today.minusDays(1);
-                break;
-            case "week":
-                startDate = today.minusWeeks(1);
-                break;
-            case "month":
-                startDate = today.minusMonths(1);
-                break;
-            case "lastMonth":
-                startDate = today.minusMonths(1).withDayOfMonth(1);
-                endDate = startDate.plusMonths(1).minusDays(1);
-                break;
-            case "halfYear":
-                startDate = today.minusMonths(6);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid time parameter");
+        if (time.startsWith("custom:")) {
+            // 解析自訂時間區間，格式為 custom:YYYY-MM-DD,YYYY-MM-DD
+            String[] dates = time.substring(7).split(",");
+            if (dates.length == 2) {
+                try {
+                    startDate = LocalDate.parse(dates[0]); // 自訂的開始日期
+                    endDate = LocalDate.parse(dates[1]); // 自訂的結束日期
+                } catch (DateTimeParseException e) {
+                    throw new IllegalArgumentException("Invalid custom date format");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid custom time range format");
+            }
+        } else {
+            switch (time) {
+                case "today":
+                    startDate = today;
+                    break;
+                case "yesterday":
+                    startDate = today.minusDays(1);
+                    endDate = today.minusDays(1);
+                    break;
+                case "week":
+                    startDate = today.minusWeeks(1);
+                    break;
+                case "month":
+                    startDate = today.minusMonths(1);
+                    break;
+                case "lastMonth":
+                    startDate = today.minusMonths(1).withDayOfMonth(1);
+                    endDate = startDate.plusMonths(1).minusDays(1);
+                    break;
+                case "halfYear":
+                    startDate = today.minusMonths(6);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid time parameter");
+            }
         }
 
         String startDateStr = dateToString(startDate);
