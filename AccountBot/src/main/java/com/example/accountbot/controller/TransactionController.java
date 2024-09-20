@@ -2,6 +2,7 @@ package com.example.accountbot.controller;
 
 import com.example.accountbot.dto.ErrorResponseDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
+import com.example.accountbot.dto.transaction.GetAllTransactionDto;
 import com.example.accountbot.dto.transaction.TransactionDto;
 import com.example.accountbot.dto.transaction.UpdateTransactionDto;
 import com.example.accountbot.service.TransactionService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -95,6 +97,23 @@ public class TransactionController {
 
         try {
             BalanceDto response = transactionService.balance();
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(ErrorResponseDto.error("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("/get/details")
+    public ResponseEntity<?> getAllTransaction(@RequestParam(value = "startDate") String startDate,
+                                            @RequestParam(value = "endDate") String endDate,
+                                            @RequestParam(value = "lineUserId") String lineUserId) {
+
+        try {
+            List<GetAllTransactionDto> response = transactionService.getAllTransaction(startDate, endDate, lineUserId);
 
             return ResponseEntity.ok(response);
         }catch (RuntimeException e){
