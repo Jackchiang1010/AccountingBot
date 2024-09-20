@@ -14,12 +14,12 @@
 <div class="container mt-5">
 
     <div class="row">
-        <div class="col-12 text-center">
+        <div class="col-12 text-center category-buttons">
             <h2>圖表分析</h2>
-            <button class="btn btn-secondary">支出</button>
-            <button class="btn btn-secondary">收入</button>
-            <input type="date" value="2024-09-10"> -
-            <input type="date" value="2024-09-10">
+            <button class="btn btn-secondary" value="1">支出</button>
+            <button class="btn btn-secondary" value="0">收入</button>
+            <input type="date" id="startDate" value="2024-09-10"> -
+            <input type="date" id="endDate" value="2024-09-10">
         </div>
     </div>
 
@@ -29,25 +29,14 @@
                 <canvas id="expenseChart"></canvas>
             </div>
             <ul class="category-list mt-3">
-                <li><span style="color: #FF6384;">●</span> 飲食 $</li>
-                <li><span style="color: #FF9F40;">●</span> 娛樂 $</li>
-                <li><span style="color: #FFCD56;">●</span> 交通 $</li>
-                <li><span style="color: #4BC0C0;">●</span> 投資 $</li>
-                <li><span style="color: #36A2EB;">●</span> 生活 $</li>
-                <li><span style="color: #9966FF;">●</span> 保險 $</li>
+                <li></li>
             </ul>
         </div>
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">支出明細</h5>
                     <ul class="category-list">
-                        <li>飲食 $</li>
-                        <li>娛樂 $</li>
-                        <li>交通 $</li>
-                        <li>投資 $</li>
-                        <li>生活 $</li>
-                        <li>保險 $</li>
+                        <li></li>
                     </ul>
                 </div>
             </div>
@@ -55,12 +44,12 @@
     </div>
 
     <div class="row mt-4 text-center">
-        <div class="col-12 filter-buttons">
-            <button class="btn btn-outline-primary">今天</button>
-            <button class="btn btn-outline-primary">本週</button>
-            <button class="btn btn-outline-primary">本月</button>
-            <button class="btn btn-outline-primary">上月</button>
-            <button class="btn btn-outline-primary">半年</button>
+        <div class="col-12 text-center filter-buttons">
+            <button class="btn btn-outline-primary" value="today">今天</button>
+            <button class="btn btn-outline-primary" value="week">本週</button>
+            <button class="btn btn-outline-primary" value="month">本月</button>
+            <button class="btn btn-outline-primary" value="lastMonth">上月</button>
+            <button class="btn btn-outline-primary" value="halfYear">半年</button>
         </div>
     </div>
 </div>
