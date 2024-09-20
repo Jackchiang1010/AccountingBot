@@ -154,19 +154,9 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<GetAllTransactionDto> getAllTransaction(String lineUserId) {
-        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
-        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
-//        LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
-//        LocalDate endDate = today.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
-        //TODO 測試用 本月報表 待塞8月假資料
-        LocalDate startDate = today.withDayOfMonth(1);
-        LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+    public List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId) {
 
-        String startDateStr = dateToString(startDate);
-        String endDateStr = dateToString(endDate);
-
-        List<GetAllTransactionDto> getAllTransactionDto = transactionRepository.getAllTransaction(startDateStr, endDateStr, lineUserId);
+        List<GetAllTransactionDto> getAllTransactionDto = transactionRepository.getAllTransaction(startDate, endDate, lineUserId);
 
         return getAllTransactionDto;
     }

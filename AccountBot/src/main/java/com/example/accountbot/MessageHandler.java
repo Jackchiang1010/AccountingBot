@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -277,7 +279,18 @@ public class MessageHandler {
             // 如果用戶輸入以 "匯出上月報表" 開頭
             if (receivedText != null && receivedText.matches("^匯出上月報表.*")) {
 
-                String message = s3Service.exportCsvFile(userId, transactionService.getAllTransaction(userId));
+                ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+                LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+                LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
+                LocalDate endDate = today.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+                //測試用 本月報表
+//                LocalDate startDate = today.withDayOfMonth(1);
+//                LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+
+                String startDateStr = dateToString(startDate);
+                String endDateStr = dateToString(endDate);
+
+                String message = s3Service.exportCsvFile(userId, transactionService.getAllTransaction(startDateStr, endDateStr, userId));
 
                 TextMessage textMessage = new TextMessage("請點擊網址下載上個月報表的 CSV 檔"+ "\n" + message);
 
@@ -285,7 +298,7 @@ public class MessageHandler {
 
             }
 
-            //TODO 檢查額度
+            //TODO 檢查 line token 額度
 
         }catch (Exception e){
             e.printStackTrace();
@@ -407,6 +420,17 @@ public class MessageHandler {
         TextMessage textMessage = new TextMessage(description);
         PushMessage pushMessage = new PushMessage(lineUserId, textMessage);
         lineMessagingClient.pushMessage(pushMessage);
+    }
+
+    public String dateToString(LocalDate date) {
+        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        // 定義日期格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // 將 LocalDate 轉換為 String
+        String dateStr = date.format(formatter);
+        return dateStr;
     }
 
 }

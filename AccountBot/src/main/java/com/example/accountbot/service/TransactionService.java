@@ -23,6 +23,6 @@ public interface TransactionService {
 
     BalanceDto balance();
 
-    List<GetAllTransactionDto> getAllTransaction(String lineUserId);
+    List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
 
 }
