@@ -1,0 +1,22 @@
+body {
+    font-family: 'Microsoft JhengHei', sans-serif;
+    padding: 20px;
+}
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+}
+button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.buttons {
+    text-align: right;
+}
