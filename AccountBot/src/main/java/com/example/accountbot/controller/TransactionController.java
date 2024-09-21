@@ -124,4 +124,19 @@ public class TransactionController {
 
     }
 
+    @GetMapping("/get/byId")
+    public ResponseEntity<?> getTransactionById(@RequestParam(value = "id") Integer id) {
+
+        try {
+            GetAllTransactionDto response = transactionService.getTransactionById(id);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(ErrorResponseDto.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(ErrorResponseDto.error("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

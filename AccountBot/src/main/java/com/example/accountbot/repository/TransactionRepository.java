@@ -22,4 +22,6 @@ public interface TransactionRepository {
     BalanceDto balance(String startDate, String endDate, String lineUserId);
 
     List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
+
+    GetAllTransactionDto getTransactionById(Integer id);
 }

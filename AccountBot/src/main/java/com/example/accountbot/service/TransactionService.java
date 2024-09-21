@@ -25,4 +25,6 @@ public interface TransactionService {
 
     List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId);
 
+    GetAllTransactionDto getTransactionById(Integer id);
+
 }

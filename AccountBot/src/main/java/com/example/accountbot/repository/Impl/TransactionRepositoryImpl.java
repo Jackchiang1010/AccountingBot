@@ -223,4 +223,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             throw new RuntimeException("Failed to get all transaction", e);
         }
     }
+
+    @Override
+    public GetAllTransactionDto getTransactionById(Integer id) {
+        String sql = "SELECT " +
+                "    t.id, t.type, c.name AS category, t.cost, t.description, t.date " +
+                "FROM `transaction` t " +
+                "JOIN `category` c ON t.category_id = c.id " +
+                "WHERE t.id = :id;";
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", id);
+
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, map, new GetAllTransactionRowMapper());
+        }catch (DataAccessException e){
+
+            log.info("error : " + e.getMessage());
+
+            throw new RuntimeException("Failed to get transaction", e);
+        }
+    }
 }

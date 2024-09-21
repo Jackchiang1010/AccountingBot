@@ -160,4 +160,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         return getAllTransactionDto;
     }
+
+    @Override
+    public GetAllTransactionDto getTransactionById(Integer id) {
+        GetAllTransactionDto getTransactionDto = transactionRepository.getTransactionById(id);
+
+        return getTransactionDto;
+    }
 }
