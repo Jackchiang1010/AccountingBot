@@ -103,9 +103,9 @@ function setDateRange() {
 
 // 當日期變更時，更新 time 變數
 function updateTime() {
-    const start = document.getElementById('startDate').value;
-    const end = document.getElementById('endDate').value;
-    time = `custom:${start},${end}`;
+    startDate = document.getElementById('startDate').value;
+    endDate = document.getElementById('endDate').value;
+    time = `custom:${startDate},${endDate}`;
     console.log("Updated time:", time);
     updateChart();
 }
@@ -169,7 +169,6 @@ function updateChart() {
 }
 
 function getCategoryDetails() {
-    // 獲取全部類別的API
     const categoryApiUrl = `/api/1.0/category/get?type=${type}&name=all&lineUserId=${lineUserId}`;
 
     fetch(categoryApiUrl)
@@ -177,7 +176,6 @@ function getCategoryDetails() {
         .then(categoryData => {
             let allCategories = categoryData.data.map(item => item.name);
 
-            // 獲取交易明細資料的API
             const detailApiUrl = `/api/1.0/transaction/get/details?startDate=${startDate}&endDate=${endDate}&lineUserId=${lineUserId}`;
 
             return fetch(detailApiUrl)
@@ -188,31 +186,36 @@ function getCategoryDetails() {
                         const detailList = document.querySelector('.card .category-list');
                         detailList.innerHTML = '';
 
-                        // 為每個類別分組並顯示相關明細
                         allCategories.forEach(category => {
-                            // 顯示類別名稱
                             const categoryTitle = `<li><strong>${category}</strong></li>`;
                             detailList.innerHTML += categoryTitle;
 
-                            // 過濾出屬於該類別的明細
                             const filteredData = transactionData.filter(item => item.category === category);
 
                             if (filteredData.length > 0) {
-                                // 顯示該類別的每筆明細
                                 filteredData.forEach(item => {
-                                    detailList.innerHTML += `<li>${item.date} ${item.description} - $${item.cost}</li>`;
+                                    detailList.innerHTML += `
+                                        <li>
+                                            ${item.date} ${item.description} - $${item.cost}
+                                            <button className="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})">修改</button>
+                                        </li>`;
                                 });
                             } else {
-                                // 若無資料，顯示無交易明細的訊息
-                                detailList.innerHTML += `<li>無交易明細</li>`;
+                                detailList.innerHTML += `<li>無記帳</li>`;
                             }
                         });
+
                     } else {
                         console.error('Invalid transaction data');
                     }
                 });
         })
         .catch(error => console.error('Error fetching category or transaction details:', error));
+}
+
+function editTransaction(lineUserId, transactionId) {
+    console.log(`Editing transaction`);
+    window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}`;
 }
 
 // 當時間篩選按鈕被點擊時
