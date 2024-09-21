@@ -76,9 +76,23 @@ public class MessageHandler {
                 // 根據開頭決定第一個參數的值
                 int type = receivedText.startsWith("++") ? 0 : 1;
 
+                // 根據使用者輸入更換時間範圍
+                String timePeriod;
+                if (receivedText.contains("昨日")) {
+                    timePeriod = "yesterday";
+                } else if (receivedText.contains("本週")) {
+                    timePeriod = "week";
+                } else if (receivedText.contains("本月")) {
+                    timePeriod = "month";
+                } else if (receivedText.contains("半年")) {
+                    timePeriod = "halfYear";
+                } else {
+                    timePeriod = "month"; // 預設為 "本月"
+                }
+
                 String outputFilePath = "src/main/resources/static/images/pieChart.png";
                 // 生成圓餅圖
-                String imagePath = chartGenerateService.generatePieChart(type, "month", outputFilePath, userId);
+                String imagePath = chartGenerateService.generatePieChart(type, timePeriod, outputFilePath, userId);
 
                 if (imagePath != null) {
                     log.info("圖片生成並儲存成功，路徑為: " + imagePath);
@@ -111,37 +125,33 @@ public class MessageHandler {
                     {
                         "type": "button",
                         "action": {
-                            "type": "postback",
+                            "type": "message",
                             "label": "昨日",
-                            "data": "昨日",
-                            "displayText": "%s:昨日"
+                            "text": "%s:昨日"
                         }
                     },
                     {
                         "type": "button",
                         "action": {
-                            "type": "postback",
+                            "type": "message",
                             "label": "本週",
-                            "data": "本週",
-                            "displayText": "%s:本週"
+                            "text": "%s:本週"
                         }
                     },
                     {
                         "type": "button",
                         "action": {
-                            "type": "postback",
+                            "type": "message",
                             "label": "本月",
-                            "data": "本月",
-                            "displayText": "%s:本月"
+                            "text": "%s:本月"
                         }
                     },
                     {
                         "type": "button",
                         "action": {
-                            "type": "postback",
+                            "type": "message",
                             "label": "半年",
-                            "data": "半年",
-                            "displayText": "%s:半年"
+                            "text": "%s:半年"
                         }
                     },
                     {
@@ -180,7 +190,7 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "$" 開頭
+            // 如果用戶輸入以 "$" 開頭，記支出
             else if (receivedText != null && receivedText.matches("\\$.*")) {
 
                 String flexMessageJson = """
@@ -247,7 +257,7 @@ public class MessageHandler {
                     e.printStackTrace();
                 }
             }
-            // 如果用戶輸入以 "+" 開頭
+            // 如果用戶輸入以 "+" 開頭，記收入
             else if (receivedText != null && receivedText.matches("\\+.*")) {
 
                 String flexMessageJson = """
@@ -433,7 +443,6 @@ public class MessageHandler {
 
             //TODO 把死的寫成活的
 
-            // Map for storing category messages and types
             Map<String, String> categoryMessages = new HashMap<>();
             categoryMessages.put("飲食", "支出分類選擇:飲食類別");
             categoryMessages.put("娛樂", "支出分類選擇:娛樂類別");
@@ -444,7 +453,6 @@ public class MessageHandler {
             categoryMessages.put("兼職", "收入分類選擇:兼職類別");
             categoryMessages.put("投資", "收入分類選擇:投資類別");
 
-            // Determine the type based on the category
             Map<String, Integer> categoryTypes = new HashMap<>();
             categoryTypes.put("飲食", 1);
             categoryTypes.put("娛樂", 1);
