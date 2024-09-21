@@ -68,7 +68,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Map<String, Object> map = new HashMap<>();
         map.put("name", categoryName);
         map.put("lineuser_id", lineUserId);
-        map.put("share", "share");
 
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);

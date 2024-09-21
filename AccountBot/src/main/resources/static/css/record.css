@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.date-picker input {
+    padding: 5px;
+}
+.toggle-buttons button {
+    padding: 5px 15px;
+    margin: 0 5px;
+}
+.main-content {
+    display: flex;
+    justify-content: space-between;
+}
+.categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 45%;
+    align-content: start; /* Align items to the top */
+    background-color: #f0f0f0; /* 預設顏色 */
+}
+.categories button {
+    padding: 5px; /* Reduced padding */
+    text-align: center;
+    font-size: 14px; /* Slightly smaller font size */
+    height: 30px; /* Fixed height */
+}
+.categories button.selected {
+    background-color: #99ccff; /* 選中顏色 */
+    color: white; /* 選中文字顏色 */
+}
+
+.right-section {
+    width: 50%;
+}
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.numpad button, #amount {
+    padding: 10px;
+    font-size: 18px;
+}
+#amount {
+    grid-column: span 3;
+    text-align: right;
+}
+.description textarea {
+    width: 100%;
+    padding: 10px;
+    resize: vertical;
+    margin-bottom: 20px;
+}
+#save {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
