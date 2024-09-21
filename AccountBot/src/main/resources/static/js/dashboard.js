@@ -34,6 +34,8 @@ window.onload = function() {
 
                     localStorage.setItem('lineUserId', profile.userId);
 
+                    lineUserId = localStorage.getItem('lineUserId');
+
                     // 設置本地儲存，標記已經完成過初始化
                     localStorage.setItem('liffInitialized', 'true');
                     // 更新圖表
@@ -131,6 +133,7 @@ var expenseChart = new Chart(ctx, {
 
 // 更新圖表和類別列表的函數
 function updateChart() {
+
     const apiUrl = `/api/1.0/transaction/get?type=${type}&category=${category}&time=${time}&lineUserId=${lineUserId}`;
 
     console.log("apiUrl : " + apiUrl);

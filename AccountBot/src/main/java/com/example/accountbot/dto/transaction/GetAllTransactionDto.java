@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetAllTransactionDto {
 
+    private Integer id;
+
     private Integer type;
 
     private String category;

@@ -203,7 +203,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId) {
-        String sql = "SELECT t.type, c.name AS category, t.cost, t.description, t.date " +
+        String sql = "SELECT t.id, t.type, c.name AS category, t.cost, t.description, t.date " +
                 "FROM `transaction` t " +
                 "JOIN `category` c ON t.category_id = c.id " +
                 "WHERE t.lineuser_id = :lineuser_id " +

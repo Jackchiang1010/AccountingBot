@@ -12,6 +12,7 @@ public class GetAllTransactionRowMapper implements RowMapper<GetAllTransactionDt
     public GetAllTransactionDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         GetAllTransactionDto getAllTransactionDto = new GetAllTransactionDto();
 
+        getAllTransactionDto.setId(rs.getInt("id"));
         getAllTransactionDto.setType(rs.getInt("type"));
         getAllTransactionDto.setCategory(rs.getString("category"));
         getAllTransactionDto.setCost(rs.getInt("cost"));
