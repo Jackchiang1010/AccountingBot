@@ -9,7 +9,7 @@ public interface CategoryRepository {
 
     Integer create(CategoryDto categoryDto);
 
-    List<CategoryDto> get(Integer type, String name, String lineUserId);
+    List<UpdateCategoryDto> get(Integer type, String name, String lineUserId);
 
     void initializeDefaultCategories(String lineUserId);
 

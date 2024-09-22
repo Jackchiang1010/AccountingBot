@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.initializeDefaultCategories(lineUserId);
 
-        List<CategoryDto> getCategoryDto = categoryRepository.get(type, name, lineUserId);
+        List<UpdateCategoryDto> getCategoryDto = categoryRepository.get(type, name, lineUserId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", getCategoryDto);

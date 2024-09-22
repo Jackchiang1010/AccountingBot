@@ -50,7 +50,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public List<CategoryDto> get(Integer type, String name, String lineUserId) {
+    public List<UpdateCategoryDto> get(Integer type, String name, String lineUserId) {
         String sql;
         Map<String, Object> map = new HashMap<>();
 
@@ -66,7 +66,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         map.put("lineUserId", lineUserId);
 
         try {
-            return namedParameterJdbcTemplate.query(sql, map, new GetCategoryRowMapper());
+            return namedParameterJdbcTemplate.query(sql, map, new UpdateCategoryRowMapper());
         }catch (DataAccessException e){
 
             log.info("error : " + e.getMessage());
