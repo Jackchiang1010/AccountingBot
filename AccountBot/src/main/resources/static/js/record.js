@@ -156,7 +156,7 @@ function updateCategories() {
 
             // 設定點擊事件，跳轉到分類管理頁面
             manageButton.onclick = function() {
-                window.location.href = '/categoryManage.html';
+                window.location.href = `/categoryManage.html?type=${type}`;
             };
 
             categoriesDiv.appendChild(manageButton);

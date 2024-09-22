@@ -10,6 +10,15 @@ body {
     padding: 20px;
 }
 
+.selectable {
+    cursor: pointer; /* 鼠標樣式變為手型 */
+}
+
+.selectable.selected {
+    background-color: #007bff; /* 選中顏色 */
+    color: white; /* 字體顏色 */
+}
+
 .container {
     max-width: 800px;
     margin: 0 auto;
