@@ -43,6 +43,7 @@ function fetchCategories() {
                 data.data.forEach(category => {
                     const li = document.createElement("li");
                     li.textContent = category.name;
+                    li.dataset.id = category.id;
                     li.classList.add("selectable"); // 添加 selectable 類別
                     li.addEventListener("click", function() {
                         // 取消之前選中的分類
@@ -100,3 +101,49 @@ function fetchBudgets(categories) {
             console.error("發生錯誤: ", error);
         });
 }
+
+// 定義儲存按鈕的事件處理函數
+document.querySelector('.save').addEventListener('click', function() {
+    if (selectedCategory) {
+        const categoryNameInput = document.getElementById("category-name").value;
+
+        // 確認用戶已輸入分類名稱
+        if (categoryNameInput.trim() === "") {
+            alert("請輸入分類名稱！");
+            return;
+        }
+
+        const apiUrl = '/api/1.0/category/update';
+        const categoryId = selectedCategory.dataset.id;
+
+        const body = {
+            id: categoryId,
+            type: type,
+            name: categoryNameInput,
+            lineUserId: lineUserId
+        };
+
+        fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('更新失敗');
+            })
+            .then(data => {
+                console.log("更新成功: ", data);
+                window.location.href = `categoryManage.html?type=${type}`;
+            })
+            .catch(error => {
+                console.error("發生錯誤: ", error);
+            });
+    } else {
+        alert("請選擇一個分類進行編輯！");
+    }
+});
