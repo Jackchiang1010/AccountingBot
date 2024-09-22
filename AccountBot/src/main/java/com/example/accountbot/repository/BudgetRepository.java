@@ -18,4 +18,6 @@ public interface BudgetRepository {
 
     UpdateBudgetResponseDto update(UpdateBudgetDto updateBudgetDto);
 
+    boolean delete(Integer id);
+
 }

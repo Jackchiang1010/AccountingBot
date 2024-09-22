@@ -138,4 +138,22 @@ public class BudgetRepositoryImpl implements BudgetRepository {
             throw new RuntimeException("Failed to update budget", e);
         }
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        String sql = "DELETE FROM budget WHERE id = :id;";
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", id);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        Integer result = namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        if(result > 0) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

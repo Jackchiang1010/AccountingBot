@@ -13,4 +13,6 @@ public interface BudgetService {
 
     Map<String, Object> update(UpdateBudgetDto updateBudgetDto);
 
+    boolean delete(Integer id);
+
 }

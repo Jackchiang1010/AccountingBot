@@ -53,4 +53,9 @@ public class BudgetServiceImpl implements BudgetService {
 
         return result;
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        return budgetRepository.delete(id);
+    }
 }
