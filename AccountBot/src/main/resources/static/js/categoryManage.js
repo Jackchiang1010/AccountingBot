@@ -43,20 +43,19 @@ function fetchCategories() {
                 data.data.forEach(category => {
                     const li = document.createElement("li");
                     li.textContent = category.name;
-                    li.dataset.id = category.id;
-                    li.classList.add("selectable"); // 添加 selectable 類別
-                    li.addEventListener("click", function() {
-                        // 取消之前選中的分類
-                        if (selectedCategory) {
-                            selectedCategory.classList.remove("selected");
-                        }
-                        // 設定新的選中分類
-                        selectedCategory = li;
-                        selectedCategory.classList.add("selected"); // 標記為選中
-                        console.log("選中的分類: ", selectedCategory.textContent); // 紀錄被選中的分類
-                    });
+                    li.dataset.id = category.id; // 假設 API 返回的 category 對象中有 id 屬性
+                    li.classList.add("selectable");
+                    addSelectableListener(li); // 添加選擇事件
                     categoryList.appendChild(li);
                 });
+
+                // 添加 "新增分類" 選項
+                const addCategoryLi = document.createElement("li");
+                addCategoryLi.textContent = "新增分類";
+                addCategoryLi.classList.add("selectable");
+                addSelectableListener(addCategoryLi); // 添加選擇事件
+                categoryList.appendChild(addCategoryLi);
+
                 // 取得預算資料
                 fetchBudgets(data.data.map(c => c.name));
             } else {
@@ -101,49 +100,105 @@ function fetchBudgets(categories) {
             console.error("發生錯誤: ", error);
         });
 }
+// 定義選擇事件的函數
+function addSelectableListener(li) {
+    li.addEventListener("click", function() {
+        // 取消之前選中的分類
+        if (selectedCategory) {
+            selectedCategory.classList.remove("selected");
+        }
+        // 設定新的選中分類
+        selectedCategory = li;
+        selectedCategory.classList.add("selected"); // 標記為選中
+        console.log("選中的分類: ", selectedCategory.textContent); // 紀錄被選中的分類
+
+        // 如果是 "新增分類"，清空輸入框
+        if (selectedCategory.textContent === "新增分類") {
+            document.getElementById("category-name").value = ""; // 清空輸入框
+        }
+    });
+}
 
 // 定義儲存按鈕的事件處理函數
 document.querySelector('.save').addEventListener('click', function() {
+    const categoryNameInput = document.getElementById("category-name").value;
+
     if (selectedCategory) {
-        const categoryNameInput = document.getElementById("category-name").value;
+        if (selectedCategory.textContent === "新增分類") {
+            // 新增分類的情況
+            if (categoryNameInput.trim() === "") {
+                alert("請輸入分類名稱！");
+                return;
+            }
 
-        // 確認用戶已輸入分類名稱
-        if (categoryNameInput.trim() === "") {
-            alert("請輸入分類名稱！");
-            return;
+            const apiUrl = '/api/1.0/category/create';
+            const body = {
+                type: parseInt(type), // 將 type 轉換為整數
+                name: categoryNameInput,
+                lineUserId: lineUserId
+            };
+
+            // 發送 POST 請求
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('新增失敗');
+                })
+                .then(data => {
+                    console.log("新增成功: ", data);
+                    fetchCategories();
+                })
+                .catch(error => {
+                    console.error("發生錯誤: ", error);
+                });
+        } else {
+            // 編輯已選中的分類
+            if (categoryNameInput.trim() === "") {
+                alert("請輸入分類名稱！");
+                return;
+            }
+
+            const apiUrl = '/api/1.0/category/update';
+            const categoryId = selectedCategory.dataset.id;
+
+            const body = {
+                id: categoryId,
+                type: parseInt(type),
+                name: categoryNameInput,
+                lineUserId: lineUserId
+            };
+
+            // 發送 PUT 請求
+            fetch(apiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('更新失敗');
+                })
+                .then(data => {
+                    console.log("更新成功: ", data);
+                    fetchCategories();
+                })
+                .catch(error => {
+                    console.error("發生錯誤: ", error);
+                });
         }
-
-        const apiUrl = '/api/1.0/category/update';
-        const categoryId = selectedCategory.dataset.id;
-
-        const body = {
-            id: categoryId,
-            type: type,
-            name: categoryNameInput,
-            lineUserId: lineUserId
-        };
-
-        fetch(apiUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('更新失敗');
-            })
-            .then(data => {
-                console.log("更新成功: ", data);
-                window.location.href = `categoryManage.html?type=${type}`;
-            })
-            .catch(error => {
-                console.error("發生錯誤: ", error);
-            });
     } else {
-        alert("請選擇一個分類進行編輯！");
+        alert("請選擇一個分類進行編輯或新增！");
     }
 });
