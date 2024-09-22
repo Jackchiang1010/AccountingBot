@@ -73,34 +73,30 @@ function fetchBudgets(categories) {
 
             if (data && data.data) {
                 data.data.forEach(budget => {
-                    budgets[budget.category] = budget; // 將整個預算物件存入
+                    budgets[budget.category] = budget;
                 });
             } else {
                 console.error("無法取得預算資料");
             }
 
-            budgetList.innerHTML = ''; // 清空原有預算列表
+            budgetList.innerHTML = '';
 
-            // 將所有分類和對應預算加入到 budget-list 中
             categories.forEach(category => {
                 const budget = budgets[category]; // 可能為 undefined
                 const li = document.createElement("li");
 
-                // 創建輸入框，並設置預設值
                 const input = document.createElement("input");
                 input.type = "number";
                 input.value = budget ? budget.price : ''; // 如果有預算則設置預設值，否則不設值
                 input.placeholder = "輸入預算";
                 input.dataset.category = category; // 記錄類別名稱
 
-                // 新增更新按鈕
                 const updateButton = document.createElement("button");
                 updateButton.textContent = "更新";
                 updateButton.addEventListener("click", () => {
                     const inputValue = input.value.trim();
 
                     if (inputValue === "") {
-                        // 如果輸入框被清空，則刪除預算
                         if (budget) {
                             const body = {
                                 id: budget.id
@@ -130,10 +126,9 @@ function fetchBudgets(categories) {
                             console.log("無預算可刪除");
                         }
                     } else {
-                        // 檢查是更新還是創建預算
                         if (budget) {
                             const body = {
-                                id: budget.id, // 使用從 API 獲取的 ID
+                                id: budget.id,
                                 category: category,
                                 price: parseFloat(inputValue),
                                 lineUserId: lineUserId
@@ -199,8 +194,6 @@ function fetchBudgets(categories) {
             console.error("發生錯誤: ", error);
         });
 }
-
-
 
 function addSelectableListener(li) {
     li.addEventListener("click", function() {
@@ -301,23 +294,55 @@ document.querySelector('.delete').addEventListener('click', function() {
     if (selectedCategory) {
         const categoryId = selectedCategory.dataset.id;
 
-        const apiUrl = '/api/1.0/category/delete';
-        const body = {
-            id: categoryId
-        };
+        const apiUrl = `/api/1.0/budget/get?category=${selectedCategory.textContent}&lineUserId=${lineUserId}`;
 
-        fetch(apiUrl, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data) {
+                    const budgetToDelete = data.data[0];
+                    if (budgetToDelete) {
+                        const body = {
+                            id: budgetToDelete.id
+                        };
+
+                        return fetch('/api/1.0/budget/delete', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)
+                        });
+                    }
+                }
+                return Promise.resolve();
+            })
+            .then(response => {
+                if (response && response.ok) {
+                    return response.json();
+                }
+                return Promise.resolve();
+            })
+            .then(() => {
+                // 刪除分類
+                const apiUrl = '/api/1.0/category/delete';
+                const body = {
+                    id: categoryId
+                };
+
+                return fetch(apiUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+            })
             .then(response => {
                 if (response.ok) {
                     return response.json();
                 }
-                throw new Error('刪除失敗');
+                throw new Error('刪除分類失敗');
             })
             .then(data => {
                 console.log("刪除成功: ", data);
