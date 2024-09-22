@@ -73,19 +73,90 @@ function fetchBudgets(categories) {
 
             if (data && data.data) {
                 data.data.forEach(budget => {
-                    budgets[budget.category] = budget.price;
+                    budgets[budget.category] = budget; // 將整個預算物件存入
                 });
             } else {
                 console.error("無法取得預算資料");
             }
 
-            budgetList.innerHTML = '';
+            budgetList.innerHTML = ''; // 清空原有預算列表
 
             // 將所有分類和對應預算加入到 budget-list 中
             categories.forEach(category => {
-                const price = budgets[category] !== undefined ? `${budgets[category]} 元` : '未設立預算';
+                const budget = budgets[category]; // 可能為 undefined
                 const li = document.createElement("li");
-                li.textContent = `${category}: ${price}`;
+
+                // 創建輸入框，並設置預設值
+                const input = document.createElement("input");
+                input.type = "number";
+                input.value = budget ? budget.price : ''; // 如果有預算則設置預設值，否則不設值
+                input.placeholder = "輸入預算";
+                input.dataset.category = category; // 記錄類別名稱
+
+                // 新增更新按鈕
+                const updateButton = document.createElement("button");
+                updateButton.textContent = "更新";
+                updateButton.addEventListener("click", () => {
+                    if (budget) {
+                        // 若有預算則更新
+                        const body = {
+                            id: budget.id, // 使用從 API 獲取的 ID
+                            category: category,
+                            price: parseFloat(input.value),
+                            lineUserId: lineUserId
+                        };
+
+                        fetch('/api/1.0/budget/update', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                                throw new Error('更新預算失敗');
+                            })
+                            .then(data => {
+                                console.log("預算更新成功: ", data);
+                            })
+                            .catch(error => {
+                                console.error("發生錯誤: ", error);
+                            });
+                    } else {
+                        // 若沒有預算則創建
+                        const body = {
+                            category: category,
+                            price: parseFloat(input.value),
+                            lineUserId: lineUserId
+                        };
+
+                        fetch('/api/1.0/budget/create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                                throw new Error('創建預算失敗');
+                            })
+                            .then(data => {
+                                console.log("預算創建成功: ", data);
+                            })
+                            .catch(error => {
+                                console.error("發生錯誤: ", error);
+                            });
+                    }
+                });
+
+                li.appendChild(input);
+                li.appendChild(updateButton);
                 budgetList.appendChild(li);
             });
         })
@@ -93,6 +164,7 @@ function fetchBudgets(categories) {
             console.error("發生錯誤: ", error);
         });
 }
+
 
 function addSelectableListener(li) {
     li.addEventListener("click", function() {
@@ -104,6 +176,7 @@ function addSelectableListener(li) {
         selectedCategory = li;
         selectedCategory.classList.add("selected");
         console.log("選中的分類: ", selectedCategory.textContent);
+        document.getElementById("category-name").value = selectedCategory.textContent;
     });
 }
 
