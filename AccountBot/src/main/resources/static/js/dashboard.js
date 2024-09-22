@@ -1,4 +1,4 @@
-let lineUserId = ""; // 使用者 ID
+// let lineUserId = ""; // 使用者 ID
 let type = 1; // 預設為「支出」
 let time = 'month'; // 預設為「今天」
 let category = 'all';
@@ -6,48 +6,17 @@ let endDate = new Date();
 let startDate = '';
 
 // 在網頁加載時執行
-window.onload = function() {
-    // 設置預設的日期範圍
-    setDateRange();
+document.addEventListener('DOMContentLoaded', function() {
+    const checkLineUserId = setInterval(() => {
+        if (lineUserId) {
+            clearInterval(checkLineUserId); // 清除檢查
+            setDateRange();
+            updateChart();
+            console.log("lineUserId : " + lineUserId);
+        }
+    }, 100); // 每100毫秒檢查一次
+});
 
-    // 檢查是否已經完成過 LIFF 初始化
-    if (localStorage.getItem('liffInitialized') === 'true') {
-
-        lineUserId = localStorage.getItem('lineUserId');
-
-        console.log("lineUserId : " + lineUserId);
-
-        updateChart();
-
-        return;
-    }
-
-    // 初始化 LIFF
-    liff.init({ liffId: '2006338412-qNr4rdkr' })
-        .then(() => {
-            if (!liff.isLoggedIn()) {
-                // 若使用者尚未登入，跳轉到 LINE Login
-                liff.login();
-            } else {
-                // 已登入，取得使用者資料
-                liff.getProfile().then(profile => {
-
-                    localStorage.setItem('lineUserId', profile.userId);
-
-                    lineUserId = localStorage.getItem('lineUserId');
-
-                    // 設置本地儲存，標記已經完成過初始化
-                    localStorage.setItem('liffInitialized', 'true');
-                    // 更新圖表
-                    updateChart();
-                });
-
-            }
-        })
-        .catch(err => {
-            console.error('LIFF 初始化失敗:', err);
-        });
-};
 
 // 獲取今天的日期
 function getTodayDate() {
