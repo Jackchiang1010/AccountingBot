@@ -153,6 +153,12 @@ function updateCategories() {
             // 固定「分類管理」按鈕
             const manageButton = document.createElement('button');
             manageButton.textContent = '分類管理';
+
+            // 設定點擊事件，跳轉到分類管理頁面
+            manageButton.onclick = function() {
+                window.location.href = '/categoryManage.html';
+            };
+
             categoriesDiv.appendChild(manageButton);
         })
         .catch(error => {
