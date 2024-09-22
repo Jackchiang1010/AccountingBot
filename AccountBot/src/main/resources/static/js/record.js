@@ -19,31 +19,31 @@ window.onload = function() {
     }
 
     // 初始化 LIFF
-    liff.init({ liffId: '2006366895-KJ8dkgG2' })
-        .then(() => {
-            if (!liff.isLoggedIn()) {
-                // 若使用者尚未登入，跳轉到 LINE Login
-                liff.login();
-            } else {
-                // 已登入，取得使用者資料
-                liff.getProfile().then(profile => {
-
-                    localStorage.setItem('lineUserId', profile.userId);
-
-                    lineUserId = localStorage.getItem('lineUserId');
-
-                    // 設置本地儲存，標記已經完成過初始化
-                    localStorage.setItem('liffInitialized', 'true');
-
-                    // 頁面載入後首次更新類別
-                    updateCategories();
-                });
-
-            }
-        })
-        .catch(err => {
-            console.error('LIFF 初始化失敗:', err);
-        });
+    // liff.init({ liffId: '2006366895-KJ8dkgG2' })
+    //     .then(() => {
+    //         if (!liff.isLoggedIn()) {
+    //             // 若使用者尚未登入，跳轉到 LINE Login
+    //             liff.login();
+    //         } else {
+    //             // 已登入，取得使用者資料
+    //             liff.getProfile().then(profile => {
+    //
+    //                 localStorage.setItem('lineUserId', profile.userId);
+    //
+    //                 lineUserId = localStorage.getItem('lineUserId');
+    //
+    //                 // 設置本地儲存，標記已經完成過初始化
+    //                 localStorage.setItem('liffInitialized', 'true');
+    //
+    //                 // 頁面載入後首次更新類別
+    //                 updateCategories();
+    //             });
+    //
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.error('LIFF 初始化失敗:', err);
+    //     });
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 if (response.ok) {
                     alert('已儲存記錄！類型: ' + (type === 1 ? '支出' : '收入'));
+                    window.location.href="/record.html";
                 } else {
                     alert('儲存失敗！請稍後再試。');
                 }
