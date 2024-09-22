@@ -12,6 +12,7 @@ public class GetAlertRowMapper implements RowMapper<GetAlertDto> {
     public GetAlertDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         GetAlertDto getAlertDto = new GetAlertDto();
 
+        getAlertDto.setId(rs.getInt("id"));
         getAlertDto.setTime(rs.getString("time"));
         getAlertDto.setDescription(rs.getString("description"));
 

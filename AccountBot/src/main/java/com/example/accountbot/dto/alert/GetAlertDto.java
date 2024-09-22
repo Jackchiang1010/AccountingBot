@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetAlertDto {
 
+    private Integer id;
+
     private String time;
 
     private String description;
