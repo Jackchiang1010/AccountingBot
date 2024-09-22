@@ -76,13 +76,13 @@ public class BudgetRepositoryImpl implements BudgetRepository {
         Map<String, Object> map = new HashMap<>();
 
         if(category.equals("all")){
-            sql = "SELECT c.name, b.price " +
+            sql = "SELECT b.id, c.name, b.price " +
                     "FROM budget b " +
                     "JOIN category c ON b.category_id = c.id " +
                     "WHERE c.type = 1 " +
                     "AND c.lineuser_id = :lineUserId;";
         }else {
-            sql = "SELECT c.name, b.price " +
+            sql = "SELECT b.id, c.name, b.price " +
                     "FROM budget b " +
                     "JOIN category c ON b.category_id = c.id " +
                     "WHERE c.type = 1 " +
