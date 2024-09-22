@@ -75,7 +75,7 @@ function startLineLogin() {
 
     // LINE Login 的設定
     const clientId = '2006338412'; // 替換為您的 LINE Login Channel ID
-    const redirectUri = "https://8cc9-2001-b011-3800-119b-28d3-f381-1b89-186f.ngrok-free.app/index.html"; // 使用當前頁面 URL
+    const redirectUri = "https://jacktest.site/index.html"; // 使用當前頁面 URL
     const state = generateRandomString(); // 生成隨機字符串作為 state
     const scope = 'profile%20openid'; // 請求的權限範圍
 
