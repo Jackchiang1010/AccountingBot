@@ -97,61 +97,96 @@ function fetchBudgets(categories) {
                 const updateButton = document.createElement("button");
                 updateButton.textContent = "更新";
                 updateButton.addEventListener("click", () => {
-                    if (budget) {
-                        // 若有預算則更新
-                        const body = {
-                            id: budget.id, // 使用從 API 獲取的 ID
-                            category: category,
-                            price: parseFloat(input.value),
-                            lineUserId: lineUserId
-                        };
+                    const inputValue = input.value.trim();
 
-                        fetch('/api/1.0/budget/update', {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(body)
-                        })
-                            .then(response => {
-                                if (response.ok) {
-                                    return response.json();
-                                }
-                                throw new Error('更新預算失敗');
+                    if (inputValue === "") {
+                        // 如果輸入框被清空，則刪除預算
+                        if (budget) {
+                            const body = {
+                                id: budget.id
+                            };
+
+                            fetch('/api/1.0/budget/delete', {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(body)
                             })
-                            .then(data => {
-                                console.log("預算更新成功: ", data);
-                            })
-                            .catch(error => {
-                                console.error("發生錯誤: ", error);
-                            });
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.json();
+                                    }
+                                    throw new Error('刪除預算失敗');
+                                })
+                                .then(data => {
+                                    console.log("預算刪除成功: ", data);
+                                    fetchCategories();
+                                })
+                                .catch(error => {
+                                    console.error("發生錯誤: ", error);
+                                });
+                        } else {
+                            console.log("無預算可刪除");
+                        }
                     } else {
-                        // 若沒有預算則創建
-                        const body = {
-                            category: category,
-                            price: parseFloat(input.value),
-                            lineUserId: lineUserId
-                        };
+                        // 檢查是更新還是創建預算
+                        if (budget) {
+                            const body = {
+                                id: budget.id, // 使用從 API 獲取的 ID
+                                category: category,
+                                price: parseFloat(inputValue),
+                                lineUserId: lineUserId
+                            };
 
-                        fetch('/api/1.0/budget/create', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(body)
-                        })
-                            .then(response => {
-                                if (response.ok) {
-                                    return response.json();
-                                }
-                                throw new Error('創建預算失敗');
+                            fetch('/api/1.0/budget/update', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(body)
                             })
-                            .then(data => {
-                                console.log("預算創建成功: ", data);
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.json();
+                                    }
+                                    throw new Error('更新預算失敗');
+                                })
+                                .then(data => {
+                                    console.log("預算更新成功: ", data);
+                                    fetchCategories();
+                                })
+                                .catch(error => {
+                                    console.error("發生錯誤: ", error);
+                                });
+                        } else {
+                            const body = {
+                                category: category,
+                                price: parseFloat(inputValue),
+                                lineUserId: lineUserId
+                            };
+
+                            fetch('/api/1.0/budget/create', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(body)
                             })
-                            .catch(error => {
-                                console.error("發生錯誤: ", error);
-                            });
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.json();
+                                    }
+                                    throw new Error('創建預算失敗');
+                                })
+                                .then(data => {
+                                    console.log("預算創建成功: ", data);
+                                    fetchCategories();
+                                })
+                                .catch(error => {
+                                    console.error("發生錯誤: ", error);
+                                });
+                        }
                     }
                 });
 
@@ -164,6 +199,7 @@ function fetchBudgets(categories) {
             console.error("發生錯誤: ", error);
         });
 }
+
 
 
 function addSelectableListener(li) {
