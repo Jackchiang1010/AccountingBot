@@ -116,7 +116,7 @@ function getAccessToken(code) {
         body: new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: "https://8cc9-2001-b011-3800-119b-28d3-f381-1b89-186f.ngrok-free.app/index.html",
+            redirect_uri: "https://jacktest.site/index.html",
             client_id: '2006338412',
             client_secret: '6abc1c7960246f49092cc5f2509fe267'
         })
