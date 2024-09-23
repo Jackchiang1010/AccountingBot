@@ -62,6 +62,8 @@ public class AlertServiceImpl implements AlertService {
     public Map<String, Object> update(UpdateAlertDto updateAlertDto) {
         UpdateAlertDto updatedCategoryDto = alertRepository.update(updateAlertDto);
 
+        scheduleAllAlerts();
+
         Map<String, Object> result = new HashMap<>();
         result.put("data", updatedCategoryDto);
 
