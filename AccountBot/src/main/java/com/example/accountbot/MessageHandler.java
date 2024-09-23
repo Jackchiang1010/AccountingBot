@@ -326,7 +326,7 @@ public class MessageHandler {
             }
 
             // 如果用戶輸入以 "本月結餘" 開頭
-            if (receivedText != null && receivedText.matches("^本月結餘.*")) {
+            else if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
                 BalanceDto balanceDto = transactionService.balance(userId);
                 int totalIncome = balanceDto.getTotalIncome();
@@ -398,7 +398,7 @@ public class MessageHandler {
             }
 
             // 如果用戶輸入以 "匯出上月報表" 開頭
-            if (receivedText != null && receivedText.matches("^匯出上月報表.*")) {
+            else if (receivedText != null && receivedText.matches("^匯出上月報表.*")) {
 
                 ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
                 LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
@@ -419,7 +419,10 @@ public class MessageHandler {
 
             }
 
-
+            else {
+                log.info("error: 指令有誤");
+                sendLineMessage(userId, "請輸入正確指令");
+            }
 
             //TODO 檢查 line token 額度
 
