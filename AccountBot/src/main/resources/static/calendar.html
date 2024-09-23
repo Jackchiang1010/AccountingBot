@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記帳月曆</title>
+
+    <link rel="stylesheet" href="css/calendar.css">
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard.html">圖表分析</a>
+    <a href="/record.html">記帳頁面</a>
+    <a href="/alertManage.html">定時提醒管理頁面</a>
+    <a href="/calendar.html">記帳月曆頁面</a>
+</nav>
+
+<div class="calendar-container">
+    <div class="calendar-header">
+        <button id="prevMonthBtn"><</button>
+        <span id="currentMonth">2024年09月</span>
+        <button id="nextMonthBtn">></button>
+    </div>
+    <div class="calendar-days">
+        <div class="day-of-week">日</div>
+        <div class="day-of-week">一</div>
+        <div class="day-of-week">二</div>
+        <div class="day-of-week">三</div>
+        <div class="day-of-week">四</div>
+        <div class="day-of-week">五</div>
+        <div class="day-of-week">六</div>
+    </div>
+    <div class="calendar-days" id="calendarDays">
+        <!-- 日曆天數會被動態填入 -->
+    </div>
+</div>
+
+<div id="expenseDetails"></div>
+<div id="goRecord"></div>
+
+<script src="js/index.js"></script>
+<script src="js/calendar.js"></script>
+</body>
+</html>
