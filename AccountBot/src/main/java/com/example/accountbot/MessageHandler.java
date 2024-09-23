@@ -70,11 +70,11 @@ public class MessageHandler {
 
         try {
 
-            // 如果用戶輸入以 "$$" 或 "++" 開頭
-            if (receivedText != null && (receivedText.startsWith("$$") || receivedText.startsWith("++"))) {
+            // 如果用戶輸入以 "支出報表" 或 "收入報表" 開頭
+            if (receivedText != null && (receivedText.startsWith("支出報表") || receivedText.startsWith("收入報表"))) {
 
                 // 根據開頭決定第一個參數的值
-                int type = receivedText.startsWith("++") ? 0 : 1;
+                int type = receivedText.startsWith("收入報表") ? 0 : 1;
 
                 // 根據使用者輸入更換時間範圍
                 String timePeriod;
@@ -101,7 +101,7 @@ public class MessageHandler {
                 }
 
                 // 根據開頭動態設置 displayText
-                String displayTextPrefix = receivedText.startsWith("++") ? "++" : "$$";
+                String displayTextPrefix = receivedText.startsWith("收入報表") ? "收入報表" : "支出報表";
 
                 String flexMessageJson = String.format("""
         {
