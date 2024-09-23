@@ -1,10 +1,9 @@
 package com.example.accountbot;
 
+import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
-import com.example.accountbot.service.BudgetService;
-import com.example.accountbot.service.ChartGenerateService;
-import com.example.accountbot.service.S3Service;
-import com.example.accountbot.service.TransactionService;
+import com.example.accountbot.repository.CategoryRepository;
+import com.example.accountbot.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
@@ -29,6 +28,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -55,6 +55,8 @@ public class MessageHandler {
     private final S3Service s3Service;
 
     private final BudgetService budgetService;
+
+    private final CategoryService categoryService;
 
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
@@ -159,7 +161,7 @@ public class MessageHandler {
                         "action": {
                             "type": "uri",
                             "label": "more",
-                            "uri": "https://jacktest.site/dashboard.html"
+                            "uri": "https://jacktest.site/index.html"
                         }
                     }
                 ]
@@ -192,136 +194,159 @@ public class MessageHandler {
 
             // 如果用戶輸入以 "$" 開頭，記支出
             else if (receivedText != null && receivedText.matches("\\$.*")) {
-
-                String flexMessageJson = """
-                            {
-                              "type": "bubble",
-                              "body": {
-                                "type": "box",
-                                "layout": "horizontal",
-                                "contents": [
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "飲食",
-                                      "data": "飲食",
-                                      "displayText": "支出分類選擇:飲食類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "娛樂",
-                                      "data": "娛樂",
-                                      "displayText": "支出分類選擇:娛樂類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "交通",
-                                      "data": "交通",
-                                      "displayText": "支出分類選擇:交通類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "藥妝",
-                                      "data": "藥妝",
-                                      "displayText": "支出分類選擇:藥妝類別"
-                                    },
-                                    "position": "relative"
-                                  }
-                                ]
-                              }
-                            }
-                    """;
-
                 try {
+                    Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
+                    List<UpdateCategoryDto> expenseCategories = (List<UpdateCategoryDto>) expenseCategoryMap.get("data");
 
+                    // 動態生成 FlexMessage 的分類按鈕 JSON 內容
+                    StringBuilder buttonContents = new StringBuilder();
+                    int buttonCount = 0;
+
+                    for (int i = 0; i < expenseCategories.size(); i++) {
+                        UpdateCategoryDto category = expenseCategories.get(i);
+                        String categoryName = category.getName();
+
+                        if (buttonCount % 3 == 0) {
+                            if (buttonCount != 0) {
+                                buttonContents.append("]},");
+                            }
+                            buttonContents.append("""
+                {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                """);
+                        }
+
+                        buttonContents.append("""
+            {
+                "type": "button",
+                "action": {
+                    "type": "postback",
+                    "label": "%s",
+                    "data": "%s",
+                    "displayText": "支出分類選擇:%s類別"
+                },
+                "height": "sm",
+                "flex":0,
+                "margin": "md"
+            }
+            """.formatted(categoryName, categoryName, categoryName));
+
+                        buttonCount++;
+
+                        if (buttonCount % 3 != 0 && i < expenseCategories.size() - 1) {
+                            buttonContents.append(",");
+                        }
+                    }
+
+                    if (buttonCount > 0) {
+                        buttonContents.append("]}");
+                    }
+
+                    String flexMessageJson = """
+        {
+          "type": "bubble",
+          "size": "mega",
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              %s
+            ],
+            "spacing": "sm"
+          }
+        }
+        """.formatted(buttonContents.toString());
+
+                    // 解析 JSON 並發送 FlexMessage
                     FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
-
                     FlexMessage flexMessage = new FlexMessage("記支出", flexContainer);
 
                     lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
                 } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
+                    sendLineMessage(userId, "記帳失敗");
                 }
             }
-            // 如果用戶輸入以 "+" 開頭，記收入
+
+            // 如果用戶輸入以 "+" 開頭，記支出
             else if (receivedText != null && receivedText.matches("\\+.*")) {
-
-                String flexMessageJson = """
-                            {
-                              "type": "bubble",
-                              "body": {
-                                "type": "box",
-                                "layout": "horizontal",
-                                "contents": [
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "薪水",
-                                      "data": "薪水",
-                                      "displayText": "收入分類選擇:薪水類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "獎金",
-                                      "data": "獎金",
-                                      "displayText": "收入分類選擇:獎金類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "兼職",
-                                      "data": "兼職",
-                                      "displayText": "收入分類選擇:兼職類別"
-                                    },
-                                    "position": "relative"
-                                  },
-                                  {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "postback",
-                                      "label": "投資",
-                                      "data": "投資",
-                                      "displayText": "收入分類選擇:投資類別"
-                                    },
-                                    "position": "relative"
-                                  }
-                                ]
-                              }
-                            }
-                    """;
-
                 try {
+                    Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
+                    List<UpdateCategoryDto> incomeCategories = (List<UpdateCategoryDto>) incomeCategoryMap.get("data");
 
+                    // 動態生成 FlexMessage 的分類按鈕 JSON 內容
+                    StringBuilder buttonContents = new StringBuilder();
+                    int buttonCount = 0;
+
+                    for (int i = 0; i < incomeCategories.size(); i++) {
+                        UpdateCategoryDto category = incomeCategories.get(i);
+                        String categoryName = category.getName();
+
+                        if (buttonCount % 3 == 0) {
+                            if (buttonCount != 0) {
+                                buttonContents.append("]},");
+                            }
+                            buttonContents.append("""
+                {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                """);
+                        }
+
+                        buttonContents.append("""
+            {
+                "type": "button",
+                "action": {
+                    "type": "postback",
+                    "label": "%s",
+                    "data": "%s",
+                    "displayText": "收入分類選擇:%s類別"
+                },
+                "height": "sm",
+                "flex": 0,
+                "margin": "md"
+            }
+            """.formatted(categoryName, categoryName, categoryName));
+
+                        buttonCount++;
+
+                        if (buttonCount % 3 != 0 && i < incomeCategories.size() - 1) {
+                            buttonContents.append(",");
+                        }
+                    }
+
+                    if (buttonCount > 0) {
+                        buttonContents.append("]}");
+                    }
+
+                    String flexMessageJson = """
+        {
+          "type": "bubble",
+          "size": "mega",
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              %s
+            ],
+            "spacing": "sm"
+          }
+        }
+        """.formatted(buttonContents.toString());
+
+                    // 解析 JSON 並發送 FlexMessage
                     FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
-
                     FlexMessage flexMessage = new FlexMessage("記收入", flexContainer);
 
                     lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
 
                 } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
+                    sendLineMessage(userId, "記帳失敗");
                 }
             }
 
@@ -393,6 +418,7 @@ public class MessageHandler {
 
                 } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
+                    sendLineMessage(userId, "圖表生成失敗");
                 }
 
             }
@@ -404,9 +430,6 @@ public class MessageHandler {
                 LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
                 LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
                 LocalDate endDate = today.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
-                //測試用 本月報表
-//                LocalDate startDate = today.withDayOfMonth(1);
-//                LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
 
                 String startDateStr = dateToString(startDate);
                 String endDateStr = dateToString(endDate);
@@ -423,8 +446,6 @@ public class MessageHandler {
                 log.info("error: 指令有誤");
                 sendLineMessage(userId, "請輸入正確指令");
             }
-
-            //TODO 檢查 line token 額度
 
         }catch (Exception e){
             e.printStackTrace();
@@ -444,27 +465,26 @@ public class MessageHandler {
 
         try {
 
-            //TODO 把死的寫成活的
+            Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
+            Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
+
+            List<UpdateCategoryDto> expenseCategories = (List<UpdateCategoryDto>) expenseCategoryMap.get("data");
+            List<UpdateCategoryDto> incomeCategories = (List<UpdateCategoryDto>) incomeCategoryMap.get("data");
 
             Map<String, String> categoryMessages = new HashMap<>();
-            categoryMessages.put("飲食", "支出分類選擇:飲食類別");
-            categoryMessages.put("娛樂", "支出分類選擇:娛樂類別");
-            categoryMessages.put("交通", "支出分類選擇:交通類別");
-            categoryMessages.put("藥妝", "支出分類選擇:藥妝類別");
-            categoryMessages.put("薪水", "收入分類選擇:薪水類別");
-            categoryMessages.put("獎金", "收入分類選擇:獎金類別");
-            categoryMessages.put("兼職", "收入分類選擇:兼職類別");
-            categoryMessages.put("投資", "收入分類選擇:投資類別");
-
             Map<String, Integer> categoryTypes = new HashMap<>();
-            categoryTypes.put("飲食", 1);
-            categoryTypes.put("娛樂", 1);
-            categoryTypes.put("交通", 1);
-            categoryTypes.put("藥妝", 1);
-            categoryTypes.put("薪水", 0);
-            categoryTypes.put("獎金", 0);
-            categoryTypes.put("兼職", 0);
-            categoryTypes.put("投資", 0);
+
+            for (UpdateCategoryDto category : expenseCategories) {
+                String categoryName = category.getName();
+                categoryMessages.put(categoryName, "支出分類選擇:" + categoryName + "類別");
+                categoryTypes.put(categoryName, 1);
+            }
+
+            for (UpdateCategoryDto category : incomeCategories) {
+                String categoryName = category.getName();
+                categoryMessages.put(categoryName, "收入分類選擇:" + categoryName + "類別");
+                categoryTypes.put(categoryName, 0);
+            }
 
             // Check if the postbackData is in the map
             if (categoryMessages.containsKey(postbackData)) {
@@ -490,7 +510,9 @@ public class MessageHandler {
 
                 transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
 
-                budgetAlert(postbackData, userId, type);
+                if(type == 1){
+                    budgetAlert(postbackData, userId, type);
+                }
 
             }
 
