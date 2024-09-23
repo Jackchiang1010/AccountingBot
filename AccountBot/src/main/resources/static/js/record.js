@@ -21,9 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateInput = document.getElementById('date');
     let currentMode = 'expense';
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateParam = urlParams.get('date');
+
+    console.log("dateParam : " + dateParam);
+
     // 設定預設日期為當天
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0]; // 將日期格式化為 YYYY-MM-DD
+    const formattedDate = dateParam ? dateParam : today.toISOString().split('T')[0];
     dateInput.value = formattedDate;
 
     numpadButtons.forEach(button => {
