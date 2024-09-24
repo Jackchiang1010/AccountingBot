@@ -72,8 +72,19 @@ function setDateRange() {
 
 // 當日期變更時，更新 time 變數
 function updateTime() {
-    startDate = document.getElementById('startDate').value;
-    endDate = document.getElementById('endDate').value;
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+
+    startDate = startDateInput.value;
+    endDate = endDateInput.value;
+
+    // 防呆機制：檢查結束日期是否早於開始日期
+    if (new Date(startDate) > new Date(endDate)) {
+        alert("結束日期不能早於開始日期");
+        endDateInput.value = startDate; // 將結束日期設置為開始日期
+        endDate = startDate; // 更新 endDate 變數
+    }
+
     time = `custom:${startDate},${endDate}`;
     console.log("Updated time:", time);
     updateChart();
@@ -116,8 +127,30 @@ function updateChart() {
 
             // 根據類型選擇顏色（收入 vs 支出）
             const backgroundColors = type === 1 ?
-                ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40', '#4BC0C0'] :  // 支出顏色
-                ['#4BC0C0', '#9966FF', '#FF9F40', '#FFCE56', '#36A2EB'];   // 收入顏色
+                [
+                    '#ffcc00',
+                    '#ff9900',
+                    '#ff6600',
+                    '#cc3399',
+                    '#990066',
+                    '#3399cc',
+                    '#006699',
+                    '#ccee66',
+                    '#99cc33',
+                    '#669900'
+                ] :
+                [
+                    '#f29e4c',
+                    '#f1c453',
+                    '#efea5a',
+                    '#b9e769',
+                    '#83e377',
+                    '#16db93',
+                    '#0db39e',
+                    '#048ba8',
+                    '#2c699a',
+                    '#54478c'
+                ];
 
             expenseChart.data.labels = labels;
             expenseChart.data.datasets[0].data = dataValues;
