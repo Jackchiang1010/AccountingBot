@@ -1,8 +1,8 @@
 package com.example.accountbot;
 
+import com.example.accountbot.dto.ai.AIFeedbackDto;
 import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
-import com.example.accountbot.repository.CategoryRepository;
 import com.example.accountbot.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,6 +57,8 @@ public class MessageHandler {
     private final BudgetService budgetService;
 
     private final CategoryService categoryService;
+
+    private final AIService aiService;
 
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
@@ -438,6 +440,27 @@ public class MessageHandler {
 
                 TextMessage textMessage = new TextMessage("請點擊網址下載上個月報表的 CSV 檔"+ "\n" + message);
 
+                lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
+
+            }
+
+            // 如果用戶輸入以 "分析上月報表" 開頭
+            else if (receivedText != null && receivedText.matches("^分析上月報表.*")) {
+
+                Map<String, Object> expense = transactionService.getTransaction(1, "all", "lastMonth", userId);
+                Map<String, Object> income = transactionService.getTransaction(0, "all", "lastMonth", userId);
+
+                Map<String, Object> response = aiService.getFeedback(expense, income);
+
+                // 取得 "data" 的內容
+                AIFeedbackDto data = (AIFeedbackDto) response.get("data");
+
+                // 分別提取分析和建議訊息
+                String analysisMessage = data.getAnalysis();
+                String adviceMessage = data.getAdvice();
+
+                TextMessage textMessage = new TextMessage("理財分析:"+ "\n" + analysisMessage + "\n\n" + "理財建議:"+ "\n" + adviceMessage);
+//                TextMessage textMessage = new TextMessage("理財分析與建議:"+ "\n" + data);
                 lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
 
             }

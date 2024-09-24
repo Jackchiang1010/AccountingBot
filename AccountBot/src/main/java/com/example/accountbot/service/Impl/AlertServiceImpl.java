@@ -99,17 +99,17 @@ public class AlertServiceImpl implements AlertService {
     }
 
     private long calculateDelay(LocalTime alertTime) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
         LocalDateTime nextAlert = now.with(alertTime);
 
-        // 如果現在時間已經過了今天的提醒時間，設置為明天的該時間
         if (now.isAfter(nextAlert)) {
             nextAlert = nextAlert.plusDays(1);
         }
 
-        return nextAlert.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                - now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return nextAlert.atZone(ZoneId.of("Asia/Taipei")).toInstant().toEpochMilli()
+                - now.atZone(ZoneId.of("Asia/Taipei")).toInstant().toEpochMilli();
     }
+
 
     private void sendLineMessage(String lineUserId, String description) {
         TextMessage textMessage = new TextMessage(description);
