@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -59,11 +58,6 @@ public class MessageHandler {
     private final CategoryService categoryService;
 
     private final AIService aiService;
-
-    @EventMapping
-    public void handleDefaultMessageEvent(Event event) {
-        log.info("event: " + event);
-    }
 
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws ExecutionException, InterruptedException, IOException {
@@ -273,7 +267,7 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "+" 開頭，記支出
+            // 如果用戶輸入以 "+" 開頭，記收入
             else if (receivedText != null && receivedText.matches("\\+.*")) {
                 try {
                     Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
@@ -460,7 +454,6 @@ public class MessageHandler {
                 String adviceMessage = data.getAdvice();
 
                 TextMessage textMessage = new TextMessage("理財分析:"+ "\n" + analysisMessage + "\n\n" + "理財建議:"+ "\n" + adviceMessage);
-//                TextMessage textMessage = new TextMessage("理財分析與建議:"+ "\n" + data);
                 lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
 
             }
