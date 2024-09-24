@@ -28,12 +28,13 @@ public class AIServiceImpl implements AIService {
 
         List<Message> messages = new ArrayList<>();
 
-        messages.add(new SystemMessage("禁止使用 Markdown 語法回覆"));
+        messages.add(new SystemMessage("請用最簡單的純文字格式回覆，不能使用任何 Markdown 語法，直接列出分析內容。"));
         messages.add(new SystemMessage("你現在是理財達人"));
         messages.add(new SystemMessage("這是使用者的支出狀況" + expense));
         messages.add(new SystemMessage("這是使用者的收入狀況" + income));
+        messages.add(new SystemMessage("請提供最簡短的回覆，避免重述收入和支出的數字。"));
 
-        messages.add(new SystemMessage("請給予精簡的理財分析，不用給建議"));
+        messages.add(new SystemMessage("只需總結3個最關鍵的觀察點。"));
 
         ChatResponse responseAnalysis = openAiChatModel
                 .call(new Prompt(
@@ -45,7 +46,7 @@ public class AIServiceImpl implements AIService {
 
         String analysis = responseAnalysis.getResult().getOutput().getContent();
 
-        messages.add(new SystemMessage("請給予精簡的理財建議，不用分析"));
+        messages.add(new SystemMessage("只需總結3個最具行動性的建議即可。"));
 
         ChatResponse responseAdvice = openAiChatModel
                 .call(new Prompt(
