@@ -565,9 +565,9 @@ public class MessageHandler {
             JSONObject transactionItem = transactionArray.getJSONObject(0);
             Integer totalCost = transactionItem.getInt("totalCost");
 
-            if(totalCost / budgetPrice >= 2){
+            if(totalCost / budgetPrice >= 1){
                 sendLineMessage(lineUserId, "已超出 " + category + " 預算");
-            } else if (totalCost / budgetPrice >= 1) {
+            } else if ((double)totalCost / budgetPrice >= 0.5) {
                 sendLineMessage(lineUserId, "已超出 " + category + " 一半預算");
             } else {
                 //TODO 未超出一半預算
