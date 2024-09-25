@@ -117,6 +117,7 @@ function fetchBudgets(categories) {
                                 })
                                 .then(data => {
                                     console.log("預算刪除成功: ", data);
+                                    alert("預算刪除成功");
                                     fetchCategories();
                                 })
                                 .catch(error => {
@@ -149,6 +150,7 @@ function fetchBudgets(categories) {
                                 })
                                 .then(data => {
                                     console.log("預算更新成功: ", data);
+                                    alert("預算更新成功");
                                     fetchCategories();
                                 })
                                 .catch(error => {

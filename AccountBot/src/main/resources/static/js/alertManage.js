@@ -105,10 +105,12 @@ function fetchAndRenderAlerts() {
                         })
                         .then(data => {
                             console.log("定時提醒更新成功: ", data);
+                            alert("定時提醒更新成功");
                             fetchAndRenderAlerts();
                         })
                         .catch(error => {
                             console.error("發生錯誤: ", error);
+                            alert("定時提醒更新失敗");
                         });
                 });
 
