@@ -119,11 +119,10 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
         int height = 400;
 
         try {
-            // 取得檔案儲存目錄
+
             File outputFile = new File(outputFilePath);
             File outputDir = outputFile.getParentFile();
 
-            // 檢查並建立目錄
             if (!outputDir.exists()) {
                 boolean dirCreated = outputDir.mkdirs();
                 if (dirCreated) {
@@ -139,7 +138,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             Graphics2D g2d = bufferedImage.createGraphics();
 
             // 背景色
-            g2d.setColor(new Color(255, 253, 234)); // 黃色背景
+            g2d.setColor(new Color(255, 253, 234));
             g2d.fillRect(0, 0, width, height);
 
             // 設置反鋸齒
@@ -151,11 +150,9 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             int outerRadius = 150;
             int innerRadius = 100;
 
-            // 從 transactionService 獲取數據
             Map<String, Object> transactionData = transactionService.getTransaction(type, "all", time, lineUserId);
             List<CategoryCostDto> transactions = (List<CategoryCostDto>) transactionData.get("data");
 
-            // 固定顏色
             Color[] colors = {
                     new Color(242, 158, 142),
                     new Color(249, 213, 138),
@@ -172,6 +169,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
 
             for (int i = 0; i < transactions.size(); i++) {
                 values[i] = transactions.get(i).getTotalCost();
+                log.info("values[i] : " + values[i]);
                 labels[i] = transactions.get(i).getCategory();
             }
 
@@ -182,13 +180,41 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             }
 
             // 繪製圓環
-            int startAngle = 0;
+            int startAngle = 0; // 起始角度
+            double textAngle = 0; // 起始角度
 
             for (int i = 0; i < values.length; i++) {
+                // 確保角度計算正確
                 int angle = (int) Math.round((values[i] / total) * 360);
+                log.info("angle : " + angle);
+
+                // 繪製圓環
                 g2d.setColor(colors[i % colors.length]);
                 g2d.fillArc(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2, startAngle, angle);
-                startAngle += angle;
+
+                // 計算文字應該顯示的角度
+                double radian = Math.toRadians(textAngle - angle / 2.0);
+
+                // 計算文字的位置
+                int textX = (int) (centerX + (outerRadius + innerRadius) / 2 * Math.cos(radian));
+                int textY = (int) (centerY + (outerRadius + innerRadius) / 2 * Math.sin(radian));
+
+                // 繪製百分比文字
+                g2d.setColor(Color.BLACK);
+                String percentageText = (int) (values[i] / total * 100) + "%";
+                FontMetrics fm = g2d.getFontMetrics();
+                int textWidth = fm.stringWidth(percentageText);
+                int textHeight = fm.getAscent();
+
+                // 將文字位置調整到圓環的中心
+                g2d.drawString(percentageText, textX - textWidth / 2, textY + textHeight / 4); // 文字居中
+
+                // 更新起始角度
+                textAngle -= angle; // 更新起始角度以供下次使用
+                log.info("textAngle : " + textAngle);
+
+                // 更新起始角度
+                startAngle += angle; // 更新起始角度以供下次使用
             }
 
             // 繪製內圓
@@ -209,15 +235,30 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
                 g2d.setColor(Color.BLACK);
 
                 String amount = values[i] > 0 ? "$" + (int) values[i] : "$0";
-                g2d.drawString(labels[i] + " " + amount + " (" + (int) (values[i] / total * 100) + "%)",
-                        legendX + squareSize + 10, legendY + i * legendSpacing + squareSize / 2 + 5);
+                g2d.drawString(labels[i] + " " + amount, legendX + squareSize + 10, legendY + i * legendSpacing + squareSize / 2 + 5);
             }
 
-            // 繪製合計文字
-            g2d.setColor(Color.BLACK);
+            String totalText = "合計";
+            String amountText = "$" + (int) total;
+
             g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 20));
-            g2d.drawString("合計", centerX - 20, centerY - 20);
-            g2d.drawString("$" + (int) total, centerX - 30, centerY + 20);
+
+            FontMetrics fontMetrics = g2d.getFontMetrics();
+            int totalTextWidth = fontMetrics.stringWidth(totalText);
+            int amountTextWidth = fontMetrics.stringWidth(amountText);
+            int textHeight = fontMetrics.getAscent();
+
+            int totalTextX = centerX - totalTextWidth / 2;
+            int totalTextY = centerY - textHeight / 2;
+
+            int amountTextX = centerX - amountTextWidth / 2;
+            int amountTextY = centerY + textHeight;
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(totalText, totalTextX, totalTextY);
+
+            g2d.drawString(amountText, amountTextX, amountTextY);
+
 
             // 釋放圖形資源
             g2d.dispose();
