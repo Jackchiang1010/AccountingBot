@@ -34,7 +34,7 @@ public class AIServiceImpl implements AIService {
         messages.add(new SystemMessage("這是使用者的收入狀況" + income));
         messages.add(new SystemMessage("請提供最簡短的回覆，避免重述收入和支出的數字。"));
 
-        messages.add(new SystemMessage("只需總結3個最關鍵的觀察點。"));
+        messages.add(new SystemMessage("只需總結最關鍵的觀察點。"));
 
         ChatResponse responseAnalysis = openAiChatModel
                 .call(new Prompt(
@@ -46,7 +46,7 @@ public class AIServiceImpl implements AIService {
 
         String analysis = responseAnalysis.getResult().getOutput().getContent();
 
-        messages.add(new SystemMessage("只需總結3個最具行動性的建議即可。"));
+        messages.add(new SystemMessage("只需總結最具行動性的建議即可。"));
 
         ChatResponse responseAdvice = openAiChatModel
                 .call(new Prompt(
