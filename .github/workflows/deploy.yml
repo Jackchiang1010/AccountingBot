@@ -35,6 +35,7 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         cd AccountBot
         # Save private key to a file
@@ -47,6 +48,7 @@ jobs:
         # SSH to EC2 and run deployment commands
         ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@ec2-54-248-138-109.ap-northeast-1.compute.amazonaws.com << 'EOF'
           export MYSQL_PASSWORD=${MYSQL_PASSWORD}
+          export OPENAI_API_KEY=${OPENAI_API_KEY}
           
           PORT=8080
           PID=$(lsof -ti:$PORT)
