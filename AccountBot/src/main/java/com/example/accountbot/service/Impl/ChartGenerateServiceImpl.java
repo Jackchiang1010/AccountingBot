@@ -321,5 +321,117 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
         return startDate.format(formatter) + " - " + endDate.format(formatter); // 返回日期範圍字符串
     }
 
+    @Override
+    public String generateRecordImage(Integer type, Integer amount, String category, String lineUserId) {
+        int width = 400; // 調整寬度以適應 Line Flex Message
+        int height = 200; // 調整高度以避免被切割
+
+        try {
+            // 設定圖片的輸出路徑
+            String outputFilePath = "src/main/resources/static/images/pieChart.png"; // 修改為您的輸出路徑
+            File outputFile = new File(outputFilePath);
+            File outputDir = outputFile.getParentFile();
+
+            if (!outputDir.exists() && !outputDir.mkdirs()) {
+                log.info("目錄建立失敗: " + outputDir.getAbsolutePath());
+                return null;
+            }
+
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = bufferedImage.createGraphics();
+
+            // 背景設定
+            g2d.setColor(new Color(255, 253, 234)); // 以附圖相似的背景顏色
+            g2d.fillRoundRect(0, 0, width, height, 40, 40);
+
+            // 開啟抗鋸齒
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // 設定字型
+            Font font = new Font("Microsoft JhengHei", Font.PLAIN, 24);
+            g2d.setFont(font);
+            g2d.setColor(new Color(0, 0, 0)); // 黑色字體
+
+            // 取得交易資料
+            Map<String, Object> transactionData = transactionService.getTransaction(type, category, "month", lineUserId);
+            List<CategoryCostDto> dataList = (List<CategoryCostDto>) transactionData.get("data");
+
+            int totalCost = 0;
+            for (CategoryCostDto data : dataList) {
+                if (data.getCategory().equals(category)) {
+                    totalCost = data.getTotalCost();
+                    break;
+                }
+            }
+
+            // 設定起始位置
+            int paddingLeft = 40;
+            int firstLineY = 70; // 第一行Y軸位置
+            int secondLineY = 140; // 第二行Y軸位置
+
+            // 第一行：已將 100 元新增至 飲食
+            int currentX = paddingLeft;
+            g2d.drawString("已將", currentX, firstLineY);
+
+            // 繪製金額
+            currentX += g2d.getFontMetrics().stringWidth("已將 ") + 10;
+            g2d.drawString(amount.toString(), currentX, firstLineY);
+            int amountWidth = g2d.getFontMetrics().stringWidth(amount.toString());
+            g2d.drawLine(currentX - 5, firstLineY + 5, currentX + amountWidth + 5, firstLineY + 5);
+
+            // 元新增至
+            currentX += amountWidth + 20;
+            g2d.drawString("元新增至", currentX, firstLineY);
+
+            // 繪製分類
+            currentX += g2d.getFontMetrics().stringWidth("元新增至 ") + 10;
+            g2d.drawString(category, currentX, firstLineY);
+            int categoryWidth = g2d.getFontMetrics().stringWidth(category);
+            g2d.drawLine(currentX - 5, firstLineY + 5, currentX + categoryWidth + 5, firstLineY + 5);
+
+            // 第二行：本月 飲食 已累積 100 元
+            currentX = paddingLeft;
+            g2d.drawString("本月", currentX, secondLineY);
+
+            // 繪製分類
+            currentX += g2d.getFontMetrics().stringWidth("本月 ") + 10;
+            g2d.drawString(category, currentX, secondLineY);
+            g2d.drawLine(currentX - 5, secondLineY + 5, currentX + categoryWidth + 5, secondLineY + 5);
+
+            // 已累積
+            currentX += categoryWidth + 20;
+            g2d.drawString("已累積", currentX, secondLineY);
+
+            // 繪製總花費
+            currentX += g2d.getFontMetrics().stringWidth("已累積 ") + 10;
+            g2d.drawString(String.valueOf(totalCost), currentX, secondLineY);
+            int totalCostWidth = g2d.getFontMetrics().stringWidth(String.valueOf(totalCost));
+            g2d.drawLine(currentX - 5, secondLineY + 5, currentX + totalCostWidth + 5, secondLineY + 5);
+
+            // 元
+            currentX += totalCostWidth + 10;
+            g2d.drawString("元", currentX, secondLineY);
+
+            // 釋放圖形資源
+            g2d.dispose();
+
+            // 保存圖片
+            ImageIO.write(bufferedImage, "png", outputFile);
+            log.info("圖片已成功儲存到: " + outputFile.getAbsolutePath());
+
+            return outputFile.getAbsolutePath();
+
+        } catch (IOException e) {
+            log.info("生成圖片時發生錯誤: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            log.info("發生未知錯誤: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }

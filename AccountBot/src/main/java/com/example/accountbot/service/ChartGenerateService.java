@@ -6,4 +6,6 @@ public interface ChartGenerateService {
 
     String generatePieChart(Integer type, String time, String outputFilePath, String lineUserId);
 
+    String generateRecordImage(Integer type, Integer amount, String category, String lineUserId);
+
 }

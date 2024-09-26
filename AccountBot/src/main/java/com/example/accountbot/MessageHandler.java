@@ -5,6 +5,7 @@ import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
@@ -346,6 +347,22 @@ public class MessageHandler {
                 }
             }
 
+            // 如果用戶輸入以 "刪除" 開頭，記收入
+            else if ( receivedText != null && receivedText.matches("^刪除.*")){
+                // 解析輸入以取得類別和 ID
+                String[] parts = receivedText.split(":");
+                if (parts.length == 2) {
+                    String type = parts[0].substring(2);
+                    int transactionId = Integer.parseInt(parts[1].trim());
+
+                    // 呼叫 transactionService 刪除該筆資料
+                    transactionService.delete(transactionId);
+
+                    // 回覆刪除成功訊息
+                    sendLineMessage(userId, type + "已成功刪除");
+                }
+            }
+
             // 如果用戶輸入以 "本月結餘" 開頭
             else if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
@@ -481,7 +498,6 @@ public class MessageHandler {
         Integer type = -1;
 
         try {
-
             Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
             Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
 
@@ -505,10 +521,8 @@ public class MessageHandler {
 
             // Check if the postbackData is in the map
             if (categoryMessages.containsKey(postbackData)) {
-                String replyText = categoryMessages.get(postbackData);
-                TextMessage replyMessage = new TextMessage(replyText);
-                lineMessagingClient.pushMessage(new PushMessage(userId, replyMessage)).get();
                 type = categoryTypes.get(postbackData);
+                String typeStr = "";
 
                 // 預處理輸入字串：去除首尾空白並將多個空白字符替換為單個空格
                 String cleanedMessage = lastUserMessage.trim().replaceAll("\\s+", " ");
@@ -525,12 +539,97 @@ public class MessageHandler {
                 LocalDate today = LocalDate.now(taipeiZone);
                 String todayStr = transactionService.dateToString(today);
 
-                transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
+                Integer transactionId = transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
 
-                if(type == 1){
+                if (type == 1) {
                     budgetAlert(postbackData, userId, type);
                 }
 
+                // 使用 generateRecordImage 方法生成圖像
+                String imagePath = chartGenerateService.generateRecordImage(type, amount, postbackData, userId);
+
+                if (imagePath == null) {
+                    sendLineMessage(userId, "記帳失敗，無法生成圖像");
+                    return;
+                }
+
+                // 上傳圖片到 S3
+                String s3Key = "images/transaction/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
+                String imageUrl = uploadImageToS3(imagePath, s3Key);
+
+                if (imageUrl == null) {
+                    sendLineMessage(userId, "記帳失敗，無法上傳圖片至 S3");
+                    return;
+                }
+
+                if(type.equals(0)){
+                    typeStr = "收入";
+                }else if(type.equals(1)){
+                    typeStr = "支出";
+                }
+
+                // 動態生成 FlexMessage 的 JSON 內容
+                String flexMessageJson = """
+    {
+       "type": "bubble",
+       "size": "giga",
+       "hero": {
+         "type": "image",
+         "url": "%s",
+         "size": "full",
+         "aspectRatio": "2:1",
+         "aspectMode": "cover",
+         "action": {
+           "type": "uri",
+           "uri": "%s"
+         }
+       },
+       "body": {
+         "type": "box",
+         "layout": "horizontal",
+         "contents": [
+           {
+             "type": "button",
+             "action": {
+               "type": "uri",
+               "label": "編輯",
+               "uri": "https://jacktest.site/transactionDetail.html?lineUserId=%s&transactionId=%s"
+             }
+           },
+           {
+             "type": "button",
+             "action": {
+               "type": "message",
+               "label": "刪除",
+               "text": "刪除%s:%s"
+             }
+           },
+           {
+             "type": "button",
+             "action": {
+               "type": "message",
+               "label": "報表",
+               "text": "支出報表"
+             }
+           },
+           {
+             "type": "button",
+             "action": {
+               "type": "message",
+               "label": "結餘",
+               "text": "本月結餘"
+             }
+           }
+         ]
+       }
+     }
+""".formatted(imageUrl, imageUrl, userId, transactionId, typeStr, transactionId);
+
+// 解析 JSON 並發送 FlexMessage
+                FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
+                FlexMessage flexMessage = new FlexMessage("記帳資訊", flexContainer);
+
+                lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
             }
 
         } catch (InterruptedException e) {
@@ -538,8 +637,13 @@ public class MessageHandler {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
+
 
     public String uploadImageToS3(String filePath, String s3Key) {
 

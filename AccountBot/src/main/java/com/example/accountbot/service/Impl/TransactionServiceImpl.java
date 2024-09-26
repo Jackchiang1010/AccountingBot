@@ -98,7 +98,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void createTransaction(Integer type, String category, Integer cost, String description, String date, String lineUserId) {
+    public Integer createTransaction(Integer type, String category, Integer cost, String description, String date, String lineUserId) {
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setType(type);
         transactionDto.setCategory(category);
@@ -107,7 +107,11 @@ public class TransactionServiceImpl implements TransactionService {
         transactionDto.setDate(date);
         transactionDto.setLineUserId(lineUserId);
 
-        record(transactionDto);
+        Map<String, Object> data = record(transactionDto);
+
+        Integer transactionId = (Integer) data.get("data");
+
+        return transactionId;
     }
 
     @Override
