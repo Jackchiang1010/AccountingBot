@@ -80,8 +80,8 @@ public class AlertServiceImpl implements AlertService {
         scheduleAllAlerts();
     }
 
-    // 定期重新排程，確保每天都會更新提醒
-    @Scheduled(cron = "0 0 0 * * ?")  // 每天午夜重新安排所有提醒
+    //每小時更新
+    @Scheduled(cron = "0 * * * * ?")
     public void scheduleAllAlerts() {
         List<UpdateAlertDto> alerts = alertRepository.getAllAlerts();
         for (UpdateAlertDto alert : alerts) {
