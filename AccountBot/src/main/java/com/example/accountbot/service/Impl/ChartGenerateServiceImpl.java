@@ -24,10 +24,10 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
 
     @Override
     public String generateBarChart(Integer income, Integer expense, Integer balance, String outputFilePath) {
-        int width = 600;
-        int height = 300;
-        int barWidth = 100;
-        int barSpacing = 60;
+        int width = 1200;  // 將寬度增加
+        int height = 600;  // 將高度增加
+        int barWidth = 150;  // 調整長條的寬度
+        int barSpacing = 120; // 調整長條間的間距
 
         try {
             // 取得檔案儲存目錄
@@ -49,50 +49,52 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = bufferedImage.createGraphics();
 
-            g2d.setColor(Color.decode("#F8E8C9"));
+            g2d.setColor(new Color(255, 253, 234));
             g2d.fillRoundRect(0, 0, width, height, 40, 40);
 
             // 設置長條圖的起始位置
             int startX = (width - (barWidth * 3 + barSpacing * 2)) / 2; // 確保長條圖在圖片中間
-            int baseY = height - 50; // 長條圖的底部位置
+            int baseY = height - 100; // 調整長條圖的底部位置
 
             int maxAmount = Math.max(income, Math.max(expense, balance));
-            int expenseBarHeight = (int) ((double) expense / maxAmount * (height - 100));
-            int incomeBarHeight = (int) ((double) income / maxAmount * (height - 100));
-            int balanceBarHeight = (int) ((double) balance / maxAmount * (height - 100));
+            int expenseBarHeight = (int) ((double) expense / maxAmount * (height - 150));
+            int incomeBarHeight = (int) ((double) income / maxAmount * (height - 150));
+            int balanceBarHeight = (int) ((double) balance / maxAmount * (height - 150));
 
             // 繪製支出長條
-            g2d.setColor(Color.decode("#E97777"));
+            g2d.setColor(new Color(242, 158, 142));
             g2d.fillRoundRect(startX, baseY - expenseBarHeight, barWidth, expenseBarHeight, 20, 20);
-            g2d.setColor(Color.decode("#FF8B8B"));
-            g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 18));
+            g2d.setColor(new Color(242, 158, 142));
+            g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 24));
 
-            g2d.setColor(Color.decode("#E97777")); // 文字顏色
+//            g2d.setColor(new Color(0, 0, 0));
             String expenseLabel = "支出\n$" + expense;
             int labelWidth = g2d.getFontMetrics().stringWidth(expenseLabel);
-            g2d.drawString(expenseLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
+            g2d.drawString(expenseLabel, startX + (barWidth - labelWidth) / 2, baseY + 30);
 
             startX += barWidth + barSpacing;
 
             // 繪製收入長條
-            g2d.setColor(Color.decode("#52A26E"));
+            g2d.setColor(new Color(173, 220, 147));
             g2d.fillRoundRect(startX, baseY - incomeBarHeight, barWidth, incomeBarHeight, 20, 20);
-            g2d.setColor(Color.decode("#48A05F"));
+            g2d.setColor(new Color(173, 220, 147));
 
+//            g2d.setColor(new Color(0, 0, 0));
             String incomeLabel = "收入\n$" + income;
             labelWidth = g2d.getFontMetrics().stringWidth(incomeLabel);
-            g2d.drawString(incomeLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
+            g2d.drawString(incomeLabel, startX + (barWidth - labelWidth) / 2, baseY + 30);
 
             startX += barWidth + barSpacing;
 
             // 繪製結餘長條
-            g2d.setColor(Color.decode("#FFB547"));
+            g2d.setColor(new Color(249, 213, 138));
             g2d.fillRoundRect(startX, baseY - balanceBarHeight, barWidth, balanceBarHeight, 20, 20);
-            g2d.setColor(Color.decode("#F6A83D"));
+            g2d.setColor(new Color(249, 213, 138));
 
+//            g2d.setColor(new Color(0, 0, 0));
             String balanceLabel = "結餘\n$" + balance;
             labelWidth = g2d.getFontMetrics().stringWidth(balanceLabel);
-            g2d.drawString(balanceLabel, startX + (barWidth - labelWidth) / 2, baseY + 20); // 置中顯示
+            g2d.drawString(balanceLabel, startX + (barWidth - labelWidth) / 2, baseY + 30);
 
             // 釋放圖形資源
             g2d.dispose();
@@ -112,6 +114,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             return null;
         }
     }
+
 
     @Override
     public String generatePieChart(Integer type, String time, String outputFilePath, String lineUserId) {

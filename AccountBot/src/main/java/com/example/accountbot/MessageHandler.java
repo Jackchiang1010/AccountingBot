@@ -376,16 +376,17 @@ public class MessageHandler {
                 String flexMessageJson = """
             {
                  "type": "bubble",
+                 "size": "giga",
                  "hero": {
                    "type": "image",
                    "size": "full",
-                   "aspectMode": "fit",
+                   "aspectMode": "cover",
                    "action": {
                      "type": "uri",
                      "uri": "%s"
                    },
                    "url": "%s.png",
-                   "aspectRatio": "2:1"
+                   "aspectRatio": "20:13"
                  }
                }
         """;
