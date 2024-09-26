@@ -117,7 +117,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             return null;
         }
     }
-    
+
     @Override
     public String generatePieChart(Integer type, String time, String outputFilePath, String lineUserId) {
         int width = 500;
@@ -291,8 +291,10 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
     }
 
     private String getTimePeriodText(String time) {
-        LocalDate endDate = LocalDate.now(); // 取得今天的日期
-        LocalDate startDate;
+        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
+        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        LocalDate startDate = null;
+        LocalDate endDate = today; // 預設結束時間為今天
 
         switch (time) {
             case "yesterday":
