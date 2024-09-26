@@ -12,6 +12,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.List;
 
@@ -24,17 +28,16 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
 
     @Override
     public String generateBarChart(Integer income, Integer expense, Integer balance, String outputFilePath) {
-        int width = 1200;  // 將寬度增加
-        int height = 600;  // 將高度增加
-        int barWidth = 150;  // 調整長條的寬度
-        int barSpacing = 120; // 調整長條間的間距
+        int width = 1200;
+        int height = 600;
+        int barWidth = 150;
+        int barSpacing = 120;
 
         try {
-            // 取得檔案儲存目錄
+
             File outputFile = new File(outputFilePath);
             File outputDir = outputFile.getParentFile();
 
-            // 檢查並建立目錄
             if (!outputDir.exists()) {
                 boolean dirCreated = outputDir.mkdirs();
                 if (dirCreated) {
@@ -114,15 +117,13 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             return null;
         }
     }
-
-
+    
     @Override
     public String generatePieChart(Integer type, String time, String outputFilePath, String lineUserId) {
         int width = 500;
         int height = 400;
 
         try {
-
             File outputFile = new File(outputFilePath);
             File outputDir = outputFile.getParentFile();
 
@@ -224,6 +225,15 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.setColor(new Color(255, 253, 234));
             g2d.fillOval(centerX - innerRadius, centerY - innerRadius, innerRadius * 2, innerRadius * 2);
 
+            // 繪製時間區段
+            g2d.setFont(new Font("Microsoft JhengHei", Font.BOLD, 16));
+            g2d.setColor(Color.BLACK);
+            String timePeriodText = getTimePeriodText(time);
+            FontMetrics timeFm = g2d.getFontMetrics();
+            int timeTextWidth = timeFm.stringWidth(timePeriodText);
+            int timeTextX = (width - timeTextWidth) / 2;
+            g2d.drawString(timePeriodText, timeTextX, 30);
+
             // 繪製分類標籤，包括金額
             int legendX = centerX + outerRadius + 20;
             int legendY = centerY - outerRadius;
@@ -259,9 +269,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
 
             g2d.setColor(Color.BLACK);
             g2d.drawString(totalText, totalTextX, totalTextY);
-
             g2d.drawString(amountText, amountTextX, amountTextY);
-
 
             // 釋放圖形資源
             g2d.dispose();
@@ -281,5 +289,35 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             return null;
         }
     }
+
+    private String getTimePeriodText(String time) {
+        LocalDate endDate = LocalDate.now(); // 取得今天的日期
+        LocalDate startDate;
+
+        switch (time) {
+            case "yesterday":
+                startDate = endDate.minusDays(1);
+                break;
+            case "week":
+                // 當前週的禮拜一
+                startDate = endDate.with(DayOfWeek.MONDAY);
+                break;
+            case "month":
+                // 當前月份的開始日期
+                startDate = endDate.withDayOfMonth(1);
+                break;
+            case "halfYear":
+                startDate = endDate.minusMonths(6).withDayOfMonth(1); // 包含這個半年的第一天
+                break;
+            default:
+                startDate = endDate.withDayOfMonth(1); // 預設為當前月份的第一天
+                break;
+        }
+
+        // 格式化日期
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        return startDate.format(formatter) + " - " + endDate.format(formatter); // 返回日期範圍字符串
+    }
+
 
 }

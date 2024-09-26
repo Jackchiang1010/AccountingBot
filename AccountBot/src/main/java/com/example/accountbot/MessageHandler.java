@@ -109,7 +109,7 @@ public class MessageHandler {
                 "type": "image",
                 "url": "%s",
                 "size": "full",
-                "aspectRatio": "20:13",
+                "aspectRatio": "20:15",
                 "aspectMode": "cover",
                 "action": {
                     "type": "uri",
