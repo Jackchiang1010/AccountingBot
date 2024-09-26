@@ -89,7 +89,7 @@ public class MessageHandler {
                     timePeriod = "month"; // 預設為 "本月"
                 }
 
-                String outputFilePath = "src/main/resources/static/images/pieChart.png";
+                String outputFilePath = "src/main/resources/static/images/transactionPieChart.png";
                 // 生成圓餅圖
                 String imagePath = chartGenerateService.generatePieChart(type, timePeriod, outputFilePath, userId);
 
@@ -378,7 +378,7 @@ public class MessageHandler {
 
                 TextMessage textMessage = new TextMessage(message);
 
-                String outputFilePath = "src/main/resources/static/images/chart.png";
+                String outputFilePath = "src/main/resources/static/images/balanceBarChart.png";
                 // 生成長條圖
                 String imagePath = chartGenerateService.generateBarChart(totalIncome, totalExpenses, netBalance, outputFilePath);
 
@@ -554,7 +554,7 @@ public class MessageHandler {
                 }
 
                 // 上傳圖片到 S3
-                String s3Key = "images/transaction/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
+                String s3Key = "images/record/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
                 String imageUrl = uploadImageToS3(imagePath, s3Key);
 
                 if (imageUrl == null) {

@@ -328,7 +328,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
 
         try {
             // 設定圖片的輸出路徑
-            String outputFilePath = "src/main/resources/static/images/pieChart.png"; // 修改為您的輸出路徑
+            String outputFilePath = "src/main/resources/static/images/transactionRecord.png"; // 修改為您的輸出路徑
             File outputFile = new File(outputFilePath);
             File outputDir = outputFile.getParentFile();
 
