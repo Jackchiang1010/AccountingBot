@@ -1,23 +1,162 @@
-* {
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+body {
+    line-height: 1;
+    color: black;
+    background: white;
+}
+ol, ul {
+    list-style: none;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+body {
+    font-family: '微軟正黑體', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+    height: 100%;
+}
+header {
+    background-color: #F7D486;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: calc(100vh - 120px);
+}
+
+header img.logo {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    transition: transform 0.3s;
+}
+header img.logo:hover {
+    transform: scale(1.05);
+}
+header h1 {
+    font-size: 2em;
+    margin: 0;
+    letter-spacing: 2px;
+    text-align: center;
+}
+header p {
+    margin: 15px 0 0;
+    text-align: center;
+    font-size: 1.1em;
 }
 
 nav {
-    background-color: #000000;
+    background-color: #FFF2CC;
     width: 100%;
-    padding: 15px;
+    padding: 15px 0;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around; /* 使 nav 連結和 logo 平均分布 */
+    align-items: center; /* 讓連結垂直置中 */
 }
 
 nav a {
-    color: white;
-    margin: 0 15px;
+    color: #333;
     text-decoration: none;
     font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s;
+    flex: 1; /* 讓連結平均分配空間 */
+    text-align: center; /* 讓連結置中 */
 }
-
 nav a:hover {
     text-decoration: underline;
+    color: #F7D486;
+}
+.logo-container {
+    flex: 1; /* 讓 logo 容器也占據一個平均空間 */
+    display: flex;
+    justify-content: center;
+}
+.logo-container img {
+    width: 50px;
+    height: auto;
+    transition: transform 0.3s;
+}
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+
+.features .feature i, .steps .step i {
+    color: #F7D486;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}
+footer a {
+    color: #ffcc00;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+footer a:hover {
+    color: #ffd633;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+img:hover {
+    transform: scale(1.02);
 }
