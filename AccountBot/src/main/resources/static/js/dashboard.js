@@ -1,6 +1,5 @@
-// let lineUserId = ""; // 使用者 ID
-let type = 1; // 預設為「支出」
-let time = 'month'; // 預設為「今天」
+let type = 1;
+let time = 'month';
 let category = 'all';
 let endDate = new Date();
 let startDate = '';
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100); // 每100毫秒檢查一次
 });
-
 
 // 獲取今天的日期
 function getTodayDate() {
@@ -108,7 +106,20 @@ var expenseChart = new Chart(ctx, {
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'right', // 將標籤移至圖表右側
+                labels: {
+                    usePointStyle: true, // 使用點樣式顯示標籤
+                    padding: 20, // 調整標籤與圖表的間距
+                    font: {
+                        size: 16 // 標籤字體大小
+                    }
+                }
+            }
+        }
     }
 });
 
@@ -123,7 +134,7 @@ function updateChart() {
         .then(response => response.json())
         .then(data => {
             // 更新圖表的標籤和數據
-            const labels = data.data.map(item => item.category);
+            const labels = data.data.map(item => `${item.category} $${item.total_cost}`);
             const dataValues = data.data.map(item => item.total_cost);
 
             // 根據類型選擇顏色（收入 vs 支出）
@@ -158,12 +169,6 @@ function updateChart() {
             expenseChart.data.datasets[0].backgroundColor = backgroundColors;
             expenseChart.update();
 
-            // 更新類別列表
-            const categoryList = document.querySelector('.category-list');
-            categoryList.innerHTML = labels.map((label, index) =>
-                `<li><span style="color: ${backgroundColors[index]}">●</span> ${label} $${dataValues[index]}</li>`
-            ).join('');
-
             // 獲取明細資料
             getCategoryDetails();
 
@@ -189,31 +194,69 @@ function getCategoryDetails() {
                         const detailList = document.querySelector('.card .category-list');
                         detailList.innerHTML = '';
 
-                        allCategories.forEach(category => {
-                            const categoryTitle = `<li><strong>${category}</strong></li>`;
-                            detailList.innerHTML += categoryTitle;
+                        allCategories.forEach((category, index) => {
+                            // 建立可點擊的類別名稱，並加上事件
+                            const categoryContainer = document.createElement('div');
+                            categoryContainer.className = 'category-container';
+                            categoryContainer.style.position = 'relative';
+                            categoryContainer.style.backgroundColor = getCategoryColorFromChart(index); // 根據圖表顏色設置背景顏色
+                            categoryContainer.style.padding = '10px';
+                            categoryContainer.style.marginBottom = '5px';
+                            categoryContainer.style.cursor = 'pointer';
 
+                            const categoryTitle = document.createElement('strong');
+                            categoryTitle.textContent = `${category} $0`; // 預設金額為0
+                            categoryContainer.appendChild(categoryTitle);
+
+                            // 建立用來放帳務明細的 ul 元素
+                            const detailsContainer = document.createElement('ul');
+                            detailsContainer.style.display = 'none'; // 預設隱藏
+                            detailsContainer.style.paddingLeft = '20px';
+
+                            categoryContainer.addEventListener('click', () => {
+                                // 切換明細的顯示狀態
+                                detailsContainer.style.display = detailsContainer.style.display === 'none' ? 'block' : 'none';
+                            });
+
+                            // 過濾出該類別的帳務明細
                             const filteredData = transactionData.filter(item => item.category === category);
-
+                            let totalCost = 0;
                             if (filteredData.length > 0) {
                                 filteredData.forEach(item => {
-                                    detailList.innerHTML += `
-                                        <li>
-                                            ${item.date} ${item.description} - $${item.cost}
-                                            <button className="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})">修改</button>
-                                        </li>`;
+                                    const detailItem = document.createElement('li');
+                                    detailItem.innerHTML = `
+                                        ${item.date} ${item.description} - $${item.cost}
+                                        <button class="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})">修改</button>`;
+                                    totalCost += item.cost; // 計算該類別的總金額
+                                    detailsContainer.appendChild(detailItem);
                                 });
                             } else {
-                                detailList.innerHTML += `<li>無記帳</li>`;
+                                const noDataItem = document.createElement('li');
+                                noDataItem.textContent = '無記帳';
+                                detailsContainer.appendChild(noDataItem);
                             }
-                        });
 
+                            // 更新該類別的總金額顯示
+                            categoryTitle.textContent = `${category} $${totalCost}`;
+
+                            // 將類別名稱和明細容器添加到列表
+                            detailList.appendChild(categoryContainer);
+                            detailList.appendChild(detailsContainer);
+                        });
                     } else {
                         console.error('Invalid transaction data');
                     }
                 });
         })
         .catch(error => console.error('Error fetching category or transaction details:', error));
+}
+
+// 從圖表中抓取顏色
+function getCategoryColorFromChart(index) {
+    if (expenseChart && expenseChart.data && expenseChart.data.datasets[0]) {
+        return expenseChart.data.datasets[0].backgroundColor[index] || '#ffffff'; // 若圖表中無顏色，預設為白色
+    }
+    return '#ffffff';
 }
 
 function editTransaction(lineUserId, transactionId) {
@@ -241,7 +284,6 @@ document.querySelectorAll('.category-buttons .btn').forEach(button => {
 });
 
 // 匯出按鈕點擊事件
-// 匯出按鈕點擊事件
 document.getElementById('exportBtn').addEventListener('click', function() {
     const exportApiUrl = `/api/1.0/S3/export?startDate=${startDate}&endDate=${endDate}&lineUserId=${lineUserId}`;
 
@@ -266,8 +308,8 @@ document.getElementById('exportBtn').addEventListener('click', function() {
         });
 });
 
+// 本月結餘圖表
 function drawBalanceChart() {
-    // 呼叫API取得資料
     fetch(`/api/1.0/transaction/balance?lineUserId=${lineUserId}`)
         .then(response => response.json())
         .then(data => {
@@ -275,7 +317,6 @@ function drawBalanceChart() {
             const totalExpenses = data.totalExpenses;
             const balance = totalIncome - totalExpenses;
 
-            // 繪製圖表
             const ctx = document.getElementById('balanceChart').getContext('2d');
             window.balanceChart = new Chart(ctx, {
                 type: 'bar',
@@ -284,16 +325,12 @@ function drawBalanceChart() {
                     datasets: [{
                         data: [totalExpenses, totalIncome, balance],
                         backgroundColor: ['#f08080', '#90ee90', '#fdd835'],
-                        borderColor: ['#f08080', '#90ee90', '#fdd835'],
-                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         x: {

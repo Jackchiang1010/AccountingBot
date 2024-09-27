@@ -13,59 +13,51 @@
 <body>
 
 <nav>
+    <div class="logo-container">
+        <a href="/index.html"><img src="images/logo.png" alt="吉包帳 Logo"></a>
+    </div>
     <a href="/dashboard.html">圖表分析</a>
     <a href="/record.html">記帳頁面</a>
     <a href="/alertManage.html">定時提醒管理頁面</a>
     <a href="/calendar.html">記帳月曆頁面</a>
 </nav>
 
-<div class="container mt-5">
-
-    <div class="row">
-        <div class="col-12 text-center category-buttons">
-            <h2>圖表分析</h2>
-            <button class="btn btn-secondary" value="1">支出</button>
-            <button class="btn btn-secondary" value="0">收入</button>
+<div class="container">
+    <div class="category-buttons">
+        <h1 class="text-center">圖表分析</h1>
+        <div class="button-group">
+            <button class="btn btn-secondary expense-btn" value="1">支出</button>
+            <button class="btn btn-secondary income-btn" value="0">收入</button>
+        </div>
+        <div class="date-range">
             <input type="date" id="startDate" value="2024-09-10"> -
             <input type="date" id="endDate" value="2024-09-10">
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="chart-container">
-                <canvas id="expenseChart"></canvas>
-            </div>
-            <ul class="category-list mt-3">
-                <li></li>
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="filter-buttons text-center">
-                        <button class="btn btn-outline-primary" value="today">今天</button>
-                        <button class="btn btn-outline-primary" value="week">本週</button>
-                        <button class="btn btn-outline-primary" value="month">本月</button>
-                        <button class="btn btn-outline-primary" value="lastMonth">上月</button>
-                        <button class="btn btn-outline-primary" value="halfYear">半年</button>
-                        <button class="btn btn-outline-success" id="exportBtn">匯出</button>
-                    </div>
-                    <ul class="category-list">
-                        <li></li>
-                    </ul>
-                </div>
-            </div>
+    <div class="chart-container">
+        <canvas id="expenseChart"></canvas>
+    </div>
+
+    <div class="filter-buttons text-center mb-3">
+        <button class="btn btn-outline-primary" value="today">今天</button>
+        <button class="btn btn-outline-primary" value="week">本週</button>
+        <button class="btn btn-outline-primary" value="month">本月</button>
+        <button class="btn btn-outline-primary" value="lastMonth">上月</button>
+        <button class="btn btn-outline-primary" value="halfYear">半年</button>
+        <button class="btn btn-outline-success" id="exportBtn">匯出</button>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <ul class="category-list detail-list"></ul>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-12 text-center">
-            <h3>本月結餘</h3>
-            <canvas id="balanceChart" width="400" height="200"></canvas>
-        </div>
+    <div class="balance-section text-center">
+        <h1>本月結餘</h1>
+        <canvas id="balanceChart" width="400" height="200"></canvas>
     </div>
-
 </div>
 
 <script src="js/index.js"></script>
