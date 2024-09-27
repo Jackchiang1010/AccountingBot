@@ -222,11 +222,13 @@ function editTransaction(lineUserId, transactionId) {
 
 // 當時間篩選按鈕被點擊時
 document.querySelectorAll('.filter-buttons .btn').forEach(button => {
-    button.addEventListener('click', function() {
-        time = this.value;
-        setDateRange(); // 更新日期範圍
-        updateChart(); // 更新圖表
-    });
+    if (button.id !== 'exportBtn') { // 排除匯出按鈕
+        button.addEventListener('click', function() {
+            time = this.value;
+            setDateRange(); // 更新日期範圍
+            updateChart(); // 更新圖表
+        });
+    }
 });
 
 // 當支出/收入按鈕被點擊時
@@ -236,4 +238,31 @@ document.querySelectorAll('.category-buttons .btn').forEach(button => {
         updateChart(); // 更新圖表
     });
 });
+
+// 匯出按鈕點擊事件
+// 匯出按鈕點擊事件
+document.getElementById('exportBtn').addEventListener('click', function() {
+    const exportApiUrl = `/api/1.0/S3/export?startDate=${startDate}&endDate=${endDate}&lineUserId=${lineUserId}`;
+
+    fetch(exportApiUrl)
+        .then(response => {
+            return response.text(); // 取得回傳的文字（URL）
+        })
+        .then(url => {
+            if (url.startsWith('http')) {
+                // 透過新增的連結下載 CSV
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = '記帳資料.csv'; // 可選，設定下載的檔案名稱
+                downloadLink.click();
+            } else {
+                alert('匯出失敗，請稍後再試');
+            }
+        })
+        .catch(error => {
+            console.error('Error exporting data:', error);
+            alert('匯出過程中出現錯誤，請稍後再試');
+        });
+});
+
 
