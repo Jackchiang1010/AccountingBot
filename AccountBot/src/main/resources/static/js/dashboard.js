@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(checkLineUserId); // 清除檢查
             setDateRange();
             updateChart();
+            drawBalanceChart();
             console.log("lineUserId : " + lineUserId);
         }
     }, 100); // 每100毫秒檢查一次
@@ -265,4 +266,48 @@ document.getElementById('exportBtn').addEventListener('click', function() {
         });
 });
 
+function drawBalanceChart() {
+    // 呼叫API取得資料
+    fetch(`/api/1.0/transaction/balance?lineUserId=${lineUserId}`)
+        .then(response => response.json())
+        .then(data => {
+            const totalIncome = data.totalIncome;
+            const totalExpenses = data.totalExpenses;
+            const balance = totalIncome - totalExpenses;
 
+            // 繪製圖表
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            window.balanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['支出', '收入', '結餘'],
+                    datasets: [{
+                        data: [totalExpenses, totalIncome, balance],
+                        backgroundColor: ['#f08080', '#90ee90', '#fdd835'],
+                        borderColor: ['#f08080', '#90ee90', '#fdd835'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '本月結餘'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
