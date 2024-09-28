@@ -60,8 +60,8 @@ nav {
     top: 0;
     z-index: 1000;
     display: flex;
-    justify-content: space-around; /* 使 nav 連結和 logo 平均分布 */
-    align-items: center; /* 讓連結垂直置中 */
+    justify-content: space-around;
+    align-items: center;
 }
 
 nav a {
@@ -70,15 +70,15 @@ nav a {
     font-size: 18px;
     font-weight: bold;
     transition: color 0.3s, text-decoration 0.3s;
-    flex: 1; /* 讓連結平均分配空間 */
-    text-align: center; /* 讓連結置中 */
+    flex: 1;
+    text-align: center;
 }
 nav a:hover {
     text-decoration: underline;
     color: #F7D486;
 }
 .logo-container {
-    flex: 1; /* 讓 logo 容器也占據一個平均空間 */
+    flex: 1;
     display: flex;
     justify-content: center;
 }
@@ -91,32 +91,16 @@ nav a:hover {
     transform: scale(1.1);
 }
 
-.button-group {
-    display: flex;
-}
-
-.date-range {
-    margin-top: 10px; /* 調整日期區塊與按鈕間的距離 */
-    display: flex;
-    align-items: center;
-}
-
-.date-range input {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 0 5px; /* 調整日期輸入框間的距離 */
-}
-
 h1 {
     color: #000;
     margin: 10px 0;
-    font-size: 24px; /* 調整字體大小 */
-    text-align: center; /* 置中 */
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
 }
 
 button {
-    background-color: #fff;
+    background-color: #FFF2CC;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px 10px;
@@ -125,5 +109,122 @@ button {
 }
 
 button:hover {
-    background-color: #ffeb99;
+    background-color: #ffffff;
+}
+
+/* 整個容器設為 flex */
+.info-container {
+    display: flex;
+    width: 100%;
+}
+
+/* 左半部 */
+.left-section {
+    width: 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+/* 右半部 */
+.right-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.card {
+    width: 100%;
+}
+
+.category-buttons,
+.chart-container,
+.filter-buttons {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* 類別按鈕和日期範圍的區塊設定 */
+.category-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    margin-bottom: 10px;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+}
+
+.date-range input {
+    margin: 0 5px;
+}
+
+/* 圓餅圖容器 */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0 auto;
+}
+
+/* 篩選按鈕容器 */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* 支出按鈕樣式 */
+.expense-btn {
+    background-color: #F27A7D; /* 按鈕背景顏色 */
+    border: none;             /* 去掉按鈕邊框 */
+    color: white;             /* 按鈕文字顏色 */
+}
+
+.expense-btn:hover {
+    background-color: #E06666; /* 滑鼠懸停時的顏色 */
+}
+
+/* 收入按鈕樣式 */
+.income-btn {
+    background-color: #C5F9D7; /* 按鈕背景顏色 */
+    border: none;              /* 去掉按鈕邊框 */
+    color: black;              /* 按鈕文字顏色 */
+}
+
+.income-btn:hover {
+    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
+}
+
+.balance-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#balanceChart {
+    max-width: 60%; /* 可以根據需要調整 */
+    max-height: 400px; /* 可以根據需要調整 */
+    height: auto;
+    background-color: #FFF2CC;
+    padding: 10px;
+    margin: 10px;
 }

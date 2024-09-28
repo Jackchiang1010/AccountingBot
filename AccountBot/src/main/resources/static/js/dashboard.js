@@ -101,7 +101,8 @@ var expenseChart = new Chart(ctx, {
         labels: [],
         datasets: [{
             data: [],
-            backgroundColor: []
+            backgroundColor: [],
+            borderColor: '#4B4B4B'
         }]
     },
     options: {
@@ -140,16 +141,16 @@ function updateChart() {
             // 根據類型選擇顏色（收入 vs 支出）
             const backgroundColors = type === 1 ?
                 [
-                    '#ffcc00',
-                    '#ff9900',
-                    '#ff6600',
-                    '#cc3399',
-                    '#990066',
-                    '#3399cc',
-                    '#006699',
-                    '#ccee66',
-                    '#99cc33',
-                    '#669900'
+                    '#ffadad',
+                    '#ffc2a9',
+                    '#ffd6a5',
+                    '#fdffb6',
+                    '#caffbf',
+                    '#b3fbdf',
+                    '#aae0ef',
+                    '#a0c4ff',
+                    '#bdb2ff',
+                    '#ffc6ff'
                 ] :
                 [
                     '#f29e4c',
@@ -201,7 +202,6 @@ function getCategoryDetails() {
                             categoryContainer.style.position = 'relative';
                             categoryContainer.style.backgroundColor = getCategoryColorFromChart(index); // 根據圖表顏色設置背景顏色
                             categoryContainer.style.padding = '10px';
-                            categoryContainer.style.marginBottom = '5px';
                             categoryContainer.style.cursor = 'pointer';
 
                             const categoryTitle = document.createElement('strong');
@@ -211,7 +211,6 @@ function getCategoryDetails() {
                             // 建立用來放帳務明細的 ul 元素
                             const detailsContainer = document.createElement('ul');
                             detailsContainer.style.display = 'none'; // 預設隱藏
-                            detailsContainer.style.paddingLeft = '20px';
 
                             categoryContainer.addEventListener('click', () => {
                                 // 切換明細的顯示狀態
@@ -225,14 +224,33 @@ function getCategoryDetails() {
                                 filteredData.forEach(item => {
                                     const detailItem = document.createElement('li');
                                     detailItem.innerHTML = `
-                                        ${item.date} ${item.description} - $${item.cost}
-                                        <button class="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})">修改</button>`;
+                                        <span style="flex: 1;">${item.date} ${item.description} - $${item.cost}</span>
+                                        <button class="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})" style="margin-left: auto">修改</button>`;
+
+                                    // 設定每個帳務明細項目的樣式
+                                    detailItem.style.display = 'flex'; // 使用 flex 排列
+                                    detailItem.style.justifyContent = 'space-between'; // 左右對齊
+                                    detailItem.style.alignItems = 'center'; // 垂直置中
+                                    detailItem.style.backgroundColor = '#ffffff'; // 白色底色
+                                    detailItem.style.padding = '10px'; // 設定內距
+                                    detailItem.style.width = '100%'; // 設定寬度為 100%
+                                    detailItem.style.boxSizing = 'border-box'; // 確保 padding 不影響元素寬度
+                                    detailItem.style.border = '1px solid #ddd'; // 添加邊框以區分
+
                                     totalCost += item.cost; // 計算該類別的總金額
                                     detailsContainer.appendChild(detailItem);
                                 });
                             } else {
                                 const noDataItem = document.createElement('li');
                                 noDataItem.textContent = '無記帳';
+
+                                // 設定 "無記帳" 項目的樣式
+                                noDataItem.style.backgroundColor = '#ffffff'; // 白色底色
+                                noDataItem.style.padding = '10px'; // 設定內距
+                                noDataItem.style.width = '100%'; // 設定寬度為 100%
+                                noDataItem.style.boxSizing = 'border-box'; // 確保 padding 不影響元素寬度
+                                noDataItem.style.border = '1px solid #ddd'; // 添加邊框以區分
+
                                 detailsContainer.appendChild(noDataItem);
                             }
 
@@ -329,6 +347,7 @@ function drawBalanceChart() {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: { display: false }
                     },
