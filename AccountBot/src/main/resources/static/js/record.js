@@ -1,4 +1,3 @@
-// let lineUserId = "";
 let type = 1;
 let selectedCategory = "";
 
@@ -19,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const expenseButton = document.getElementById('expense');
     const incomeButton = document.getElementById('income');
     const dateInput = document.getElementById('date');
+    const eraseButton = document.getElementById('erase');
     let currentMode = 'expense';
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     amountInput.value = 'Error';
                 }
+            } else if (this.id === 'erase') {
+                amountInput.value = amountInput.value.slice(0, -1); // 每次移除最後一個字元
             } else {
                 amountInput.value += value;
             }
@@ -150,7 +152,7 @@ function updateCategories() {
                     });
                     // 添加選中樣式
                     button.classList.add('selected');
-                    button.style.backgroundColor = '#99ccff'; // 選中顏色
+                    button.style.backgroundColor = '#FFF2CC'; // 選中顏色
                     console.log("Selected category: " + selectedCategory);
                 });
 
@@ -160,6 +162,7 @@ function updateCategories() {
             // 固定「分類管理」按鈕
             const manageButton = document.createElement('button');
             manageButton.textContent = '分類管理';
+            manageButton.classList.add('manage-button');
 
             // 設定點擊事件，跳轉到分類管理頁面
             manageButton.onclick = function() {

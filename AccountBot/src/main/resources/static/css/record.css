@@ -1,69 +1,158 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+body {
+    line-height: 1;
+    color: black;
+    background: white;
+}
+ol, ul {
+    list-style: none;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #F7D486;
+    font-family: "微軟正黑體", sans-serif;
+    height: 100%;
+}
+
+nav {
+    background-color: #FFF2CC;
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s;
+    flex: 1;
+    text-align: center;
+}
+nav a:hover {
+    text-decoration: underline;
+    color: #F7D486;
+}
+.logo-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+.logo-container img {
+    width: 50px;
+    height: auto;
+    transition: transform 0.3s;
+}
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #f0f0f0;
-}
-
-nav {
-    background-color: #000000;
-    width: 100%;
-    padding: 15px;
-    text-align: center;
-}
-
-nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
 .container {
-    background-color: white;
+    background-color: #F7D486;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    max-width: 1000px;
+    max-width: 90%;
+    height: 80%;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 h1 {
+    color: #000;
+    margin: 10px 0;
+    font-size: 24px;
     text-align: center;
-    margin-bottom: 20px;
+    font-weight: bold;
 }
 .top-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-direction: column;
 }
 .date-picker input {
     padding: 5px;
 }
 .toggle-buttons button {
-    padding: 5px 15px;
-    margin: 0 5px;
+    padding: 5px 10px;
+    margin: 10px 5px;
 }
 .main-content {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    height: 100%;
 }
+
+.left-section {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+}
+
 .categories {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    width: 45%;
-    align-content: start; /* Align items to the top */
-    background-color: #f0f0f0; /* 預設顏色 */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    /*width: 45%;*/
+    align-content: start;
 }
 .categories button {
     padding: 5px; /* Reduced padding */
@@ -72,8 +161,8 @@ h1 {
     height: 30px; /* Fixed height */
 }
 .categories button.selected {
-    background-color: #99ccff; /* 選中顏色 */
-    color: white; /* 選中文字顏色 */
+    background-color: #F7D486; /* 選中顏色 */
+    color: black; /* 選中文字顏色 */
 }
 
 .right-section {
@@ -82,8 +171,7 @@ h1 {
 .numpad {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 20px;
 }
 .numpad button, #amount {
     padding: 10px;
@@ -93,19 +181,52 @@ h1 {
     grid-column: span 3;
     text-align: right;
 }
+
+.bottom-section {
+    display: flex;
+    align-items: center; /* 垂直置中 */
+    justify-content: flex-start; /* 從左至右排列 */
+    gap: 10px; /* 控制間距 */
+}
+
 .description textarea {
     width: 100%;
     padding: 10px;
-    resize: vertical;
-    margin-bottom: 20px;
+    resize: none;
 }
 #save {
     display: block;
-    width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #C5F9D7;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.manage-button {
+    background-color: #FFF2CC;
+    border: none;
+}
+
+/* 支出按鈕樣式 */
+#expense {
+    background-color: #F27A7D; /* 按鈕背景顏色 */
+    border: none;             /* 去掉按鈕邊框 */
+    color: white;             /* 按鈕文字顏色 */
+}
+
+#expense:hover {
+    background-color: #E06666; /* 滑鼠懸停時的顏色 */
+}
+
+/* 收入按鈕樣式 */
+#income {
+    background-color: #C5F9D7; /* 按鈕背景顏色 */
+    border: none;              /* 去掉按鈕邊框 */
+    color: black;              /* 按鈕文字顏色 */
+}
+
+#income:hover {
+    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
 }

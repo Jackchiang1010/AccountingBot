@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>記帳小幫手</title>
+    <title>立即記帳</title>
 
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 
@@ -12,14 +12,17 @@
 <body>
 
 <nav>
+    <div class="logo-container">
+        <a href="/index.html"><img src="images/logo.png" alt="吉包帳 Logo"></a>
+    </div>
     <a href="/dashboard.html">圖表分析</a>
-    <a href="/record.html">記帳頁面</a>
-    <a href="/alertManage.html">定時提醒管理頁面</a>
-    <a href="/calendar.html">記帳月曆頁面</a>
+    <a href="/record.html">立即記帳</a>
+    <a href="/alertManage.html">定時提醒管理</a>
+    <a href="/calendar.html">記帳月曆</a>
 </nav>
 
 <div class="container">
-    <h1>記帳小幫手</h1>
+    <h1>吉包帳</h1>
     <div class="top-section">
         <div class="date-picker">
             <input type="date" id="date" value="2024-09-10">
@@ -30,33 +33,38 @@
         </div>
     </div>
     <div class="main-content">
-        <div class="categories"></div>
+        <div class="left-section">
+            <div class="categories"></div>
+        </div>
         <div class="right-section">
             <div class="numpad">
-                <input type="text" id="amount">
-                <button>AC</button>
+                <input type="text" id="amount" placeholder="$">
+                <button id="erase">←</button>
                 <button>7</button>
                 <button>8</button>
                 <button>9</button>
-                <button>/</button>
+                <button>*</button>
                 <button>4</button>
                 <button>5</button>
                 <button>6</button>
-                <button>*</button>
+                <button>-</button>
                 <button>1</button>
                 <button>2</button>
                 <button>3</button>
-                <button>-</button>
-                <button>0</button>
-                <button>.</button>
-                <button>=</button>
                 <button>+</button>
+                <button>AC</button>
+                <button>0</button>
+                <button>/</button>
+                <button>=</button>
             </div>
-            <div class="description">
-                <textarea placeholder="說明文字"></textarea>
-            </div>
-            <button id="save">儲存</button>
         </div>
+    </div>
+    <div class="bottom-section">
+        <div class="description">
+            <textarea placeholder="備註:"></textarea>
+        </div>
+
+        <button id="save">儲存</button>
     </div>
 </div>
 
