@@ -116,7 +116,7 @@ var expenseChart = new Chart(ctx, {
                     usePointStyle: true, // 使用點樣式顯示標籤
                     padding: 20, // 調整標籤與圖表的間距
                     font: {
-                        size: 16 // 標籤字體大小
+                        size: 18 // 標籤字體大小
                     }
                 }
             }
@@ -349,17 +349,33 @@ function drawBalanceChart() {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: { display: false }
+                        legend: { display: false },
+                        tooltip: {
+                            bodyFont: { size: 24 } // 調整 tooltip 字體大小
+                        }
                     },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: '本月結餘'
+                                text: '本月結餘',
+                                font: {
+                                    size: 24 // 調整 x 軸標題字體大小
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 24 // 調整 x 軸標籤字體大小
+                                }
                             }
                         },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 24 // 調整 y 軸標籤字體大小
+                                }
+                            }
                         }
                     }
                 }

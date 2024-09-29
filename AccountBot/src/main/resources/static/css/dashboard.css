@@ -51,6 +51,7 @@ body {
 }
 
 nav {
+    /*background-color: #F7D486;*/
     background-color: #FFF2CC;
     width: 100%;
     padding: 15px 0;
@@ -65,25 +66,34 @@ nav {
 }
 
 nav a {
-    color: #333;
+    color: #440381;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     transition: color 0.3s, text-decoration 0.3s;
-    flex: 1;
+    display: flex;
     text-align: center;
+    align-items: center;
 }
 nav a:hover {
-    text-decoration: underline;
-    color: #F7D486;
+    /*color: #F7D486;*/
+    transform: scale(1.1);
+    /*color: #FFF2CC;*/
 }
+
+nav a img {
+    width: 27px;
+}
+
 .logo-container {
-    flex: 1;
     display: flex;
     justify-content: center;
+    height: 50px;
+    align-items: center;
+    margin-left: 0;
 }
 .logo-container img {
-    width: 50px;
+    width: 100px;
     height: auto;
     transition: transform 0.3s;
 }
@@ -91,9 +101,13 @@ nav a:hover {
     transform: scale(1.1);
 }
 
+html {
+    font-size: 120%;
+}
+
 h1 {
     color: #000;
-    margin: 10px 0;
+    margin: 20px 0;
     font-size: 24px;
     text-align: center;
     font-weight: bold;
@@ -106,10 +120,17 @@ button {
     padding: 5px 10px;
     margin: 5px;
     cursor: pointer;
+    font-size: 24px;
 }
 
 button:hover {
     background-color: #ffffff;
+}
+
+input {
+    padding: 5px 10px;
+    margin: 5px;
+    font-size: 24px;
 }
 
 /* 整個容器設為 flex */
@@ -120,7 +141,7 @@ button:hover {
 
 /* 左半部 */
 .left-section {
-    width: 50%;
+    width: 60%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -132,12 +153,13 @@ button:hover {
 
 /* 右半部 */
 .right-section {
-    width: 50%;
+    width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding-right: 5%;
     box-sizing: border-box;
+    font-size: 24px;
 }
 
 .card {
@@ -178,9 +200,9 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 400px;
-    max-height: 400px;
-    margin: 0 auto;
+    max-width: 600px;
+    max-height: 600px;
+    margin: 20px auto;
 }
 
 /* 篩選按鈕容器 */
