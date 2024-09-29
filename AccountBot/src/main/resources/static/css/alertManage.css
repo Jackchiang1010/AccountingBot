@@ -56,6 +56,7 @@ body {
 }
 
 nav {
+    /*background-color: #F7D486;*/
     background-color: #FFF2CC;
     width: 100%;
     padding: 15px 0;
@@ -65,30 +66,39 @@ nav {
     top: 0;
     z-index: 1000;
     display: flex;
-    justify-content: space-around; /* 使 nav 連結和 logo 平均分布 */
-    align-items: center; /* 讓連結垂直置中 */
+    justify-content: space-around;
+    align-items: center;
 }
 
 nav a {
-    color: #333;
+    color: #440381;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     transition: color 0.3s, text-decoration 0.3s;
-    flex: 1; /* 讓連結平均分配空間 */
-    text-align: center; /* 讓連結置中 */
+    display: flex;
+    text-align: center;
+    align-items: center;
 }
 nav a:hover {
-    text-decoration: underline;
-    color: #F7D486;
+    /*color: #F7D486;*/
+    transform: scale(1.1);
+    /*color: #FFF2CC;*/
 }
+
+nav a img {
+    width: 27px;
+}
+
 .logo-container {
-    flex: 1; /* 讓 logo 容器也占據一個平均空間 */
     display: flex;
     justify-content: center;
+    height: 50px;
+    align-items: center;
+    margin-left: 0;
 }
 .logo-container img {
-    width: 50px;
+    width: 100px;
     height: auto;
     transition: transform 0.3s;
 }
@@ -96,10 +106,15 @@ nav a:hover {
     transform: scale(1.1);
 }
 
+html {
+    font-size: 120%;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: '微軟正黑體', sans-serif;
 }
 
 h1 {
@@ -140,6 +155,8 @@ h1 {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    font-size: 24px;
+    margin-right: 0;
 }
 
 .input-container {
@@ -155,19 +172,26 @@ h1 {
 
 .time-input,
 .description-input {
-    width: 120px; /* 調整輸入框的寬度 */
+    width: 30%; /* 調整輸入框的寬度 */
+    font-size: 24px;
 }
 
 .action-btn {
     padding: 5px 10px;
-    border: none;
     cursor: pointer;
+    border-radius: 10px;
+    font-size: 24px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .add-time-btn {
     margin-top: 20px;
     padding: 10px 20px;
-    border: none;
     cursor: pointer;
     background-color: #FFF2CC;
+    border-radius: 10px;
+    font-size: 24px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
