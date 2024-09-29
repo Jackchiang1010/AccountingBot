@@ -63,23 +63,42 @@ function fetchAndRenderAlerts() {
 
                 const saveButton = document.createElement('button');
                 saveButton.className = 'action-btn';
+                saveButton.style.backgroundColor = '#C5F9D7';
                 saveButton.textContent = '儲存';
 
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'action-btn';
+                deleteButton.style.backgroundColor = '#F27A7D';
                 deleteButton.textContent = '刪除';
 
                 const timeNoteRow = document.createElement('div');
                 timeNoteRow.className = 'time-note-row';
-                timeNoteRow.appendChild(timeInput);
-                timeNoteRow.appendChild(descriptionInput);
-                timeNoteRow.appendChild(saveButton);
-                timeNoteRow.appendChild(deleteButton);
 
-                timeNoteRow.dataset.alertId = alert.id;
+                const leftSection = document.createElement('div');
+                leftSection.className = 'left-section';
+
+                const timeLabel = document.createElement('label');
+                timeLabel.textContent = "時間:";
+                const descriptionLabel = document.createElement('label');
+                descriptionLabel.textContent = "備註:"
+
+                leftSection.appendChild(timeLabel);
+                leftSection.appendChild(timeInput);
+                leftSection.appendChild(descriptionLabel);
+                leftSection.appendChild(descriptionInput);
+
+                const rightSection = document.createElement('div');
+                rightSection.className = 'right-section';
+                rightSection.appendChild(saveButton);
+                rightSection.appendChild(deleteButton);
+
+                timeNoteRow.appendChild(leftSection);
+                timeNoteRow.appendChild(rightSection);
+
+                leftSection.dataset.alertId = alert.id;
 
                 saveButton.addEventListener('click', function () {
-                    const alertId = timeNoteRow.dataset.alertId;
+                    const alertId = leftSection.dataset.alertId;
                     const updatedTime = timeInput.value;
                     const updatedDescription = descriptionInput.value;
 
@@ -105,17 +124,15 @@ function fetchAndRenderAlerts() {
                         })
                         .then(data => {
                             console.log("定時提醒更新成功: ", data);
-                            alert("定時提醒更新成功");
                             fetchAndRenderAlerts();
                         })
                         .catch(error => {
                             console.error("發生錯誤: ", error);
-                            alert("定時提醒更新失敗");
                         });
                 });
 
                 deleteButton.addEventListener('click', function () {
-                    const alertId = timeNoteRow.dataset.alertId;
+                    const alertId = leftSection.dataset.alertId;
 
                     const requestBody = {
                         id: alertId

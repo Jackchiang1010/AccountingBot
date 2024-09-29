@@ -3,21 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>定時提醒管理</title>
+    <title>定時提醒</title>
     <link rel="stylesheet" href="css/alertManage.css">
 </head>
 <body>
 
 <nav>
+    <div class="logo-container">
+        <a href="/index.html"><img src="images/logo.png" alt="吉包帳 Logo"></a>
+    </div>
     <a href="/dashboard.html">圖表分析</a>
-    <a href="/record.html">記帳頁面</a>
-    <a href="/alertManage.html">定時提醒管理頁面</a>
-    <a href="/calendar.html">記帳月曆頁面</a>
+    <a href="/record.html">立即記帳</a>
+    <a href="/alertManage.html">定時提醒管理</a>
+    <a href="/calendar.html">記帳月曆</a>
 </nav>
 
+<h1>定時提醒管理</h1>
+
 <div class="container">
-    <h1>定時提醒管理</h1>
-    <div class="time-note-container" id="alert-container"></div>
+
+<!--    <label class="time-label">時間</label>-->
+<!--    <label class="description-label">備註</label>-->
+    <div class="time-note-container" id="alert-container">
+        <div class="left-section"></div>
+        <div class="right-section"></div>
+    </div>
     <button class="add-time-btn" id="add-alert-btn">新增時間</button>
 </div>
 
