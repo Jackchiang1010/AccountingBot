@@ -23,50 +23,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 
 body {
     background-color: #F7D486;
+    /*background-color: #FFF2CC;*/
     font-family: "微軟正黑體", sans-serif;
 }
-
-nav {
-    background-color: #FFF2CC;
-    width: 100%;
-    padding: 15px 0;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-nav a {
-    color: #333;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
-    transition: color 0.3s, text-decoration 0.3s;
-    flex: 1;
-    text-align: center;
-}
-nav a:hover {
-    text-decoration: underline;
-    color: #F7D486;
-}
-.logo-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-.logo-container img {
-    width: 50px;
-    height: auto;
-    transition: transform 0.3s;
-}
-.logo-container img:hover {
-    transform: scale(1.1);
-}
-
 
 body {
     line-height: 1;
@@ -91,6 +50,61 @@ q:before, q:after {
 }
 blockquote, q {
     quotes: "" "";
+}
+
+nav {
+    /*background-color: #F7D486;*/
+    background-color: #FFF2CC;
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav a {
+    color: #440381;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s;
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+nav a:hover {
+    /*color: #F7D486;*/
+    transform: scale(1.1);
+    /*color: #FFF2CC;*/
+}
+
+nav a img {
+    width: 27px;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    align-items: center;
+    margin-left: 0;
+}
+.logo-container img {
+    width: 100px;
+    height: auto;
+    transition: transform 0.3s;
+}
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+
+html {
+    font-size: 120%;
 }
 
 * {
@@ -118,7 +132,8 @@ blockquote, q {
 
 /* 調整整個日曆背景 */
 .fc-theme-standard .fc-scrollgrid {
-    background-color: #FFF2CC; /* 修改為你想要的背景顏色 */
+    background-color: #FFF2CC;
+    /*background-color: #F7D486;*/
 }
 
 /* 隱藏非當月日期行 */
@@ -145,6 +160,7 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #F7D486;
+    /*background-color: #FFF2CC;*/
 }
 
 /* The Modal (background) */
@@ -166,14 +182,15 @@ body {
 /* Modal Content */
 .modal-content {
     background-color: #F7D486;
-    margin: 15% auto; /* 15% from the top and centered */
+    /*background-color: #FFF2CC;*/
+    margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 300px; /* Adjust the width for a smaller box */
-    max-width: 80%; /* Ensure it doesn't exceed 80% of the screen */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Optional shadow */
-    text-align: center; /* Center text inside */
+    width: 400px;
+    max-width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    text-align: start;
 }
 
 /* The Close Button */
@@ -194,7 +211,14 @@ body {
 button {
     border: none;
     border-radius: 10px;
-    padding: 2px;
+    padding: 5px;
     background-color: #FFF2CC;
-    margin: 2px;
+    /*background-color: #F7D486;*/
+    margin: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 陰影效果 */
+    transition: box-shadow 0.3s ease; /* 讓陰影效果更順滑 */
+}
+
+button:hover {
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); /* 滑鼠移過時陰影更明顯 */
 }
