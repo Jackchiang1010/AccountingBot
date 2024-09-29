@@ -49,8 +49,8 @@ body {
     background-color: #F7D486;
     font-family: "微軟正黑體", sans-serif;
 }
-
 nav {
+    /*background-color: #F7D486;*/
     background-color: #FFF2CC;
     width: 100%;
     padding: 15px 0;
@@ -65,30 +65,43 @@ nav {
 }
 
 nav a {
-    color: #333;
+    color: #440381;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     transition: color 0.3s, text-decoration 0.3s;
-    flex: 1;
+    display: flex;
     text-align: center;
+    align-items: center;
 }
 nav a:hover {
-    text-decoration: underline;
-    color: #F7D486;
+    /*color: #F7D486;*/
+    transform: scale(1.1);
+    /*color: #FFF2CC;*/
 }
+
+nav a img {
+    width: 27px;
+}
+
 .logo-container {
-    flex: 1;
     display: flex;
     justify-content: center;
+    height: 50px;
+    align-items: center;
+    margin-left: 0;
 }
 .logo-container img {
-    width: 50px;
+    width: 100px;
     height: auto;
     transition: transform 0.3s;
 }
 .logo-container img:hover {
     transform: scale(1.1);
+}
+
+html {
+    font-size: 120%;
 }
 
 h1 {
@@ -103,6 +116,7 @@ h1 {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "微軟正黑體", sans-serif;
 }
 
 img {
@@ -146,15 +160,19 @@ img:hover {
     box-sizing: border-box;
 }
 
+#updateForm {
+    width: 60%;
+}
+
 label {
     display: block;
-    margin: 10px 0 5px;
+    margin: 10px;
     text-align: center;
 }
 input, select, textarea {
     width: 100%;
     padding: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 textarea {
@@ -168,13 +186,16 @@ button {
     cursor: pointer;
 }
 .buttons {
-    text-align: right;
+    text-align: center;
 }
 
 .delete {
     background-color: #F27A7D; /* 按鈕背景顏色 */
-    border: none;             /* 去掉按鈕邊框 */
     color: black;             /* 按鈕文字顏色 */
+    font-size: 24px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 .delete:hover {
@@ -183,8 +204,11 @@ button {
 
 .save {
     background-color: #C5F9D7; /* 按鈕背景顏色 */
-    border: none;              /* 去掉按鈕邊框 */
     color: black;              /* 按鈕文字顏色 */
+    font-size: 24px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 .save:hover {
