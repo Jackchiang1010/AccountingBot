@@ -56,6 +56,7 @@ body {
 }
 
 nav {
+    /*background-color: #F7D486;*/
     background-color: #FFF2CC;
     width: 100%;
     padding: 15px 0;
@@ -70,25 +71,34 @@ nav {
 }
 
 nav a {
-    color: #333;
+    color: #440381;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     transition: color 0.3s, text-decoration 0.3s;
-    flex: 1;
+    display: flex;
     text-align: center;
+    align-items: center;
 }
 nav a:hover {
-    text-decoration: underline;
-    color: #F7D486;
+    /*color: #F7D486;*/
+    transform: scale(1.1);
+    /*color: #FFF2CC;*/
 }
+
+nav a img {
+    width: 27px;
+}
+
 .logo-container {
-    flex: 1;
     display: flex;
     justify-content: center;
+    height: 50px;
+    align-items: center;
+    margin-left: 0;
 }
 .logo-container img {
-    width: 50px;
+    width: 100px;
     height: auto;
     transition: transform 0.3s;
 }
@@ -96,15 +106,20 @@ nav a:hover {
     transform: scale(1.1);
 }
 
+html {
+    font-size: 120%;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "微軟正黑體", sans-serif;
 }
 
 .container {
     background-color: #F7D486;
-    padding: 20px;
+    /*padding: 20px;*/
     border-radius: 10px;
     max-width: 90%;
     height: 80%;
@@ -115,10 +130,11 @@ nav a:hover {
 }
 h1 {
     color: #000;
-    margin: 10px 0;
+    margin: 20px 0;
     font-size: 24px;
     text-align: center;
     font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 .top-section {
     display: flex;
@@ -129,10 +145,14 @@ h1 {
 }
 .date-picker input {
     padding: 5px;
+    font-size: 24px;
 }
 .toggle-buttons button {
     padding: 5px 10px;
     margin: 10px 5px;
+    font-size: 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .main-content {
     display: flex;
@@ -151,14 +171,20 @@ h1 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    /*width: 45%;*/
     align-content: start;
+    height: 100%;
 }
 .categories button {
-    padding: 5px; /* Reduced padding */
+    padding: 20px;
     text-align: center;
-    font-size: 14px; /* Slightly smaller font size */
-    height: 30px; /* Fixed height */
+    font-size: 24px;
+    height: 30px;
+    display: flex;
+    align-items: center;      /* 垂直置中 */
+    justify-content: center;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .categories button.selected {
     background-color: #F7D486; /* 選中顏色 */
@@ -174,8 +200,12 @@ h1 {
     gap: 20px;
 }
 .numpad button, #amount {
+    background-color: #e1c0e1;
     padding: 10px;
-    font-size: 18px;
+    font-size: 24px;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 #amount {
     grid-column: span 3;
@@ -183,6 +213,7 @@ h1 {
 }
 
 .bottom-section {
+    margin-top: 20px;
     display: flex;
     align-items: center; /* 垂直置中 */
     justify-content: flex-start; /* 從左至右排列 */
@@ -190,30 +221,37 @@ h1 {
 }
 
 .description textarea {
-    width: 100%;
-    padding: 10px;
     resize: none;
+    font-size: 24px;
 }
 #save {
     display: block;
     padding: 10px;
     background-color: #C5F9D7;
     color: black;
-    border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
+    font-size: 24px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+#save:hover {
+    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
 }
 
 .manage-button {
     background-color: #FFF2CC;
     border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* 支出按鈕樣式 */
 #expense {
     background-color: #F27A7D; /* 按鈕背景顏色 */
-    border: none;             /* 去掉按鈕邊框 */
+    border: 2px solid white;
     color: white;             /* 按鈕文字顏色 */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #expense:hover {
@@ -223,8 +261,10 @@ h1 {
 /* 收入按鈕樣式 */
 #income {
     background-color: #C5F9D7; /* 按鈕背景顏色 */
-    border: none;              /* 去掉按鈕邊框 */
+    border: 2px solid white;
     color: black;              /* 按鈕文字顏色 */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #income:hover {
