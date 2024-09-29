@@ -199,7 +199,6 @@ function fetchBudgets(categories) {
 
 function addSelectableListener(li) {
     li.addEventListener("click", function() {
-
         if (selectedCategory) {
             selectedCategory.classList.remove("selected");
         }
@@ -207,7 +206,12 @@ function addSelectableListener(li) {
         selectedCategory = li;
         selectedCategory.classList.add("selected");
         console.log("選中的分類: ", selectedCategory.textContent);
+
+        // 將分類名稱填入輸入框
         document.getElementById("category-name").value = selectedCategory.textContent;
+
+        // 顯示彈出視窗
+        openPopup();
     });
 }
 
@@ -357,5 +361,35 @@ document.querySelector('.delete').addEventListener('click', function() {
             });
     } else {
         alert("請選擇一個分類進行刪除！");
+    }
+});
+
+// 打開彈出視窗
+function openPopup() {
+    document.getElementById('popup').style.display = 'flex';
+}
+
+// 關閉彈出視窗
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// 點擊儲存和刪除按鈕時顯示彈窗
+document.querySelector('.save').addEventListener('click', function() {
+    closePopup();
+});
+
+document.querySelector('.delete').addEventListener('click', function() {
+    closePopup();
+});
+
+// 關閉按鈕的事件監聽
+document.querySelector('.close-btn').addEventListener('click', closePopup);
+
+// 點擊彈窗外部關閉視窗
+window.addEventListener('click', function(event) {
+    const popup = document.getElementById('popup');
+    if (event.target === popup) {
+        closePopup();
     }
 });

@@ -1,30 +1,108 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+body {
+    line-height: 1;
+    color: black;
+    background: white;
+}
+ol, ul {
+    list-style: none;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+
+body {
+    background-color: #F7D486;
+    font-family: "微軟正黑體", sans-serif;
+}
+
+nav {
+    background-color: #FFF2CC;
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s;
+    flex: 1;
+    text-align: center;
+}
+nav a:hover {
+    text-decoration: underline;
+    color: #F7D486;
+}
+.logo-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+.logo-container img {
+    width: 50px;
+    height: auto;
+    transition: transform 0.3s;
+}
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+
+h1 {
+    color: #000;
+    margin: 10px 0;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: '微軟正黑體', sans-serif;
-}
-
-body {
-    background-color: #f7f7f7;
-}
-
-nav {
-    background-color: #000000;
-    width: 100%;
-    padding: 15px;
-    text-align: center;
-}
-
-nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-nav a:hover {
-    text-decoration: underline;
 }
 
 .selectable {
@@ -32,25 +110,19 @@ nav a:hover {
 }
 
 .selectable.selected {
-    background-color: #007bff; /* 選中顏色 */
-    color: white; /* 字體顏色 */
+    background-color: #FFF2CC; /* 選中顏色 */
+    color: black; /* 字體顏色 */
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #F7D486;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 .category-budget-section {
@@ -67,22 +139,33 @@ h1 {
 .categories h2, .budgets h2 {
     text-align: center;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .categories ul, .budgets ul {
     list-style: none;
 }
 
-.categories ul li, .budgets ul li {
+.categories ul li {
+    padding: 16.5px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #FFF2CC;
+}
+
+.budgets ul li {
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
+    background-color: #FFF2CC;
 }
 
-.categories ul li.active {
-    background-color: #e0e0e0;
+.categories ul li.active, .categories ul li.hover {
+    background-color: #ffffff;
 }
 
 .actions {
@@ -92,28 +175,24 @@ h1 {
     width: 100%;
 }
 
-.category-edit {
-    flex: 1;
-}
-
-.category-edit label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.category-edit input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
 .buttons {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-left: 20px;
+}
+
+li input {
+    width: 100px;
+    padding: 5px;
+    margin: 0 10px;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #F7D486;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
 }
 
 .buttons button {
@@ -125,12 +204,86 @@ h1 {
     width: 100px;
 }
 
-.save {
-    background-color: #4CAF50;
-    color: white;
+.delete {
+    background-color: #F27A7D; /* 按鈕背景顏色 */
+    border: none;             /* 去掉按鈕邊框 */
+    color: black;             /* 按鈕文字顏色 */
 }
 
-.delete {
-    background-color: #f44336;
-    color: white;
+.delete:hover {
+    background-color: #E06666; /* 滑鼠懸停時的顏色 */
 }
+
+.save {
+    background-color: #C5F9D7; /* 按鈕背景顏色 */
+    border: none;              /* 去掉按鈕邊框 */
+    color: black;              /* 按鈕文字顏色 */
+}
+
+.save:hover {
+    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
+}
+
+/* 背景遮罩 */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+/* 彈出視窗內容 */
+.popup-content {
+    background-color: #F7D486;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 分類名稱與輸入框 */
+.category-edit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.category-edit input{
+    width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.category-edit label{
+    margin: 10px 20px;
+}
+
+/* 按鈕區域 */
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* 關閉按鈕 */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
