@@ -20,7 +20,10 @@ function initializeFullCalendar() {
         initialView: 'dayGridMonth',
         showNonCurrentDates: false,
         locale: 'zh-tw',
-        height: 'auto',
+        height: 600, // 設定固定高度
+        contentHeight: 500, // 設定內容區域高度
+        dayMaxEventRows: true, // 每天最多顯示的事件行數，超出後會顯示 "more"
+        dayMaxEvents: 3, // 每天最多顯示的事件數量，超出後會顯示 "more"
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
