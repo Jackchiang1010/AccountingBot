@@ -114,7 +114,7 @@ public class MessageHandler {
                 "aspectMode": "cover",
                 "action": {
                     "type": "uri",
-                    "uri": "%s.png"
+                    "uri": "https://jacktest.site/index.html"
                 }
             },
             "footer": {
@@ -127,7 +127,11 @@ public class MessageHandler {
                             "type": "message",
                             "label": "昨日",
                             "text": "%s:昨日"
-                        }
+                        },
+                        "color": "#F7D486",
+                        "style": "secondary",
+                        "height": "md",
+                        "margin": "md"
                     },
                     {
                         "type": "button",
@@ -135,7 +139,11 @@ public class MessageHandler {
                             "type": "message",
                             "label": "本週",
                             "text": "%s:本週"
-                        }
+                        },
+                        "color": "#F7D486",
+                        "style": "secondary",
+                        "height": "md",
+                        "margin": "md"
                     },
                     {
                         "type": "button",
@@ -143,7 +151,11 @@ public class MessageHandler {
                             "type": "message",
                             "label": "本月",
                             "text": "%s:本月"
-                        }
+                        },
+                        "color": "#F7D486",
+                        "style": "secondary",
+                        "height": "md",
+                        "margin": "md"
                     },
                     {
                         "type": "button",
@@ -151,29 +163,25 @@ public class MessageHandler {
                             "type": "message",
                             "label": "半年",
                             "text": "%s:半年"
-                        }
-                    },
-                    {
-                        "type": "button",
-                        "action": {
-                            "type": "uri",
-                            "label": "more",
-                            "uri": "https://jacktest.site/index.html"
-                        }
+                        },
+                        "color": "#F7D486",
+                        "style": "secondary",
+                        "height": "md",
+                        "margin": "md"
                     }
                 ]
             }
         }
-    """, "%s", "%s", displayTextPrefix, displayTextPrefix, displayTextPrefix, displayTextPrefix);
+    """, "%s", displayTextPrefix, displayTextPrefix, displayTextPrefix, displayTextPrefix);
 
                 JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
 
                 String s3Key = "images/transaction/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
                 String imageUrl = uploadImageToS3(imagePath, s3Key);
 
-                flexMessageJsonObject.getJSONObject("hero")
-                        .getJSONObject("action")
-                        .put("uri", imageUrl);
+//                flexMessageJsonObject.getJSONObject("hero")
+//                        .getJSONObject("action")
+//                        .put("uri", imageUrl);
 
                 flexMessageJsonObject.getJSONObject("hero")
                         .put("url", imageUrl);
@@ -224,6 +232,10 @@ public class MessageHandler {
                     "data": "%s",
                     "displayText": "支出分類選擇:%s類別"
                 },
+                "color": "#F7D486",
+                "style": "secondary",
+                "height": "md",
+                "margin": "md",
                 "height": "sm",
                 "flex":0,
                 "margin": "md"
@@ -303,6 +315,10 @@ public class MessageHandler {
                     "data": "%s",
                     "displayText": "收入分類選擇:%s類別"
                 },
+                "color": "#F7D486",
+                "style": "secondary",
+                "height": "md",
+                "margin": "md",
                 "height": "sm",
                 "flex": 0,
                 "margin": "md"
@@ -594,7 +610,11 @@ public class MessageHandler {
                "type": "uri",
                "label": "編輯",
                "uri": "https://jacktest.site/transactionDetail.html?lineUserId=%s&transactionId=%s"
-             }
+             },
+              "color": "#F7D486",
+              "style": "secondary",
+              "height": "md",
+              "margin": "md"
            },
            {
              "type": "button",
@@ -602,7 +622,11 @@ public class MessageHandler {
                "type": "message",
                "label": "刪除",
                "text": "刪除%s:%s"
-             }
+             },
+              "color": "#F7D486",
+              "style": "secondary",
+              "height": "md",
+              "margin": "md"
            },
            {
              "type": "button",
@@ -610,7 +634,11 @@ public class MessageHandler {
                "type": "message",
                "label": "報表",
                "text": "支出報表"
-             }
+             },
+              "color": "#F7D486",
+              "style": "secondary",
+              "height": "md",
+              "margin": "md"
            },
            {
              "type": "button",
@@ -618,7 +646,11 @@ public class MessageHandler {
                "type": "message",
                "label": "結餘",
                "text": "本月結餘"
-             }
+             },
+              "color": "#F7D486",
+              "style": "secondary",
+              "height": "md",
+              "margin": "md"
            }
          ]
        }
