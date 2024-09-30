@@ -216,13 +216,6 @@ input {
     gap: 10px; /* 控制間距 */
 }
 
-/*.description input {*/
-/*    resize: none;*/
-/*    font-size: 24px;*/
-/*    border-radius: 10px;*/
-/*    !*border: 2px solid white;*!*/
-/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
-/*}*/
 #save {
     display: block;
     padding: 10px;
