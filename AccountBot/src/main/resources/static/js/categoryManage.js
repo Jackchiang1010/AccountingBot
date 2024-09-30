@@ -47,7 +47,8 @@ function fetchCategories() {
 
                 const addCategoryLi = document.createElement("li");
                 addCategoryLi.textContent = "新增分類";
-                addCategoryLi.classList.add("selectable");
+                addCategoryLi.classList.add("create");
+                addCategoryLi.style.backgroundColor = "#e1c0e1";
                 addSelectableListener(addCategoryLi);
                 categoryList.appendChild(addCategoryLi);
 

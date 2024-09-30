@@ -126,7 +126,7 @@ h1 {
 }
 
 .selectable.selected {
-    background-color: #FFF2CC; /* 選中顏色 */
+    background-color: #e1c0e1; /* 選中顏色 */
     color: black; /* 字體顏色 */
 }
 
@@ -149,7 +149,7 @@ h1 {
 
 .categories, .budgets {
     flex: 1;
-    margin-right: 20px;
+    margin: 10px;
 }
 
 .categories h2, .budgets h2 {
@@ -163,7 +163,7 @@ h1 {
 }
 
 .categories ul li {
-    padding: 16.5px;
+    padding: 17px;
     margin: 5px 0;
     text-align: center;
     background-color: #FFF2CC;
@@ -188,6 +188,11 @@ h1 {
 
 .categories ul li.active, .categories ul li.hover {
     background-color: #ffffff;
+}
+
+li.create {
+    cursor: pointer;
+    background-color: #e1c0e1;
 }
 
 .actions {
