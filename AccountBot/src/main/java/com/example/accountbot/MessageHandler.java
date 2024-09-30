@@ -416,7 +416,7 @@ public class MessageHandler {
                    "aspectMode": "cover",
                    "action": {
                      "type": "uri",
-                     "uri": "%s"
+                     "uri": "https://jacktest.site/index.html"
                    },
                    "url": "%s.png",
                    "aspectRatio": "20:13"
@@ -429,9 +429,9 @@ public class MessageHandler {
                 String s3Key = "images/balance/" + UUID.randomUUID() + ".png"; // 在 S3 上的路徑和檔案名稱
                 String imageUrl = uploadImageToS3(imagePath, s3Key);
 
-                flexMessageJsonObject.getJSONObject("hero")
-                        .getJSONObject("action")
-                        .put("uri", imageUrl);
+//                flexMessageJsonObject.getJSONObject("hero")
+//                        .getJSONObject("action")
+//                        .put("uri", imageUrl);
 
                 flexMessageJsonObject.getJSONObject("hero")
                         .put("url", imageUrl);
