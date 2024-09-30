@@ -128,24 +128,20 @@ html {
     flex-direction: column;
     align-items: center;
 }
-h1 {
-    color: #000;
-    margin: 20px 0;
-    font-size: 24px;
-    text-align: center;
-    font-weight: bold;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
+
 .top-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin: 20px;
     flex-direction: column;
 }
-.date-picker input {
-    padding: 5px;
+input {
+    background-color: #FFF2CC;
+    padding: 10px;
     font-size: 24px;
+    border-radius: 10px;
+    border: 2px solid white;
 }
 .toggle-buttons button {
     padding: 5px 10px;
@@ -220,10 +216,13 @@ h1 {
     gap: 10px; /* 控制間距 */
 }
 
-.description textarea {
-    resize: none;
-    font-size: 24px;
-}
+/*.description input {*/
+/*    resize: none;*/
+/*    font-size: 24px;*/
+/*    border-radius: 10px;*/
+/*    !*border: 2px solid white;*!*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
+/*}*/
 #save {
     display: block;
     padding: 10px;
@@ -236,7 +235,7 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 #save:hover {
-    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
+    background-color: #A8EAC4;
 }
 
 .manage-button {
@@ -247,26 +246,26 @@ h1 {
 
 /* 支出按鈕樣式 */
 #expense {
-    background-color: #F27A7D; /* 按鈕背景顏色 */
+    background-color: #F27A7D;
     border: 2px solid white;
-    color: white;             /* 按鈕文字顏色 */
+    color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #expense:hover {
-    background-color: #E06666; /* 滑鼠懸停時的顏色 */
+    background-color: #E06666;
 }
 
 /* 收入按鈕樣式 */
 #income {
-    background-color: #C5F9D7; /* 按鈕背景顏色 */
+    background-color: #C5F9D7;
     border: 2px solid white;
-    color: black;              /* 按鈕文字顏色 */
+    color: black;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #income:hover {
-    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
+    background-color: #A8EAC4;
 }

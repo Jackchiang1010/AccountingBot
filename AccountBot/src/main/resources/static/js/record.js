@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('save').addEventListener('click', function() {
         const cost = amountInput.value;
-        const description = document.querySelector('.description textarea').value;
+        const description = document.querySelector('.description input').value;
         const date = dateInput.value;
 
         if (!selectedCategory) {
