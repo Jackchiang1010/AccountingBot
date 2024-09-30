@@ -102,7 +102,7 @@ var expenseChart = new Chart(ctx, {
         datasets: [{
             data: [],
             backgroundColor: [],
-            borderColor: '#4B4B4B'
+            borderColor: '#000000'
         }]
     },
     options: {
@@ -140,30 +140,8 @@ function updateChart() {
 
             // 根據類型選擇顏色（收入 vs 支出）
             const backgroundColors = type === 1 ?
-                [
-                    '#ffadad',
-                    '#ffc2a9',
-                    '#ffd6a5',
-                    '#fdffb6',
-                    '#caffbf',
-                    '#b3fbdf',
-                    '#aae0ef',
-                    '#a0c4ff',
-                    '#bdb2ff',
-                    '#ffc6ff'
-                ] :
-                [
-                    '#f29e4c',
-                    '#f1c453',
-                    '#efea5a',
-                    '#b9e769',
-                    '#83e377',
-                    '#16db93',
-                    '#0db39e',
-                    '#048ba8',
-                    '#2c699a',
-                    '#54478c'
-                ];
+                ['#FF6666', '#FFA366', '#FFFF66', '#A3FF66', '#66FF99', '#66FFFF', '#66A3FF', '#A366FF', '#FF66FF', '#FF66A3'] :
+                ['#66FFCC', '#66FF33', '#CCFF66', '#FFFF33', '#FFCC66', '#FF9966', '#FF66CC', '#9966FF', '#6699FF', '#66CCFF'];
 
             expenseChart.data.labels = labels;
             expenseChart.data.datasets[0].data = dataValues;
