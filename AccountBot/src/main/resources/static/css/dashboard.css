@@ -66,6 +66,12 @@ nav {
     align-items: center;
 }
 
+.nav-links {
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 1; /* 讓這個 div 占滿剩餘的空間 */
+}
+
 nav a {
     color: #440381;
     text-decoration: none;
@@ -94,12 +100,12 @@ nav a img {
     margin-left: 0;
 }
 .logo-container img {
-    width: 100px;
+    width: 90px;
     height: auto;
     transition: transform 0.3s;
 }
 .logo-container img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 html {

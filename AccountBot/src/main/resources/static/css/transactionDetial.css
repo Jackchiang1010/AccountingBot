@@ -49,6 +49,7 @@ body {
     background-color: #F7D486;
     font-family: "微軟正黑體", sans-serif;
 }
+
 nav {
     /*background-color: #F7D486;*/
     background-color: #FFF2CC;
@@ -62,6 +63,12 @@ nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 1; /* 讓這個 div 占滿剩餘的空間 */
 }
 
 nav a {
@@ -92,12 +99,12 @@ nav a img {
     margin-left: 0;
 }
 .logo-container img {
-    width: 100px;
+    width: 90px;
     height: auto;
     transition: transform 0.3s;
 }
 .logo-container img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 html {
