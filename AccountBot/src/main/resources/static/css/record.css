@@ -237,6 +237,10 @@ input {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+button:hover {
+    cursor: pointer;
+}
+
 /* 支出按鈕樣式 */
 #expense {
     background-color: #F27A7D;
