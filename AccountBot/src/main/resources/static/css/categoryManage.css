@@ -125,7 +125,7 @@ h1 {
     cursor: pointer; /* 鼠標樣式變為手型 */
 }
 
-.selectable.selected {
+.selectable:hover {
     background-color: #e1c0e1; /* 選中顏色 */
     color: black; /* 字體顏色 */
 }
@@ -188,11 +188,6 @@ h1 {
 
 .categories ul li.active, .categories ul li.hover {
     background-color: #ffffff;
-}
-
-li.create {
-    cursor: pointer;
-    background-color: #e1c0e1;
 }
 
 .actions {
