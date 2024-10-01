@@ -123,6 +123,7 @@ function fetchAndRenderAlerts() {
                             throw new Error('更新定時提醒失敗');
                         })
                         .then(data => {
+                            showPopup("定時提醒更新成功");
                             console.log("定時提醒更新成功: ", data);
                             fetchAndRenderAlerts();
                         })
@@ -152,6 +153,7 @@ function fetchAndRenderAlerts() {
                             throw new Error('刪除定時提醒失敗');
                         })
                         .then(data => {
+                            showPopup("定時提醒刪除成功");
                             console.log("定時提醒刪除成功: ", data);
                             fetchAndRenderAlerts();
                         })
@@ -164,4 +166,35 @@ function fetchAndRenderAlerts() {
             });
         })
         .catch(error => console.error('Error fetching alert data:', error));
+}
+
+function showPopup(message) {
+    // 創建彈出視窗的容器
+    const popupContainer = document.createElement('div');
+    popupContainer.className = 'popup-container';
+
+    // 創建彈出視窗內容
+    const popupContent = document.createElement('div');
+    popupContent.className = 'popup-content';
+    popupContent.textContent = message;
+
+    // 將內容加入彈出視窗容器
+    popupContainer.appendChild(popupContent);
+
+    // 將彈出視窗容器加入 body
+    document.body.appendChild(popupContainer);
+
+    // 1 秒後自動關閉
+    setTimeout(() => {
+        if (popupContainer.parentNode) {
+            document.body.removeChild(popupContainer);
+        }
+    }, 1000);
+
+    // 點擊視窗外部時關閉
+    popupContainer.addEventListener('click', (event) => {
+        if (event.target === popupContainer) {
+            document.body.removeChild(popupContainer);
+        }
+    });
 }
