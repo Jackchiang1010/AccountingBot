@@ -247,13 +247,91 @@ function getCategoryDetails() {
         .catch(error => console.error('Error fetching category or transaction details:', error));
 }
 
-// 從圖表中抓取顏色
+// 從圖表中抓取顏色並自動調整色調、亮度和飽和度
 function getCategoryColorFromChart(index) {
     if (expenseChart && expenseChart.data && expenseChart.data.datasets[0]) {
-        return expenseChart.data.datasets[0].backgroundColor[index] || '#ffffff'; // 若圖表中無顏色，預設為白色
+        const colors = expenseChart.data.datasets[0].backgroundColor;
+        if (colors && colors.length > 0) {
+            if (index < 10) {
+                // 前10個顏色照原本設定
+                return colors[index % colors.length];
+            } else {
+                // 超過10個後，進行調整
+                const colorIndex = index % colors.length;
+                let color = colors[colorIndex];
+                const adjustmentFactor = Math.floor((index - 10) / 10) + 1; // 每超過 10 個分類進行一次調整
+                return adjustColor(color, adjustmentFactor);
+            }
+        }
     }
-    return '#ffffff';
+    return '#ffffff'; // 若未找到任何顏色，預設為白色
 }
+
+// 調整顏色的色調、亮度和飽和度
+function adjustColor(hexColor, factor) {
+    // 將十六進制顏色轉換為 HSL
+    let { h, s, l } = hexToHsl(hexColor);
+
+    // 調整色調、亮度和飽和度
+    h = (h + factor * 20) % 360;     // 每次調整 20 度的色相
+    s = Math.max(30, s - factor * 5); // 每次降低 5% 的飽和度，最低為 30%
+    l = Math.min(90, l + factor * 5); // 每次提高 5% 的亮度，最高為 90%
+
+    // 將 HSL 轉換回十六進制
+    return hslToHex(h, s, l);
+}
+
+// 將十六進制顏色轉換為 HSL
+function hexToHsl(hex) {
+    let r = parseInt(hex.substring(1, 3), 16) / 255;
+    let g = parseInt(hex.substring(3, 5), 16) / 255;
+    let b = parseInt(hex.substring(5, 7), 16) / 255;
+
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+        h = s = 0; // 灰色
+    } else {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h *= 60;
+    }
+
+    return { h, s: s * 100, l: l * 100 };
+}
+
+// 將 HSL 轉換回十六進制顏色
+function hslToHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+
 
 function editTransaction(lineUserId, transactionId) {
     console.log(`Editing transaction`);
