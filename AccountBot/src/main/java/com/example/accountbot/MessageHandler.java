@@ -368,14 +368,14 @@ public class MessageHandler {
                 // 解析輸入以取得類別和 ID
                 String[] parts = receivedText.split(":");
                 if (parts.length == 2) {
-                    String type = parts[0].substring(2);
+                    String type = receivedText.substring(2);
                     int transactionId = Integer.parseInt(parts[1].trim());
 
                     // 呼叫 transactionService 刪除該筆資料
                     transactionService.delete(transactionId);
 
                     // 回覆刪除成功訊息
-                    sendLineMessage(userId, type + "已成功刪除");
+                    sendLineMessage(userId, type + " 已成功刪除");
                 }
             }
 
@@ -599,7 +599,7 @@ public class MessageHandler {
          "aspectMode": "cover",
          "action": {
            "type": "uri",
-           "uri": "%s"
+           "uri": "https://jacktest.site/index.html"
          }
        },
        "body": {
@@ -623,7 +623,7 @@ public class MessageHandler {
              "action": {
                "type": "message",
                "label": "刪除",
-               "text": "刪除%s:%s"
+               "text": "刪除%s ID:%s"
              },
               "color": "#F7D486",
               "style": "secondary",
@@ -657,7 +657,7 @@ public class MessageHandler {
          ]
        }
      }
-""".formatted(imageUrl, imageUrl, userId, transactionId, typeStr, transactionId);
+""".formatted(imageUrl, userId, transactionId, typeStr, transactionId);
 
 // 解析 JSON 並發送 FlexMessage
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
