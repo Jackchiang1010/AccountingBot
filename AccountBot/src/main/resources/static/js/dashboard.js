@@ -111,12 +111,13 @@ var expenseChart = new Chart(ctx, {
         plugins: {
             legend: {
                 display: true,
-                position: 'right', // 將標籤移至圖表右側
+                position: 'right',
                 labels: {
-                    usePointStyle: true, // 使用點樣式顯示標籤
-                    padding: 20, // 調整標籤與圖表的間距
+                    usePointStyle: true,
+                    padding: 10,
+                    color: '#000000',
                     font: {
-                        size: 18 // 標籤字體大小
+                        size: 18
                     }
                 }
             }
@@ -178,12 +179,26 @@ function getCategoryDetails() {
                             const categoryContainer = document.createElement('div');
                             categoryContainer.className = 'category-container';
                             categoryContainer.style.position = 'relative';
-                            categoryContainer.style.backgroundColor = getCategoryColorFromChart(index); // 根據圖表顏色設置背景顏色
+                            // categoryContainer.style.backgroundColor = getCategoryColorFromChart(index); // 根據圖表顏色設置背景顏色
+                            categoryContainer.style.backgroundColor = '#FFF2CC';
                             categoryContainer.style.padding = '10px';
                             categoryContainer.style.cursor = 'pointer';
+                            categoryContainer.style.border = '1px solid #ffffff';
+
+                            // 新增小圓點
+                            const colorDot = document.createElement('div');
+                            colorDot.style.width = '10px';
+                            colorDot.style.height = '10px';
+                            colorDot.style.borderRadius = '50%';
+                            colorDot.style.backgroundColor = getCategoryColorFromChart(index); // 使用圖表顏色
+                            colorDot.style.display = 'inline-block';
+                            colorDot.style.marginRight = '10px';
+                            colorDot.style.verticalAlign = 'middle';
 
                             const categoryTitle = document.createElement('strong');
                             categoryTitle.textContent = `${category} $0`; // 預設金額為0
+
+                            categoryContainer.appendChild(colorDot);
                             categoryContainer.appendChild(categoryTitle);
 
                             // 建立用來放帳務明細的 ul 元素
@@ -264,7 +279,7 @@ function getCategoryColorFromChart(index) {
             }
         }
     }
-    return '#ffffff'; // 若未找到任何顏色，預設為白色
+    return '#ffffff';
 }
 
 // 調整顏色的色調、亮度和飽和度
@@ -330,8 +345,6 @@ function hslToHex(h, s, l) {
 
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
-
-
 
 function editTransaction(lineUserId, transactionId) {
     console.log(`Editing transaction`);
@@ -405,32 +418,40 @@ function drawBalanceChart() {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false,
+                            labels: {
+                                color: '#000000'
+                            }
+                        },
                         tooltip: {
-                            bodyFont: { size: 24 } // 調整 tooltip 字體大小
+                            bodyFont: { size: 24 }
                         }
                     },
                     scales: {
                         x: {
-                            title: {
-                                display: true,
-                                text: '本月結餘',
-                                font: {
-                                    size: 24 // 調整 x 軸標題字體大小
-                                }
-                            },
+                            // title: {
+                            //     display: true,
+                            //     text: '本月結餘',
+                            //     font: {
+                            //         size: 24 // 調整 x 軸標題字體大小
+                            //     },
+                            //     color: '#000000'
+                            // },
                             ticks: {
                                 font: {
-                                    size: 24 // 調整 x 軸標籤字體大小
-                                }
+                                    size: 24
+                                },
+                                color: '#000000'
                             }
                         },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 font: {
-                                    size: 24 // 調整 y 軸標籤字體大小
-                                }
+                                    size: 24
+                                },
+                                color: '#000000'
                             }
                         }
                     }

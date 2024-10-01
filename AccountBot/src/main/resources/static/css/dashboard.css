@@ -47,6 +47,7 @@ blockquote, q {
 
 body {
     background-color: #F7D486;
+    /*background-color: #FFF2CC;*/
     font-family: "微軟正黑體", sans-serif;
 }
 
@@ -115,6 +116,7 @@ h1 {
 
 button {
     background-color: #FFF2CC;
+    /*background-color: #F7D486;*/
     padding: 5px 10px;
     margin: 5px;
     cursor: pointer;
@@ -134,14 +136,25 @@ input {
     font-size: 24px;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 /* 整個容器設為 flex */
 .info-container {
     display: flex;
-    width: 100%;
+    width: 90%;
+    /*background-color: #FFF2CC;*/
+    /*background-color: #F7D486;*/
 }
 
 /* 左半部 */
 .left-section {
+    /*background-color: #FFF2CC;*/
+    /*background-color: #F7D486;*/
     width: 60%;
     box-sizing: border-box;
     display: flex;
@@ -252,10 +265,11 @@ input {
 }
 
 #balanceChart {
-    max-width: 60%; /* 可以根據需要調整 */
-    max-height: 400px; /* 可以根據需要調整 */
+    max-width: 60%;
+    max-height: 400px;
     height: auto;
     background-color: #FFF2CC;
-    padding: 10px;
-    margin: 10px;
+    /*background-color: #F7D486;*/
+    padding: 20px;
+    margin-bottom: 20px;
 }
