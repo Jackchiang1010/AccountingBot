@@ -383,8 +383,10 @@ public class MessageHandler {
             else if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
                 BalanceDto balanceDto = transactionService.balance(userId);
-                int totalIncome = balanceDto.getTotalIncome();
-                int totalExpenses = balanceDto.getTotalExpenses();
+                log.info("balanceDto : " + balanceDto);
+
+                int totalIncome = balanceDto.getTotalIncome() != null ? balanceDto.getTotalIncome() : 0;
+                int totalExpenses = balanceDto.getTotalExpenses() != null ? balanceDto.getTotalExpenses() : 0;
                 int netBalance = totalIncome - totalExpenses;
 
                 String message = String.format(

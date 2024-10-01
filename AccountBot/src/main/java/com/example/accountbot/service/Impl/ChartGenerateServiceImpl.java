@@ -299,6 +299,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
         switch (time) {
             case "yesterday":
                 startDate = endDate.minusDays(1);
+                endDate = endDate.minusDays(1);
                 break;
             case "week":
                 // 當前週的禮拜一

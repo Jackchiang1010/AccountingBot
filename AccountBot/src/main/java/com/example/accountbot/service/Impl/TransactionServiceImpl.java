@@ -72,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
                     startDate = today.minusWeeks(1);
                     break;
                 case "month":
-                    startDate = today.minusMonths(1);
+                    startDate = today.withDayOfMonth(1);
                     break;
                 case "lastMonth":
                     startDate = today.minusMonths(1).withDayOfMonth(1);
@@ -146,8 +146,10 @@ public class TransactionServiceImpl implements TransactionService {
     public BalanceDto balance(String lineUserId) {
         ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
         LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
-        LocalDate startDate = today.minusMonths(1);
+        LocalDate startDate = today.withDayOfMonth(1);
         LocalDate endDate = today; // 預設結束時間為今天
+
+        log.info("startDate : " + startDate);
 
         String startDateStr = dateToString(startDate);
         String endDateStr = dateToString(endDate);
