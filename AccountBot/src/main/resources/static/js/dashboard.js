@@ -4,6 +4,9 @@ let category = 'all';
 let endDate = new Date();
 let startDate = '';
 
+const incomeColors = ['#FF6666', '#FFA366', '#FFFF66', '#A3FF66', '#66FF99', '#66FFFF', '#66A3FF', '#A366FF', '#FF66FF', '#FF66A3'];
+const expenseColors = ['#66FFCC', '#66FF33', '#CCFF66', '#FFFF33', '#FFCC66', '#FF9966', '#FF66CC', '#9966FF', '#6699FF', '#66CCFF'];
+
 // 在網頁加載時執行
 document.addEventListener('DOMContentLoaded', function() {
     const checkLineUserId = setInterval(() => {
@@ -136,17 +139,21 @@ function updateChart() {
         .then(response => response.json())
         .then(data => {
             // 更新圖表的標籤和數據
-            const labels = data.data.map(item => `${item.category} $${item.total_cost}`);
-            const dataValues = data.data.map(item => item.total_cost);
+            let labels = data.data.map(item => `${item.category} $${item.total_cost}`);
+            let dataValues = data.data.map(item => item.total_cost);
 
-            // 根據類型選擇顏色（收入 vs 支出）
-            const backgroundColors = type === 1 ?
-                ['#FF6666', '#FFA366', '#FFFF66', '#A3FF66', '#66FF99', '#66FFFF', '#66A3FF', '#A366FF', '#FF66FF', '#FF66A3'] :
-                ['#66FFCC', '#66FF33', '#CCFF66', '#FFFF33', '#FFCC66', '#FF9966', '#FF66CC', '#9966FF', '#6699FF', '#66CCFF'];
+            // 如果資料為空，設定一個預設的標籤和數值
+            if (dataValues.length === 0) {
+                labels = ['無資料'];
+                dataValues = [1]; // 給一個最小值來繪製圖表
+                expenseChart.data.datasets[0].backgroundColor = ['#FFF2CC']; // 設定無資料的顏色
+            } else {
+                // 根據類型選擇顏色（收入 vs 支出）
+                expenseChart.data.datasets[0].backgroundColor = type === 1 ? incomeColors : expenseColors;
+            }
 
             expenseChart.data.labels = labels;
             expenseChart.data.datasets[0].data = dataValues;
-            expenseChart.data.datasets[0].backgroundColor = backgroundColors;
             expenseChart.update();
 
             // 獲取明細資料
@@ -155,6 +162,7 @@ function updateChart() {
         })
         .catch(error => console.error('Error fetching data:', error));
 }
+
 
 function getCategoryDetails() {
     const categoryApiUrl = `/api/1.0/category/get?type=${type}&name=all&lineUserId=${lineUserId}`;
@@ -264,21 +272,22 @@ function getCategoryDetails() {
 
 // 從圖表中抓取顏色並自動調整色調、亮度和飽和度
 function getCategoryColorFromChart(index) {
-    if (expenseChart && expenseChart.data && expenseChart.data.datasets[0]) {
-        const colors = expenseChart.data.datasets[0].backgroundColor;
-        if (colors && colors.length > 0) {
-            if (index < 10) {
-                // 前10個顏色照原本設定
-                return colors[index % colors.length];
-            } else {
-                // 超過10個後，進行調整
-                const colorIndex = index % colors.length;
-                let color = colors[colorIndex];
-                const adjustmentFactor = Math.floor((index - 10) / 10) + 1; // 每超過 10 個分類進行一次調整
-                return adjustColor(color, adjustmentFactor);
-            }
+    // 使用全域變數的顏色陣列
+    const colors = type === 1 ? incomeColors : expenseColors;
+
+    if (colors && colors.length > 0) {
+        if (index < 10) {
+            // 前10個顏色照原本設定
+            return colors[index % colors.length];
+        } else {
+            // 超過10個後，進行調整
+            const colorIndex = index % colors.length;
+            let color = colors[colorIndex];
+            const adjustmentFactor = Math.floor((index - 10) / 10) + 1; // 每超過 10 個分類進行一次調整
+            return adjustColor(color, adjustmentFactor);
         }
     }
+
     return '#ffffff';
 }
 
