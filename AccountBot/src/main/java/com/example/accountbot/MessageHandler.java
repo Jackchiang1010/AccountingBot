@@ -635,7 +635,7 @@ public class MessageHandler {
              "action": {
                "type": "message",
                "label": "報表",
-               "text": "支出報表"
+               "text": "%s報表"
              },
               "color": "#F7D486",
               "style": "secondary",
@@ -657,7 +657,7 @@ public class MessageHandler {
          ]
        }
      }
-""".formatted(imageUrl, userId, transactionId, typeStr, transactionId);
+""".formatted(imageUrl, userId, transactionId, typeStr, transactionId, typeStr);
 
 // 解析 JSON 並發送 FlexMessage
                 FlexContainer flexContainer = objectMapper.readValue(flexMessageJson, FlexContainer.class);
