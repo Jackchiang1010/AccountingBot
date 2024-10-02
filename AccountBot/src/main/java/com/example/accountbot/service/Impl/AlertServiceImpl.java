@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,6 +37,9 @@ public class AlertServiceImpl implements AlertService {
     private LineMessagingClient lineMessagingClient;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+
+    private final Map<Integer, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
+
 
     @Override
     public Map<String, Object> create(AlertDto alertDto) {
@@ -72,12 +76,32 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public boolean delete(Integer id) {
+        // 取消該提醒的排程
+        ScheduledFuture<?> scheduledTask = scheduledTasks.remove(id);
+        if (scheduledTask != null) {
+            scheduledTask.cancel(false); // false 表示不會中斷正在執行的任務
+        }
+
         return alertRepository.delete(id);
     }
 
     @PostConstruct
     public void initializeAlerts() {
+        // 清空所有排程
+        clearAllScheduledTasks();
+
         scheduleAllAlerts();
+    }
+
+    private void clearAllScheduledTasks() {
+        // 遍歷所有已排程的任務，取消它們
+        for (ScheduledFuture<?> scheduledTask : scheduledTasks.values()) {
+            if (scheduledTask != null) {
+                scheduledTask.cancel(false); // 取消所有現有的排程
+            }
+        }
+        // 清空追蹤任務的 Map
+        scheduledTasks.clear();
     }
 
     //每小時更新
@@ -91,11 +115,14 @@ public class AlertServiceImpl implements AlertService {
 
     private void scheduleAlert(UpdateAlertDto alert) {
         long delay = calculateDelay(LocalTime.parse(alert.getTime()));
-        scheduler.schedule(() -> {
+        ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
             sendLineMessage(alert.getLineUserId(), alert.getDescription());
             // 再次排程該提醒，確保每天提醒
             scheduleAlert(alert);
         }, delay, TimeUnit.MILLISECONDS);
+
+        // 儲存該排程的任務，方便之後取消
+        scheduledTasks.put(alert.getId(), scheduledTask);
     }
 
     private long calculateDelay(LocalTime alertTime) {
