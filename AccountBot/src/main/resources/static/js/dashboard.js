@@ -178,30 +178,16 @@ function getCategoryDetails() {
                 .then(response => response.json())
                 .then(transactionData => {
                     if (Array.isArray(transactionData)) {
-                        // 清空現有的明細列表
                         const detailList = document.querySelector('.card .category-list');
                         detailList.innerHTML = '';
 
                         allCategories.forEach((category, index) => {
-                            // 建立可點擊的類別名稱，並加上事件
                             const categoryContainer = document.createElement('div');
                             categoryContainer.className = 'category-container';
-                            categoryContainer.style.position = 'relative';
-                            // categoryContainer.style.backgroundColor = getCategoryColorFromChart(index); // 根據圖表顏色設置背景顏色
-                            categoryContainer.style.backgroundColor = '#FFF2CC';
-                            categoryContainer.style.padding = '10px';
-                            categoryContainer.style.cursor = 'pointer';
-                            categoryContainer.style.border = '1px solid #ffffff';
 
-                            // 新增小圓點
                             const colorDot = document.createElement('div');
-                            colorDot.style.width = '10px';
-                            colorDot.style.height = '10px';
-                            colorDot.style.borderRadius = '50%';
+                            colorDot.className = 'color-dot';
                             colorDot.style.backgroundColor = getCategoryColorFromChart(index); // 使用圖表顏色
-                            colorDot.style.display = 'inline-block';
-                            colorDot.style.marginRight = '10px';
-                            colorDot.style.verticalAlign = 'middle';
 
                             const categoryTitle = document.createElement('strong');
                             categoryTitle.textContent = `${category} $0`; // 預設金額為0
@@ -209,56 +195,35 @@ function getCategoryDetails() {
                             categoryContainer.appendChild(colorDot);
                             categoryContainer.appendChild(categoryTitle);
 
-                            // 建立用來放帳務明細的 ul 元素
                             const detailsContainer = document.createElement('ul');
-                            detailsContainer.style.display = 'none'; // 預設隱藏
+                            detailsContainer.className = 'details-container';
 
                             categoryContainer.addEventListener('click', () => {
-                                // 切換明細的顯示狀態
-                                detailsContainer.style.display = detailsContainer.style.display === 'none' ? 'block' : 'none';
+                                detailsContainer.classList.toggle('show');
                             });
 
-                            // 過濾出該類別的帳務明細
                             const filteredData = transactionData.filter(item => item.category === category);
                             let totalCost = 0;
                             if (filteredData.length > 0) {
                                 filteredData.forEach(item => {
                                     const detailItem = document.createElement('li');
+                                    detailItem.className = 'detail-item';
                                     detailItem.innerHTML = `
-                                        <span style="flex: 1;">${item.date} ${item.description} - $${item.cost}</span>
-                                        <button class="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})" style="margin-left: auto">修改</button>`;
+                                        <span class="detail-description">${item.date} ${item.description} - $${item.cost}</span>
+                                        <button class="edit-btn" data-id="${item.id}" onclick="editTransaction(lineUserId, ${item.id})">修改</button>`;
 
-                                    // 設定每個帳務明細項目的樣式
-                                    detailItem.style.display = 'flex'; // 使用 flex 排列
-                                    detailItem.style.justifyContent = 'space-between'; // 左右對齊
-                                    detailItem.style.alignItems = 'center'; // 垂直置中
-                                    detailItem.style.backgroundColor = '#ffffff'; // 白色底色
-                                    detailItem.style.padding = '10px'; // 設定內距
-                                    detailItem.style.width = '100%'; // 設定寬度為 100%
-                                    detailItem.style.boxSizing = 'border-box'; // 確保 padding 不影響元素寬度
-                                    detailItem.style.border = '1px solid #ddd'; // 添加邊框以區分
-
-                                    totalCost += item.cost; // 計算該類別的總金額
+                                    totalCost += item.cost;
                                     detailsContainer.appendChild(detailItem);
                                 });
                             } else {
                                 const noDataItem = document.createElement('li');
+                                noDataItem.className = 'no-data-item';
                                 noDataItem.textContent = '無記帳';
-
-                                // 設定 "無記帳" 項目的樣式
-                                noDataItem.style.backgroundColor = '#ffffff'; // 白色底色
-                                noDataItem.style.padding = '10px'; // 設定內距
-                                noDataItem.style.width = '100%'; // 設定寬度為 100%
-                                noDataItem.style.boxSizing = 'border-box'; // 確保 padding 不影響元素寬度
-                                noDataItem.style.border = '1px solid #ddd'; // 添加邊框以區分
-
                                 detailsContainer.appendChild(noDataItem);
                             }
 
-                            // 更新該類別的總金額顯示
                             categoryTitle.textContent = `${category} $${totalCost}`;
 
-                            // 將類別名稱和明細容器添加到列表
                             detailList.appendChild(categoryContainer);
                             detailList.appendChild(detailsContainer);
                         });
@@ -269,6 +234,7 @@ function getCategoryDetails() {
         })
         .catch(error => console.error('Error fetching category or transaction details:', error));
 }
+
 
 // 從圖表中抓取顏色並自動調整色調、亮度和飽和度
 function getCategoryColorFromChart(index) {

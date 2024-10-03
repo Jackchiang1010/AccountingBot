@@ -232,6 +232,54 @@ input {
     gap: 10px;
 }
 
+.category-container {
+    position: relative;
+    background-color: #FFF2CC;
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+}
+
+.color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.details-container {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.details-container.show {
+    display: block;
+}
+
+.detail-item, .no-data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+}
+
+.detail-description {
+    flex: 1;
+}
+
+.edit-btn {
+    margin-left: auto;
+}
+
+
 /* 支出按鈕樣式 */
 .expense-btn {
     background-color: #F27A7D; /* 按鈕背景顏色 */
