@@ -62,12 +62,12 @@ function fetchAndRenderAlerts() {
                 descriptionInput.className = 'description-input';
 
                 const saveButton = document.createElement('button');
-                saveButton.className = 'action-btn';
+                saveButton.className = 'save-btn';
                 saveButton.style.backgroundColor = '#C5F9D7';
                 saveButton.textContent = '儲存';
 
                 const deleteButton = document.createElement('button');
-                deleteButton.className = 'action-btn';
+                deleteButton.className = 'delete-btn';
                 deleteButton.style.backgroundColor = '#F27A7D';
                 deleteButton.textContent = '刪除';
 
