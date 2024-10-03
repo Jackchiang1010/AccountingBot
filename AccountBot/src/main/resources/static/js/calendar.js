@@ -119,6 +119,13 @@ function loadExpensesForDay(day) {
                 const noDataMessage = document.createElement('p');
                 noDataMessage.textContent = `在 ${targetDate} 沒有記帳資料。`;
                 modalContent.appendChild(noDataMessage);
+
+                const goToRecordBtn = document.createElement('button');
+                goToRecordBtn.textContent = '去記帳';
+                goToRecordBtn.onclick = () => {
+                    window.location.href = `/record.html?date=${targetDate}`;
+                };
+                modalContent.appendChild(goToRecordBtn);
             } else {
                 const detailsList = document.createElement('ul');
                 data.forEach(expense => {
