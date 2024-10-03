@@ -182,13 +182,13 @@ body {
     z-index: 1; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
 }
 
 /* Modal Content */
@@ -198,11 +198,17 @@ body {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 30%;
+    width: 25%;
     max-width: 80%;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: start;
+}
+
+.modal-content ul li{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* The Close Button */
@@ -221,6 +227,7 @@ body {
 }
 
 button {
+    width: 100px;
     border-radius: 10px;
     padding: 5px;
     background-color: #FFF2CC;
@@ -234,4 +241,218 @@ button {
 
 button:hover {
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); /* 滑鼠移過時陰影更明顯 */
+}
+
+@media (max-width: 768px) {
+
+    .date-range {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .date-range input {
+        margin: 5px 0;
+    }
+
+    .info-container {
+        flex-direction: column;
+    }
+
+    .right-section {
+        width: 100%;
+        padding-right: 0;
+        margin-top: 20px;
+    }
+
+    .left-section {
+        width: 100%;
+    }
+
+    nav a {
+        font-size: 0;
+    }
+
+    nav a img {
+        width: 32px;
+    }
+
+    .logo-container img {
+        width: 70px;
+    }
+
+    #calendar {
+        /*width: 100%; !* 日曆寬度調整為 100% *!*/
+        height: 50vh; /* 高度稍微縮小 */
+        font-size: 12px; /* 調整字體大小 */
+    }
+
+    /* 調整 FullCalendar 工具列（月份切換） */
+    .fc-toolbar {
+        height: 10%;
+        flex-direction: column; /* 工具列垂直排列 */
+        align-items: center;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.2em; /* 調整標題大小 */
+    }
+
+    .fc-prev-button, .fc-next-button {
+        font-size: 12px; /* 縮小月份切換按鈕字體 */
+        padding: 5px 10px; /* 調整按鈕大小 */
+    }
+
+    .fc-daygrid-day-top {
+        font-size: 0.8em; /* 縮小日期的顯示 */
+    }
+
+    .fc-event {
+        font-size: 0.7em; /* 調整事件文字大小 */
+    }
+
+    .modal-content {
+        width: 70%;
+        padding: 15px; /* 減少 padding 以適應較小螢幕 */
+        margin: 30% auto; /* 提高 modal 位置 */
+        font-size: 14px; /* 調整字體大小 */
+    }
+
+    .modal-header, .modal-body, .modal-footer {
+        padding: 10px; /* 減少內部間距 */
+    }
+
+    .close {
+        font-size: 24px; /* 調整關閉按鈕大小 */
+    }
+
+    button {
+        font-size: 16px; /* 調整按鈕字體大小 */
+        padding: 5px 10px; /* 減少按鈕內邊距 */
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .info-container {
+        flex-direction: column;
+    }
+
+    .right-section {
+        width: 100%;
+        padding-right: 0;
+        margin-top: 20px;
+    }
+
+    .left-section {
+        width: 100%;
+    }
+
+    nav a {
+        font-size: 22px;
+    }
+    .logo-container img {
+        width: 80px;
+    }
+    nav a img {
+        width: 24px;
+    }
+
+    #calendar {
+        /*width: 90%; !* 日曆寬度調整為 90% *!*/
+        height: 60vh; /* 調整高度 */
+        font-size: 14px; /* 調整字體大小 */
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.5em; /* 標題大小適中 */
+        margin: 10px;
+    }
+
+    .fc-prev-button, .fc-next-button {
+        font-size: 14px; /* 按鈕字體稍大 */
+        padding: 5px 15px; /* 調整按鈕大小 */
+    }
+
+    .fc-daygrid-day-top {
+        font-size: 1em; /* 調整日期顯示 */
+    }
+
+    .fc-event {
+        font-size: 0.9em; /* 調整事件字體大小 */
+    }
+
+    .modal-content {
+        width: 30%;
+        padding: 20px;
+        margin: 20% auto; /* 提高 modal 位置 */
+        font-size: 16px; /* 調整字體大小 */
+    }
+
+    .modal-header, .modal-body, .modal-footer {
+        padding: 15px; /* 增加內部間距 */
+    }
+
+    .close {
+        font-size: 26px; /* 調整關閉按鈕大小 */
+    }
+
+    button {
+        font-size: 18px; /* 調整按鈕字體大小 */
+        padding: 5px 15px; /* 增加按鈕內邊距 */
+    }
+}
+
+@media (min-width: 1025px) {
+    nav a {
+        font-size: 24px;
+    }
+    .logo-container img {
+        width: 90px;
+    }
+    nav a img {
+        width: 27px;
+    }
+
+    #calendar {
+        /*width: 85vw; !* 維持桌面模式的寬度 *!*/
+        height: 70vh; /* 提供較大的日曆區域 */
+        font-size: 16px; /* 正常字體大小 */
+    }
+
+    .fc-toolbar-title {
+        font-size: 2em; /* 日曆標題顯示更大 */
+    }
+
+    .fc-prev-button, .fc-next-button {
+        font-size: 16px; /* 按鈕字體正常大小 */
+        padding: 5px 20px; /* 調整按鈕大小 */
+    }
+
+    .fc-daygrid-day-top {
+        font-size: 1.2em; /* 顯示清晰的日期 */
+    }
+
+    .fc-event {
+        font-size: 1em; /* 正常的事件字體大小 */
+    }
+
+    .modal-content {
+        width: 25%;
+        padding: 20px;
+        margin: 15% auto; /* modal 預設位置 */
+        font-size: 18px; /* 正常字體大小 */
+    }
+
+    .modal-header, .modal-body, .modal-footer {
+        padding: 20px; /* 正常內部間距 */
+    }
+
+    .close {
+        font-size: 28px; /* 正常關閉按鈕大小 */
+    }
+
+    button {
+        font-size: 18px; /* 正常按鈕字體大小 */
+        padding: 5px 20px; /* 正常按鈕內邊距 */
+    }
 }

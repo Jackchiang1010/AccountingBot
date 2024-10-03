@@ -109,11 +109,7 @@ function loadExpensesForDay(day) {
         })
         .then(data => {
             const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = ''; // Clear previous content
-
-            // const title = document.createElement('h3');
-            // title.textContent = `記帳明細 - ${targetDate}`;
-            // modalContent.appendChild(title);
+            modalContent.innerHTML = '';
 
             if (data.length === 0) {
                 const noDataMessage = document.createElement('p');
@@ -131,7 +127,7 @@ function loadExpensesForDay(day) {
                 data.forEach(expense => {
                     const listItem = document.createElement('li');
                     const typeText = expense.type === 0 ? '收入' : '支出';
-                    listItem.textContent = `${expense.date} ${expense.description} ${expense.cost} ${typeText}`;
+                    listItem.innerHTML  = `${expense.date} ${typeText} <br> ${expense.description} - $${expense.cost}`;
 
                     const viewDetailsBtn = document.createElement('button');
                     viewDetailsBtn.textContent = '編輯';
