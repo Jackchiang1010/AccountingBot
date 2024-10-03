@@ -34,11 +34,6 @@ function initializeFullCalendar() {
             const clickedDate = new Date(info.dateStr);
             const currentStartMonth = calendar.view.currentStart.getMonth(); // 取得日曆當前顯示月份的起始月份
 
-            console.log("clickedDate : " + clickedDate);
-            console.log("currentStartMonth : " + currentStartMonth);
-            console.log("clickedDate.getMonth() : " + clickedDate.getMonth());
-
-
             if (clickedDate.getMonth() !== currentStartMonth) {
                 // 如果點擊的日期不在當前月份，則直接返回，不執行任何操作
                 console.log("return");
@@ -67,7 +62,8 @@ function initializeFullCalendar() {
                     const events = transactions.map(tx => ({
                         title: tx.description,
                         start: tx.date,
-                        color: tx.type === 0 ? '#C5F9D7' : '#F27A7D' // 根據收入或支出設定顏色
+                        color: tx.type === 0 ? '#C5F9D7' : '#F27A7D',
+                        id: tx.id
                     }));
                     successCallback(events);
                 })
@@ -76,6 +72,10 @@ function initializeFullCalendar() {
                     alert('載入記帳資料失敗，請稍後再試。');
                     failureCallback(error);
                 });
+        },
+        eventClick: function(info) {
+            const transactionId = info.event.id; // 取得事件的 ID
+            window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}`;
         }
     });
     calendar.render();
