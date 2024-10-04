@@ -329,3 +329,51 @@ button {
     font-size: 20px;
 }
 
+@media (max-width: 768px) {
+
+    .budgets ul li {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .budgets ul li input {
+        margin: 0 5px 0 0;
+    }
+
+    nav a {
+        font-size: 0;
+    }
+
+    nav a img {
+        width: 32px;
+    }
+
+    .logo-container img {
+        width: 70px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    nav a {
+        font-size: 22px;
+    }
+    .logo-container img {
+        width: 80px;
+    }
+    nav a img {
+        width: 24px;
+    }
+}
+
+@media (min-width: 1025px) {
+    nav a {
+        font-size: 24px;
+    }
+    .logo-container img {
+        width: 90px;
+    }
+    nav a img {
+        width: 27px;
+    }
+}
