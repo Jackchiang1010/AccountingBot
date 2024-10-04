@@ -75,7 +75,7 @@ function initializeFullCalendar() {
         },
         eventClick: function(info) {
             const transactionId = info.event.id; // 取得事件的 ID
-            window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}`;
+            window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}&from=calendar`;
         }
     });
     calendar.render();
@@ -132,7 +132,7 @@ function loadExpensesForDay(day) {
                     const viewDetailsBtn = document.createElement('button');
                     viewDetailsBtn.textContent = '編輯';
                     viewDetailsBtn.onclick = () => {
-                        window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${expense.id}`;
+                        window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${expense.id}&from=calendar`;
                     };
 
                     listItem.appendChild(viewDetailsBtn);

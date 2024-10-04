@@ -371,7 +371,7 @@ function hslToHex(h, s, l) {
 
 function editTransaction(lineUserId, transactionId) {
     console.log(`Editing transaction`);
-    window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}`;
+    window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}&from=dashboard`;
 }
 
 // 當時間篩選按鈕被點擊時

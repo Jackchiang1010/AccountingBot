@@ -146,19 +146,29 @@ function showPopup(message) {
     // 將彈出視窗容器加入 body
     document.body.appendChild(popupContainer);
 
-    // 1 秒後自動關閉
+    // 取得網址上的參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+
+// 設定跳轉頁面
+    let targetPage = 'dashboard.html'; // 預設為 dashboard.html
+    if (from === 'calendar') {
+        targetPage = 'calendar.html';
+    }
+
+// 1 秒後自動關閉
     setTimeout(() => {
         if (popupContainer.parentNode) {
             document.body.removeChild(popupContainer);
         }
-        window.location.href = `dashboard.html`;
+        window.location.href = targetPage;
     }, 1000);
 
-    // 點擊視窗外部時關閉
+// 點擊視窗外部時關閉
     popupContainer.addEventListener('click', (event) => {
         if (event.target === popupContainer) {
             document.body.removeChild(popupContainer);
-            window.location.href = `dashboard.html`;
+            window.location.href = targetPage;
         }
     });
 }
