@@ -45,10 +45,6 @@ blockquote, q {
     quotes: "" "";
 }
 
-html {
-    height: 100%;
-}
-
 body {
     background-color: #F7D486;
     font-family: "微軟正黑體", sans-serif;
@@ -182,15 +178,15 @@ input {
     font-size: 24px;
     height: 30px;
     display: flex;
-    align-items: center;      /* 垂直置中 */
+    align-items: center;
     justify-content: center;
     border-radius: 10px;
     border: 2px solid white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .categories button.selected {
-    background-color: #F7D486; /* 選中顏色 */
-    color: black; /* 選中文字顏色 */
+    background-color: #F7D486;
+    color: black;
 }
 
 .right-section {
@@ -216,11 +212,11 @@ input {
 }
 
 .bottom-section {
-    margin-top: 20px;
+    margin: 20px;
     display: flex;
-    align-items: center; /* 垂直置中 */
-    justify-content: flex-start; /* 從左至右排列 */
-    gap: 10px; /* 控制間距 */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
 }
 
 #save {
@@ -272,4 +268,113 @@ button:hover {
 
 #income:hover {
     background-color: #A8EAC4;
+}
+
+@media (max-width: 768px) {
+
+    .container {
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+
+    .right-section {
+        width: 100%;
+        height: 100%;
+        padding-right: 0;
+        margin-top: 20px;
+        margin-left: 0;
+    }
+
+    .left-section {
+        width: 100%;
+        height: 100%;
+        margin-right: 0;
+    }
+
+    .bottom-section {
+        display: flex;
+        flex-direction: row; /* 保持水平排列 */
+        align-items: center; /* 垂直置中 */
+        justify-content: space-between; /* 讓內容均勻分布 */
+        width: 100%;
+        gap: 10px; /* 增加一點間距，防止元素過於貼近 */
+    }
+
+    .bottom-section .description {
+        flex: 1; /* 讓備註輸入框自適應寬度 */
+    }
+
+    .bottom-section .description input {
+        width: 100%; /* 讓備註輸入框佔滿父容器的寬度 */
+        padding: 10px; /* 給輸入框適當的內邊距 */
+        font-size: 18px; /* 字體大小調整 */
+    }
+
+    #save {
+        flex: 0 0 20%; /* 固定儲存按鈕寬度為 20% */
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    nav a {
+        font-size: 0;
+    }
+
+    nav a img {
+        width: 32px;
+    }
+
+    .logo-container img {
+        width: 70px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .container {
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+
+    .right-section {
+        width: 100%;
+        height: 100%;
+        padding-right: 0;
+        margin-top: 20px;
+        margin-left: 0;
+    }
+
+    .left-section {
+        width: 100%;
+        height: 100%;
+        margin-right: 0;
+    }
+
+    nav a {
+        font-size: 22px;
+    }
+    .logo-container img {
+        width: 80px;
+    }
+    nav a img {
+        width: 24px;
+    }
+}
+
+@media (min-width: 1025px) {
+    nav a {
+        font-size: 24px;
+    }
+    .logo-container img {
+        width: 90px;
+    }
+    nav a img {
+        width: 27px;
+    }
 }
