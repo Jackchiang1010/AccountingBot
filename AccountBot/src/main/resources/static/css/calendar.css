@@ -298,6 +298,7 @@ button:hover {
     }
 
     .fc-prev-button, .fc-next-button {
+        width: 5%;
         font-size: 12px; /* 縮小月份切換按鈕字體 */
         padding: 5px 10px; /* 調整按鈕大小 */
     }
@@ -369,6 +370,7 @@ button:hover {
     }
 
     .fc-prev-button, .fc-next-button {
+        width: 10%;
         font-size: 14px; /* 按鈕字體稍大 */
         padding: 5px 15px; /* 調整按鈕大小 */
     }
