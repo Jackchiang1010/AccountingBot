@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(checkLineUserId); // 清除檢查
             setDateRange();
             updateChart();
-            drawBalanceChart();
             console.log("lineUserId : " + lineUserId);
         }
     }, 100); // 每100毫秒檢查一次
@@ -128,6 +127,53 @@ var expenseChart = new Chart(ctx, {
     }
 });
 
+// 初始化 balanceChart 長條圖
+var ctxBalance = document.getElementById('balanceChart').getContext('2d');
+var balanceChart = new Chart(ctxBalance, {
+    type: 'bar',
+    data: {
+        labels: ['支出', '收入', '結餘'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: ['#f08080', '#90ee90', '#fdd835'],
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false,
+                labels: {
+                    color: '#000000'
+                }
+            },
+            tooltip: {
+                bodyFont: { size: 24 }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    font: {
+                        size: 24
+                    },
+                    color: '#000000'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        size: 24
+                    },
+                    color: '#000000'
+                }
+            }
+        }
+    }
+});
+
 // 更新圖表和類別列表的函數
 function updateChart() {
 
@@ -161,6 +207,8 @@ function updateChart() {
 
         })
         .catch(error => console.error('Error fetching data:', error));
+
+    drawBalanceChart();
 }
 
 
@@ -380,58 +428,9 @@ function drawBalanceChart() {
             const balance = totalIncome - totalExpenses;
 
             const ctx = document.getElementById('balanceChart').getContext('2d');
-            window.balanceChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['支出', '收入', '結餘'],
-                    datasets: [{
-                        data: [totalExpenses, totalIncome, balance],
-                        backgroundColor: ['#f08080', '#90ee90', '#fdd835'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false,
-                            labels: {
-                                color: '#000000'
-                            }
-                        },
-                        tooltip: {
-                            bodyFont: { size: 24 }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            // title: {
-                            //     display: true,
-                            //     text: '本月結餘',
-                            //     font: {
-                            //         size: 24 // 調整 x 軸標題字體大小
-                            //     },
-                            //     color: '#000000'
-                            // },
-                            ticks: {
-                                font: {
-                                    size: 24
-                                },
-                                color: '#000000'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 24
-                                },
-                                color: '#000000'
-                            }
-                        }
-                    }
-                }
-            });
+
+            balanceChart.data.datasets[0].data = [totalExpenses, totalIncome, balance];
+            balanceChart.update();
         })
         .catch(error => console.error('Error fetching data:', error));
 }
