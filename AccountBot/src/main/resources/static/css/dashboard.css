@@ -361,6 +361,10 @@ input {
         width: 100%;
     }
 
+    #balanceChart {
+        max-width: 90%;
+    }
+
     nav a {
         font-size: 0;
     }
@@ -388,6 +392,10 @@ input {
 
     .left-section {
         width: 100%;
+    }
+
+    #balanceChart {
+        max-width: 90%;
     }
 
     nav a {
