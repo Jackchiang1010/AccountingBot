@@ -69,7 +69,6 @@ public class MessageHandler {
 
         try {
 
-            // 如果用戶輸入以 "支出報表" 或 "收入報表" 開頭
             if (receivedText != null && (receivedText.startsWith("支出報表") || receivedText.startsWith("收入報表"))) {
 
                 // 根據開頭決定第一個參數的值
@@ -197,7 +196,6 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "$" 開頭，記支出
             else if (receivedText != null && receivedText.matches("\\$.*")) {
                 try {
                     Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
@@ -280,7 +278,6 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "+" 開頭，記收入
             else if (receivedText != null && receivedText.matches("\\+.*")) {
                 try {
                     Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
@@ -363,7 +360,6 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "刪除" 開頭，記收入
             else if ( receivedText != null && receivedText.matches("^刪除.*")){
                 // 解析輸入以取得類別和 ID
                 String[] parts = receivedText.split(":");
@@ -379,7 +375,6 @@ public class MessageHandler {
                 }
             }
 
-            // 如果用戶輸入以 "本月結餘" 開頭
             else if (receivedText != null && receivedText.matches("^本月結餘.*")) {
 
                 BalanceDto balanceDto = transactionService.balance(userId);
@@ -455,7 +450,6 @@ public class MessageHandler {
 
             }
 
-            // 如果用戶輸入以 "匯出上月報表" 開頭
             else if (receivedText != null && receivedText.matches("^匯出上月報表.*")) {
 
                 ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
@@ -474,7 +468,6 @@ public class MessageHandler {
 
             }
 
-            // 如果用戶輸入以 "分析上月報表" 開頭
             else if (receivedText != null && receivedText.matches("^分析上月報表.*")) {
 
                 Map<String, Object> expense = transactionService.getTransaction(1, "all", "lastMonth", userId);
@@ -492,6 +485,43 @@ public class MessageHandler {
                 TextMessage textMessage = new TextMessage("理財分析:"+ "\n" + analysisMessage + "\n\n" + "理財建議:"+ "\n" + adviceMessage);
                 lineMessagingClient.pushMessage(new PushMessage(userId, textMessage)).get();
 
+            }
+
+            else if (receivedText != null && (receivedText.matches("^指令.*") || receivedText.matches("^教學.*"))) {
+                String command = "使用教學如下 : \n" +
+                        "\n" +
+                        "1.記支出\n" +
+                        "輸入: $(金額)(空格)(備註)\n" +
+                        "ex. $100 午餐\n" +
+                        "(目前分類皆為預設，若想調整請至官網>立即記帳>分類管理)\n" +
+                        "\n" +
+                        "2.記收入\n" +
+                        "$(金額)(空格)(備註)\n" +
+                        "ex. +100 零用錢\n" +
+                        "(目前分類皆為預設，若想調整請至官網>立即記帳>分類管理)\n" +
+                        "\n" +
+                        "3.查看支出狀況\n" +
+                        "輸入: 支出報表\n" +
+                        "\n" +
+                        "4.查看收入狀況\n" +
+                        "輸入: 收入報表\n" +
+                        "\n" +
+                        "5.查看結餘\n" +
+                        "輸入: 本月結餘\n" +
+                        "\n" +
+                        "6.匯出成 CSV 檔\n" +
+                        "輸入: 匯出上月報表\n" +
+                        "\n" +
+                        "7.理財分析與建議\n" +
+                        "輸入: 分析上月報表\n" +
+                        "\n" +
+                        "8.查詢指令\n" +
+                        "輸入指令或教學皆可\n" +
+                        "輸入: 指令\n" +
+                        "輸入: 教學\n" +
+                        "\n" +
+                        "點擊圖表內圖片即可前往官網~";
+                sendLineMessage(userId, command);
             }
 
             else {
