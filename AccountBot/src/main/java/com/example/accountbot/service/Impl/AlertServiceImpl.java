@@ -66,13 +66,15 @@ public class AlertServiceImpl implements AlertService {
     public Map<String, Object> update(UpdateAlertDto updateAlertDto) {
         UpdateAlertDto updatedCategoryDto = alertRepository.update(updateAlertDto);
 
-        scheduleAllAlerts();
+        clearAllScheduledTasks(); // 先清除之前的所有排程
+        scheduleAllAlerts(); // 再重新排程所有提醒
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", updatedCategoryDto);
 
         return result;
     }
+
 
     @Override
     public boolean delete(Integer id) {
@@ -93,7 +95,7 @@ public class AlertServiceImpl implements AlertService {
         scheduleAllAlerts();
     }
 
-    private void clearAllScheduledTasks() {
+    private synchronized void clearAllScheduledTasks() {
         // 遍歷所有已排程的任務，取消它們
         for (ScheduledFuture<?> scheduledTask : scheduledTasks.values()) {
             if (scheduledTask != null) {
@@ -113,7 +115,13 @@ public class AlertServiceImpl implements AlertService {
         }
     }
 
-    private void scheduleAlert(UpdateAlertDto alert) {
+    private synchronized void scheduleAlert(UpdateAlertDto alert) {
+        // 取消之前的相同 ID 的提醒排程
+        ScheduledFuture<?> previousTask = scheduledTasks.get(alert.getId());
+        if (previousTask != null) {
+            previousTask.cancel(false);
+        }
+
         long delay = calculateDelay(LocalTime.parse(alert.getTime()));
         ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
             sendLineMessage(alert.getLineUserId(), alert.getDescription());
@@ -124,6 +132,7 @@ public class AlertServiceImpl implements AlertService {
         // 儲存該排程的任務，方便之後取消
         scheduledTasks.put(alert.getId(), scheduledTask);
     }
+
 
     private long calculateDelay(LocalTime alertTime) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
