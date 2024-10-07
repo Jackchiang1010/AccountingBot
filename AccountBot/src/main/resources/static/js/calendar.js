@@ -60,7 +60,7 @@ function initializeFullCalendar() {
             fetchTransactions(startDate, endDate, lineUserId)
                 .then(transactions => {
                     const events = transactions.map(tx => ({
-                        title: tx.description,
+                        title: "$" + tx.cost + " " + tx.description,
                         start: tx.date,
                         color: tx.type === 0 ? '#C5F9D7' : '#F27A7D',
                         id: tx.id
