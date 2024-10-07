@@ -244,8 +244,22 @@ h1 {
         flex-direction: column;
     }
 
+    .left-section {
+        justify-content: center;
+    }
+
+    .right-section {
+        width: 100%;
+        justify-content: end;
+        margin-right: 10px;
+    }
+
+    .save-btn,
+    .delete-btn,
+    .left-section label,
     .time-input,
-    .description-input {
+    .description-input,
+    .add-time-btn {
         font-size: 14px;
     }
 
