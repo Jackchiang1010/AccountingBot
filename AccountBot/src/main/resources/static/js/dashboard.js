@@ -150,6 +150,18 @@ var balanceChart = new Chart(ctxBalance, {
             },
             tooltip: {
                 bodyFont: { size: 24 }
+            },
+            title: {
+                display: true,
+                text: '本月結餘',
+                font: {
+                    size: 24
+                },
+                color: '#000000',
+                padding: {
+                    top: 10,
+                    bottom: 30
+                }
             }
         },
         scales: {
