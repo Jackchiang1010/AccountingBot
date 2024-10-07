@@ -118,15 +118,6 @@ html {
     font-family: "微軟正黑體", sans-serif;
 }
 
-
-h1 {
-    color: #000;
-    margin: 20px 0;
-    font-size: 24px;
-    text-align: center;
-    font-weight: bold;
-}
-
 .selectable {
     cursor: pointer; /* 鼠標樣式變為手型 */
 }

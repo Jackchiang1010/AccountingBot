@@ -123,14 +123,6 @@ html {
     font-family: '微軟正黑體', sans-serif;
 }
 
-h1 {
-    color: #000;
-    margin: 10px 0;
-    font-size: 24px;
-    text-align: center;
-    font-weight: bold;
-}
-
 .container {
     display: flex;
     flex-direction: column; /* 垂直排列 */
