@@ -71,8 +71,6 @@ public class MessageHandler {
         String userId = event.getSource().getUserId();
         String receivedText = event.getMessage().getText();
 
-        redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
-
 //        lastUserMessage = receivedText;
 
         try {
@@ -206,6 +204,8 @@ public class MessageHandler {
 
             else if (receivedText != null && receivedText.matches("\\$.*")) {
                 try {
+                    redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
+
                     Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
                     List<UpdateCategoryDto> expenseCategories = (List<UpdateCategoryDto>) expenseCategoryMap.get("data");
 
@@ -288,6 +288,8 @@ public class MessageHandler {
 
             else if (receivedText != null && receivedText.matches("\\+.*")) {
                 try {
+                    redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
+
                     Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
                     List<UpdateCategoryDto> incomeCategories = (List<UpdateCategoryDto>) incomeCategoryMap.get("data");
 
