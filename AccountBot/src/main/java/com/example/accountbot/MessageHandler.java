@@ -4,6 +4,7 @@ import com.example.accountbot.dto.ai.AIFeedbackDto;
 import com.example.accountbot.dto.category.UpdateCategoryDto;
 import com.example.accountbot.dto.transaction.BalanceDto;
 import com.example.accountbot.service.*;
+import com.example.accountbot.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,12 +61,19 @@ public class MessageHandler {
 
     private final AIService aiService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
+    private String CACHE_KEY = "transaction:";
+
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws ExecutionException, InterruptedException, IOException {
         String userId = event.getSource().getUserId();
         String receivedText = event.getMessage().getText();
 
-        lastUserMessage = receivedText;
+        redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
+
+//        lastUserMessage = receivedText;
 
         try {
 
@@ -571,6 +579,8 @@ public class MessageHandler {
             if (categoryMessages.containsKey(postbackData)) {
                 type = categoryTypes.get(postbackData);
                 String typeStr = "";
+
+                lastUserMessage = redisUtil.getDataFromCache(CACHE_KEY + userId);
 
                 // 預處理輸入字串：去除首尾空白並將多個空白字符替換為單個空格
                 String cleanedMessage = lastUserMessage.trim().replaceAll("\\s+", " ");
