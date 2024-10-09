@@ -107,8 +107,10 @@ public class AlertServiceImpl implements AlertService {
     }
 
     //每小時更新
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduleAllAlerts() {
+        clearAllScheduledTasks();
+
         List<UpdateAlertDto> alerts = alertRepository.getAllAlerts();
         for (UpdateAlertDto alert : alerts) {
             scheduleAlert(alert);
@@ -124,9 +126,9 @@ public class AlertServiceImpl implements AlertService {
 
         long delay = calculateDelay(LocalTime.parse(alert.getTime()));
         ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-            sendLineMessage(alert.getLineUserId(), alert.getDescription());
-            // 再次排程該提醒，確保每天提醒
-            scheduleAlert(alert);
+            if (alertRepository.existsById(alert.getId())) {
+                sendLineMessage(alert.getLineUserId(), alert.getDescription());
+            }
         }, delay, TimeUnit.MILLISECONDS);
 
         // 儲存該排程的任務，方便之後取消

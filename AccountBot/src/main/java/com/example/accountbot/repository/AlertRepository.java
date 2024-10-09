@@ -16,6 +16,8 @@ public interface AlertRepository {
 
     boolean delete(Integer id);
 
+    boolean existsById(Integer id);
+
     List<UpdateAlertDto> getAllAlerts();
 
 }

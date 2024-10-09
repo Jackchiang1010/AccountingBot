@@ -118,6 +118,22 @@ public class AlertRepositoryImpl implements AlertRepository {
     }
 
     @Override
+    public boolean existsById(Integer id) {
+        String sql = "SELECT COUNT(*) FROM alert WHERE id = :id;";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+
+        try {
+            Integer count = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+            return count != null && count > 0;
+        } catch (DataAccessException e) {
+            log.info("error : " + e.getMessage());
+            throw new RuntimeException("Failed to check if alert exists by id", e);
+        }
+    }
+
+    @Override
     public List<UpdateAlertDto> getAllAlerts() {
         String sql = "SELECT * FROM alert;";
 
