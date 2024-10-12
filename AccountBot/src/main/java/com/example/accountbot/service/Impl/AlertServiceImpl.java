@@ -5,6 +5,7 @@ import com.example.accountbot.dto.alert.GetAlertDto;
 import com.example.accountbot.dto.alert.UpdateAlertDto;
 import com.example.accountbot.repository.AlertRepository;
 import com.example.accountbot.service.AlertService;
+import com.example.accountbot.util.RedisUtil;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.TextMessage;
@@ -40,6 +41,8 @@ public class AlertServiceImpl implements AlertService {
 
     private final Map<Integer, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
 
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public Map<String, Object> create(AlertDto alertDto) {
@@ -66,8 +69,7 @@ public class AlertServiceImpl implements AlertService {
     public Map<String, Object> update(UpdateAlertDto updateAlertDto) {
         UpdateAlertDto updatedCategoryDto = alertRepository.update(updateAlertDto);
 
-        clearAllScheduledTasks(); // 先清除之前的所有排程
-        scheduleAllAlerts(); // 再重新排程所有提醒
+        initializeAlerts();
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", updatedCategoryDto);
@@ -89,9 +91,7 @@ public class AlertServiceImpl implements AlertService {
 
     @PostConstruct
     public void initializeAlerts() {
-        // 清空所有排程
         clearAllScheduledTasks();
-
         scheduleAllAlerts();
     }
 
@@ -109,11 +109,21 @@ public class AlertServiceImpl implements AlertService {
     //每小時更新
     @Scheduled(cron = "0 0 * * * ?")
     public void scheduleAllAlerts() {
-        clearAllScheduledTasks();
-
-        List<UpdateAlertDto> alerts = alertRepository.getAllAlerts();
-        for (UpdateAlertDto alert : alerts) {
-            scheduleAlert(alert);
+        String lockKey = "scheduler-lock";
+        if (redisUtil.tryLock(lockKey)) {
+            try {
+                // 執行排程邏輯
+                clearAllScheduledTasks();
+                List<UpdateAlertDto> alerts = alertRepository.getAllAlerts();
+                for (UpdateAlertDto alert : alerts) {
+                    scheduleAlert(alert);
+                }
+            } finally {
+                // 釋放鎖
+                redisUtil.clearCache(lockKey);
+            }
+        } else {
+            log.info("Another instance is executing the scheduled task.");
         }
     }
 
@@ -126,8 +136,15 @@ public class AlertServiceImpl implements AlertService {
 
         long delay = calculateDelay(LocalTime.parse(alert.getTime()));
         ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-            if (alertRepository.existsById(alert.getId())) {
-                sendLineMessage(alert.getLineUserId(), alert.getDescription());
+            String taskLockKey = "alert-task-lock-" + alert.getId();
+            if (redisUtil.tryLock(taskLockKey)) {
+                try {
+                    if (alertRepository.existsById(alert.getId())) {
+                        sendLineMessage(alert.getLineUserId(), alert.getDescription());
+                    }
+                } finally {
+                    redisUtil.clearCache(taskLockKey);
+                }
             }
         }, delay, TimeUnit.MILLISECONDS);
 
