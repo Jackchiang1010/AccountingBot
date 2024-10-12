@@ -52,6 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('updateForm').addEventListener('submit', confirmUpdate);
 
+    const from = urlParams.get('from');
+
+    let targetPage = 'dashboard.html';
+    if (from === 'calendar') {
+        targetPage = 'calendar.html';
+    }
+
+    const backButton = document.getElementById('back-button');
+    backButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.location.href = targetPage;
+    });
+
 });
 
 function confirmUpdate(event) {
