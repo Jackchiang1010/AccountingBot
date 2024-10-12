@@ -17,6 +17,77 @@ window.onload = function() {
     }
 };
 
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.getElementById('menu-button');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const logoutButton = document.getElementById('logout-button');
+
+    if (menuButton && dropdownMenu) {
+        menuButton.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+    } else {
+        console.error('Menu button or dropdown menu element not found.');
+    }
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            localStorage.clear();
+
+            // 可以選擇顯示一個訊息或執行其他動作
+            showPopup('成功登出');
+        });
+    }
+});
+
+function showPopup(message) {
+    // 創建彈出視窗的容器
+    const popupContainer = document.createElement('div');
+    popupContainer.className = 'popup-container';
+
+    // 創建彈出視窗內容
+    const popupContent = document.createElement('div');
+    popupContent.className = 'popup-content';
+    popupContent.textContent = message;
+
+    // 將內容加入彈出視窗容器
+    popupContainer.appendChild(popupContent);
+
+    // 將彈出視窗容器加入 body
+    document.body.appendChild(popupContainer);
+
+    // 取得網址上的參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+
+// 設定跳轉頁面
+    let targetPage = 'index.html';
+
+// 1 秒後自動關閉
+    setTimeout(() => {
+        if (popupContainer.parentNode) {
+            document.body.removeChild(popupContainer);
+        }
+        window.location.href = targetPage;
+    }, 1000);
+
+// 點擊視窗外部時關閉
+    popupContainer.addEventListener('click', (event) => {
+        if (event.target === popupContainer) {
+            document.body.removeChild(popupContainer);
+            window.location.href = targetPage;
+        }
+    });
+}
+
 function checkAndUseAccessToken() {
     let accessToken = localStorage.getItem('lineAccessToken');
     let tokenExpireTime = localStorage.getItem('lineTokenExpireTime');
