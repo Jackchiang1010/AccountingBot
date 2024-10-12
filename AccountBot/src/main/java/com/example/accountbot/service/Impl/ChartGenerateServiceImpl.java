@@ -376,7 +376,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.drawString("已將", currentX, firstLineY);
 
             // 繪製金額
-            currentX += g2d.getFontMetrics().stringWidth("已將 ") + 10;
+            currentX += g2d.getFontMetrics().stringWidth("已將 ") + 5;
             g2d.drawString(amount.toString(), currentX, firstLineY);
             int amountWidth = g2d.getFontMetrics().stringWidth(amount.toString());
             g2d.drawLine(currentX - 5, firstLineY + 5, currentX + amountWidth + 5, firstLineY + 5);
@@ -386,7 +386,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.drawString("元新增至", currentX, firstLineY);
 
             // 繪製分類
-            currentX += g2d.getFontMetrics().stringWidth("元新增至 ") + 10;
+            currentX += g2d.getFontMetrics().stringWidth("元新增至 ") + 5;
             g2d.drawString(category, currentX, firstLineY);
             int categoryWidth = g2d.getFontMetrics().stringWidth(category);
             g2d.drawLine(currentX - 5, firstLineY + 5, currentX + categoryWidth + 5, firstLineY + 5);
@@ -396,7 +396,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.drawString("本月", currentX, secondLineY);
 
             // 繪製分類
-            currentX += g2d.getFontMetrics().stringWidth("本月 ") + 10;
+            currentX += g2d.getFontMetrics().stringWidth("本月 ") + 5;
             g2d.drawString(category, currentX, secondLineY);
             g2d.drawLine(currentX - 5, secondLineY + 5, currentX + categoryWidth + 5, secondLineY + 5);
 
@@ -405,7 +405,7 @@ public class ChartGenerateServiceImpl implements ChartGenerateService {
             g2d.drawString("已累積", currentX, secondLineY);
 
             // 繪製總花費
-            currentX += g2d.getFontMetrics().stringWidth("已累積 ") + 10;
+            currentX += g2d.getFontMetrics().stringWidth("已累積 ") + 5;
             g2d.drawString(String.valueOf(totalCost), currentX, secondLineY);
             int totalCostWidth = g2d.getFontMetrics().stringWidth(String.valueOf(totalCost));
             g2d.drawLine(currentX - 5, secondLineY + 5, currentX + totalCostWidth + 5, secondLineY + 5);

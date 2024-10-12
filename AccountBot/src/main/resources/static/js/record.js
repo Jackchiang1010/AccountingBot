@@ -80,9 +80,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('save').addEventListener('click', function() {
-        const cost = amountInput.value;
+        const cost = eval(amountInput.value);
         const description = document.querySelector('.description input').value;
         const date = dateInput.value;
+
+        if(cost > 999999){
+            alert('金額不得超過 6 位數！！');
+            return;
+        }
+
+        if (!cost || cost <= 0) {
+            alert('請輸入正確的金額！');
+            return;
+        }
 
         if (!selectedCategory) {
             alert('請選擇一個類別！');

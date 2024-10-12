@@ -204,6 +204,11 @@ public class MessageHandler {
 
             else if (receivedText != null && receivedText.matches("\\$.*")) {
                 try {
+
+                    if (!validateCost(receivedText, userId)) {
+                        return;
+                    }
+
                     redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
 
                     Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
@@ -288,6 +293,11 @@ public class MessageHandler {
 
             else if (receivedText != null && receivedText.matches("\\+.*")) {
                 try {
+
+                    if (!validateCost(receivedText, userId)) {
+                        return;
+                    }
+
                     redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
 
                     Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
@@ -776,6 +786,28 @@ public class MessageHandler {
         // 將 LocalDate 轉換為 String
         String dateStr = date.format(formatter);
         return dateStr;
+    }
+
+    public boolean validateCost(String receivedText, String userId) {
+        try {
+            String costString = receivedText.split(" ")[0];
+            int cost = Integer.parseInt(costString.substring(1));
+
+            if (cost > 999999) {
+                sendLineMessage(userId, "金額不得超過 6 位數！");
+                return false;
+            }
+
+            if (cost <= 0) {
+                sendLineMessage(userId, "金額必須大於 0！");
+                return false;
+            }
+
+            return true;
+        } catch (NumberFormatException e) {
+            sendLineMessage(userId, "金額格式不正確！");
+            return false;
+        }
     }
 
 }

@@ -67,6 +67,16 @@ function confirmUpdate(event) {
     const description = document.getElementById('note').value;
     const lineUserId = urlParams.get('lineUserId');
 
+    if(cost > 999999){
+        alert('金額不得超過 6 位數！！');
+        return;
+    }
+
+    if (!cost || cost <= 0) {
+        alert('請輸入正確的金額！');
+        return;
+    }
+
     // 構建要發送的資料物件
     const data = {
         id: transactionId,
