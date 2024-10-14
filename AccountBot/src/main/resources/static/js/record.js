@@ -137,6 +137,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+document.getElementById('amount').addEventListener('keypress', function(event) {
+    const char = String.fromCharCode(event.which);
+    // 只允許 0-9 和 + - * / 符號
+    if (!/[0-9+\-*/]/.test(char)) {
+        event.preventDefault(); // 阻止非法字符的輸入
+    }
+});
+
 // 更新類別按鈕
 function updateCategories() {
     const categoriesDiv = document.querySelector('.categories');
