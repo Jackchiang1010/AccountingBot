@@ -508,40 +508,150 @@ public class MessageHandler {
             }
 
             else if (receivedText != null && (receivedText.matches("^指令.*") || receivedText.matches("^教學.*"))) {
-                String command = "使用教學如下 : \n" +
-                        "\n" +
-                        "1.記支出\n" +
-                        "輸入: $(金額)(空格)(備註)\n" +
-                        "ex. $100 午餐\n" +
-                        "(目前分類皆為預設，若想調整請至官網>立即記帳>分類管理)\n" +
-                        "\n" +
-                        "2.記收入\n" +
-                        "輸入: +(金額)(空格)(備註)\n" +
-                        "ex. +100 零用錢\n" +
-                        "(目前分類皆為預設，若想調整請至官網>立即記帳>分類管理)\n" +
-                        "\n" +
-                        "3.查看支出狀況\n" +
-                        "輸入: 支出報表\n" +
-                        "\n" +
-                        "4.查看收入狀況\n" +
-                        "輸入: 收入報表\n" +
-                        "\n" +
-                        "5.查看結餘\n" +
-                        "輸入: 本月結餘\n" +
-                        "\n" +
-                        "6.匯出成 CSV 檔\n" +
-                        "輸入: 匯出上月報表\n" +
-                        "\n" +
-                        "7.理財分析與建議\n" +
-                        "輸入: 分析上月報表\n" +
-                        "\n" +
-                        "8.查詢指令\n" +
-                        "輸入指令或教學皆可\n" +
-                        "輸入: 指令\n" +
-                        "輸入: 教學\n" +
-                        "\n" +
-                        "點擊圖表內圖片即可前往官網~";
-                sendLineMessage(userId, command);
+                String flexMessageJson = String.format("""
+        {
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "使用教學如下 :",
+                        "weight": "bold",
+                        "size": "xl"
+                    },
+                    {
+                        "type": "text",
+                        "text": "紀錄支出",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: $(金額)(空格)(備註)\\nex. $100 午餐",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "紀錄收入",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: +(金額)(空格)(備註)\\nex. +100 零用錢",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "(目前收入、支出分類皆為預設，若想調整請至官網>立即記帳>分類管理)",
+                        "wrap": true,
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "查看支出狀況",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 支出報表",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "查看收入狀況",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 收入報表",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "查看結餘",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 本月結餘",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "匯出成 CSV 檔",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 匯出上月報表",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "理財分析與建議",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 分析上月報表",
+                        "wrap": true
+                    },
+                    {
+                        "type": "text",
+                        "text": "查詢指令",
+                        "weight": "bold",
+                        "size": "md",
+                        "margin": "md"
+                    },
+                    {
+                        "type": "text",
+                        "text": "輸入: 指令\\n輸入: 教學",
+                        "wrap": true
+                    }
+                ]
+            },
+            "footer": {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "官網",
+                            "uri": "https://jacktest.site"
+                        },
+                        "color": "#F7D486",
+                        "style": "primary"
+                    }
+                ]
+            }
+        }
+        """);
+
+                try {
+                    JSONObject flexMessageJsonObject = new JSONObject(flexMessageJson);
+                    FlexContainer flexContainer = objectMapper.readValue(flexMessageJsonObject.toString(), FlexContainer.class);
+                    FlexMessage flexMessage = new FlexMessage("教學內容", flexContainer);
+                    lineMessagingClient.pushMessage(new PushMessage(userId, flexMessage)).get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             else {
