@@ -389,7 +389,7 @@ input {
 
     .date-range {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
     }
 
     .date-range input {
@@ -424,6 +424,11 @@ input {
 
     .logo-container img {
         width: 70px;
+    }
+
+    .filter-buttons button {
+        flex: 1 1 25%;
+        max-width: 25%;
     }
 }
 
@@ -471,13 +476,6 @@ input {
 }
 
 @media (max-width: 1200px) {
-    .filter-buttons button {
-        flex: 1 1 25%;
-        max-width: 25%;
-    }
-}
-
-@media (max-width: 768px) {
     .filter-buttons button {
         flex: 1 1 25%;
         max-width: 25%;
