@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const urlParams = new URLSearchParams(window.location.search);
     type = urlParams.get('type');
+
+    let targetPage = 'record.html';
+
+    const backButton = document.getElementById('back-button');
+    backButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.location.href = targetPage;
+    });
 });
 
 function fetchCategories() {

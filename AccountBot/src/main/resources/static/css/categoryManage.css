@@ -353,6 +353,24 @@ button {
     font-size: 20px;
 }
 
+.back-button-container {
+    margin-top: 15px;
+    text-align: left;
+    padding-left: 20px;
+    display: flex;
+    justify-content: start;
+}
+
+.back-button img {
+    width: 30px;
+    height: auto;
+    transition: transform 0.3s;
+}
+
+.back-button img:hover {
+    transform: scale(1.25);
+}
+
 @media (max-width: 768px) {
 
     .budgets ul li {
