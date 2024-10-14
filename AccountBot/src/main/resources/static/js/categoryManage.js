@@ -216,10 +216,12 @@ function addSelectableListener(li) {
         selectedCategory.classList.add("selected");
         console.log("選中的分類: ", selectedCategory.textContent);
 
-        // 將分類名稱填入輸入框
-        document.getElementById("category-name").value = selectedCategory.textContent;
+        if(selectedCategory.textContent !== "新增分類"){
+            document.getElementById("category-name").value = selectedCategory.textContent;
+        }else{
+            document.getElementById("category-name").value = "";
+        }
 
-        // 顯示彈出視窗
         openPopup();
     });
 }
