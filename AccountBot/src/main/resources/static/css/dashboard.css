@@ -145,22 +145,6 @@ html {
     font-size: 120%;
 }
 
-button {
-    background-color: #FFF2CC;
-    /*background-color: #F7D486;*/
-    padding: 5px 10px;
-    margin: 5px;
-    cursor: pointer;
-    font-size: 24px;
-    border-radius: 10px;
-    border: 2px solid white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-button:hover {
-    background-color: #ffffff;
-}
-
 input {
     padding: 5px 10px;
     margin: 5px;
@@ -261,6 +245,27 @@ input {
 .filter-buttons button {
     flex: 1 1 5%;
     max-width: 15%;
+}
+
+button {
+    background-color: #FFF2CC;
+    /*background-color: #F7D486;*/
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#exportBtn {
+    background-color: #e1c0e1;
+}
+
+button:hover,
+#exportBtn:hover {
+    background-color: #ffffff;
 }
 
 .category-container {
