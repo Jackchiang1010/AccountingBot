@@ -180,6 +180,23 @@ var balanceChart = new Chart(ctxBalance, {
                         size: 24
                     },
                     color: '#000000'
+                },
+                grid: {
+                    drawBorder: true,
+                    borderColor: '#000000',
+                    borderWidth: 2,
+                    color: function(context) {
+                        if (context.tick.value === 0) {
+                            return '#000000';
+                        }
+                        return '#e0e0e0';
+                    },
+                    lineWidth: function(context) {
+                        if (context.tick.value === 0) {
+                            return 3;
+                        }
+                        return 1;
+                    }
                 }
             }
         }
