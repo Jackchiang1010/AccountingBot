@@ -9,6 +9,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ec2_instance: 
+          - ec2-54-248-138-109.ap-northeast-1.compute.amazonaws.com
+          - ec2-54-65-194-170.ap-northeast-1.compute.amazonaws.com
 
     steps:
     - name: Checkout code
@@ -34,13 +39,12 @@ jobs:
         mkdir -p ~/.ssh
         mvn clean package -DskipTests
 
-    - name: Add both EC2 instances to known_hosts
+    - name: Add EC2 instance to known_hosts
       run: |
         cd AccountBot
-        ssh-keyscan -H ec2-54-248-138-109.ap-northeast-1.compute.amazonaws.com >> ~/.ssh/known_hosts
-        ssh-keyscan -H ec2-54-65-194-170.ap-northeast-1.compute.amazonaws.com >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ matrix.ec2_instance }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to EC2-1
+    - name: Deploy to EC2 instance
       env:
         PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
@@ -50,38 +54,11 @@ jobs:
         echo "${PRIVATE_KEY}" > private_key.pem
         chmod 600 private_key.pem
 
-        # SCP the JAR file to the first EC2
-        scp -o StrictHostKeyChecking=no -i private_key.pem target/AccountBot-0.0.1-SNAPSHOT.jar ubuntu@ec2-54-248-138-109.ap-northeast-1.compute.amazonaws.com:~
+        # SCP the JAR file to the EC2 instance
+        scp -o StrictHostKeyChecking=no -i private_key.pem target/AccountBot-0.0.1-SNAPSHOT.jar ubuntu@${{ matrix.ec2_instance }}:~
 
-        # SSH to the first EC2 and run deployment commands
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@ec2-54-248-138-109.ap-northeast-1.compute.amazonaws.com << 'EOF'
-          export MYSQL_PASSWORD=${MYSQL_PASSWORD}
-          export OPENAI_API_KEY=${OPENAI_API_KEY}
-
-          PORT=8080
-          PID=$(lsof -ti:$PORT)
-          if [ -n "$PID" ]; then
-            kill -9 $PID
-          fi
-          rm -f app.log
-          sudo systemctl start linebot
-        EOF
-
-    - name: Deploy to EC2-2
-      env:
-        PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        cd AccountBot
-        echo "${PRIVATE_KEY}" > private_key.pem
-        chmod 600 private_key.pem
-
-        # SCP the JAR file to the second EC2
-        scp -o StrictHostKeyChecking=no -i private_key.pem target/AccountBot-0.0.1-SNAPSHOT.jar ubuntu@ec2-54-65-194-170.ap-northeast-1.compute.amazonaws.com:~
-
-        # SSH to the second EC2 and run deployment commands
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@ec2-54-65-194-170.ap-northeast-1.compute.amazonaws.com << 'EOF'
+        # SSH to the EC2 instance and run deployment commands
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ matrix.ec2_instance }} << 'EOF'
           export MYSQL_PASSWORD=${MYSQL_PASSWORD}
           export OPENAI_API_KEY=${OPENAI_API_KEY}
 
