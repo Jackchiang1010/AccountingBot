@@ -98,32 +98,6 @@ nav a img {
     display: none;
 }
 
-/* 下拉選單的樣式 */
-#dropdown-menu {
-    position: absolute;
-    top: 60px; /* 可以根據實際的導航欄高度調整 */
-    right: 20px;
-    background-color: #FFF2CC;
-    border: 1px solid white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 150px;
-    text-align: center;
-    z-index: 1000;
-}
-
-#dropdown-menu a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: #333;
-}
-
-#dropdown-menu a:hover {
-    background-color: #f7d486;
-    cursor: pointer;
-}
-
 .logo-container {
     display: flex;
     justify-content: center;
@@ -352,11 +326,11 @@ button:hover {
 
     .bottom-section {
         display: flex;
-        flex-direction: row; /* 保持水平排列 */
-        align-items: center; /* 垂直置中 */
-        justify-content: space-between; /* 讓內容均勻分布 */
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         width: 100%;
-        gap: 10px; /* 增加一點間距，防止元素過於貼近 */
+        gap: 10px;
     }
 
     .bottom-section .description {
@@ -364,9 +338,9 @@ button:hover {
     }
 
     .bottom-section .description input {
-        width: 100%; /* 讓備註輸入框佔滿父容器的寬度 */
-        padding: 10px; /* 給輸入框適當的內邊距 */
-        font-size: 18px; /* 字體大小調整 */
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
     }
 
     #save {

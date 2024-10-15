@@ -97,32 +97,6 @@ nav a img {
     display: none;
 }
 
-/* 下拉選單的樣式 */
-#dropdown-menu {
-    position: absolute;
-    top: 60px; /* 可以根據實際的導航欄高度調整 */
-    right: 20px;
-    background-color: #FFF2CC;
-    border: 1px solid white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 150px;
-    text-align: center;
-    z-index: 1000;
-}
-
-#dropdown-menu a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: #333;
-}
-
-#dropdown-menu a:hover {
-    background-color: #f7d486;
-    cursor: pointer;
-}
-
 .logo-container {
     display: flex;
     justify-content: center;
@@ -151,12 +125,12 @@ html {
 }
 
 .selectable {
-    cursor: pointer; /* 鼠標樣式變為手型 */
+    cursor: pointer;
 }
 
 .selectable:hover {
-    background-color: #e1c0e1; /* 選中顏色 */
-    color: black; /* 字體顏色 */
+    background-color: #e1c0e1;
+    color: black;
 }
 
 .container {
@@ -260,8 +234,8 @@ button {
 }
 
 .delete {
-    background-color: #F27A7D; /* 按鈕背景顏色 */
-    color: black;             /* 按鈕文字顏色 */
+    background-color: #F27A7D;
+    color: black;
     border-radius: 10px;
     cursor: pointer;
     font-size: 24px;
@@ -270,12 +244,12 @@ button {
 }
 
 .delete:hover {
-    background-color: #E06666; /* 滑鼠懸停時的顏色 */
+    background-color: #E06666;
 }
 
 .save {
-    background-color: #C5F9D7; /* 按鈕背景顏色 */
-    color: black;              /* 按鈕文字顏色 */
+    background-color: #C5F9D7;
+    color: black;
     border-radius: 10px;
     cursor: pointer;
     font-size: 24px;
@@ -284,7 +258,7 @@ button {
 }
 
 .save:hover {
-    background-color: #A8EAC4; /* 滑鼠懸停時的顏色 */
+    background-color: #A8EAC4;
 }
 
 /* 背景遮罩 */

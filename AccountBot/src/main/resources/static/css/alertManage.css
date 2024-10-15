@@ -102,32 +102,6 @@ nav a img {
     display: none;
 }
 
-/* 下拉選單的樣式 */
-#dropdown-menu {
-    position: absolute;
-    top: 60px; /* 可以根據實際的導航欄高度調整 */
-    right: 20px;
-    background-color: #FFF2CC;
-    border: 1px solid white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 150px;
-    text-align: center;
-    z-index: 1000;
-}
-
-#dropdown-menu a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: #333;
-}
-
-#dropdown-menu a:hover {
-    background-color: #f7d486;
-    cursor: pointer;
-}
-
 .logo-container {
     display: flex;
     justify-content: center;
