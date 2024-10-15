@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
         type = 1;
         console.log("type : " + type);
         updateCategories();
-        this.style.backgroundColor = '#ff9999';
         incomeButton.style.backgroundColor = '';
     });
 
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         type = 0;
         console.log("type : " + type);
         updateCategories();
-        this.style.backgroundColor = '#99ff99';
         expenseButton.style.backgroundColor = '';
     });
 
