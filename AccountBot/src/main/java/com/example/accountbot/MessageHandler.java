@@ -49,8 +49,6 @@ public class MessageHandler {
 
     private final TransactionService transactionService;
 
-    private String lastUserMessage = "";
-
     private final ChartGenerateService chartGenerateService;
 
     private final S3Service s3Service;
@@ -64,7 +62,13 @@ public class MessageHandler {
     @Autowired
     private RedisUtil redisUtil;
 
-    private String CACHE_KEY = "transaction:";
+    private final String CACHE_KEY = "transaction:";
+
+    public static final int EXPENSE_CATEGORY = 1;
+    public static final int INCOME_CATEGORY = 0;
+
+    public static final Integer FULL_BUDGET = 1;
+    public static final double HALF_BUDGET = 0.5;
 
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws ExecutionException, InterruptedException, IOException {
@@ -80,7 +84,7 @@ public class MessageHandler {
 
             if (receivedText.startsWith("支出報表") || receivedText.startsWith("收入報表")) {
 
-                int type = receivedText.startsWith("收入報表") ? 0 : 1;
+                int type = receivedText.startsWith("收入報表") ? INCOME_CATEGORY : EXPENSE_CATEGORY;
 
                 String timePeriod;
                 if (receivedText.contains("昨日")) {
@@ -206,7 +210,7 @@ public class MessageHandler {
 
                     redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
 
-                    Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
+                    Map<String, Object> expenseCategoryMap = categoryService.get(EXPENSE_CATEGORY, "all", userId);
                     List<UpdateCategoryDto> expenseCategories = (List<UpdateCategoryDto>) expenseCategoryMap.get("data");
 
                     StringBuilder buttonContents = new StringBuilder();
@@ -293,7 +297,7 @@ public class MessageHandler {
 
                     redisUtil.setDataToCache(CACHE_KEY + userId, receivedText);
 
-                    Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
+                    Map<String, Object> incomeCategoryMap = categoryService.get(INCOME_CATEGORY, "all", userId);
                     List<UpdateCategoryDto> incomeCategories = (List<UpdateCategoryDto>) incomeCategoryMap.get("data");
 
                     StringBuilder buttonContents = new StringBuilder();
@@ -473,8 +477,8 @@ public class MessageHandler {
 
             else if (receivedText.matches("^分析上月報表.*")) {
 
-                Map<String, Object> expense = transactionService.getTransaction(1, "all", "lastMonth", userId);
-                Map<String, Object> income = transactionService.getTransaction(0, "all", "lastMonth", userId);
+                Map<String, Object> expense = transactionService.getTransaction(EXPENSE_CATEGORY, "all", "lastMonth", userId);
+                Map<String, Object> income = transactionService.getTransaction(INCOME_CATEGORY, "all", "lastMonth", userId);
 
                 Map<String, Object> response = aiService.getFeedback(expense, income);
 
@@ -656,8 +660,8 @@ public class MessageHandler {
         Integer type = -1;
 
         try {
-            Map<String, Object> expenseCategoryMap = categoryService.get(1, "all", userId);
-            Map<String, Object> incomeCategoryMap = categoryService.get(0, "all", userId);
+            Map<String, Object> expenseCategoryMap = categoryService.get(EXPENSE_CATEGORY, "all", userId);
+            Map<String, Object> incomeCategoryMap = categoryService.get(INCOME_CATEGORY, "all", userId);
 
             List<UpdateCategoryDto> expenseCategories = (List<UpdateCategoryDto>) expenseCategoryMap.get("data");
             List<UpdateCategoryDto> incomeCategories = (List<UpdateCategoryDto>) incomeCategoryMap.get("data");
@@ -680,8 +684,7 @@ public class MessageHandler {
             if (categoryMessages.containsKey(postbackData)) {
                 type = categoryTypes.get(postbackData);
                 String typeStr = "";
-
-                lastUserMessage = redisUtil.getDataFromCache(CACHE_KEY + userId);
+                String lastUserMessage = redisUtil.getDataFromCache(CACHE_KEY + userId);
 
                 String cleanedMessage = lastUserMessage.trim().replaceAll("\\s+", " ");
 
@@ -698,7 +701,7 @@ public class MessageHandler {
 
                 Integer transactionId = transactionService.createTransaction(type, postbackData, amount, description, todayStr, userId);
 
-                if (type == 1) {
+                if (type == EXPENSE_CATEGORY) {
                     budgetAlert(postbackData, userId, type);
                 }
 
@@ -717,9 +720,9 @@ public class MessageHandler {
                     return;
                 }
 
-                if(type.equals(0)){
+                if(type.equals(INCOME_CATEGORY)){
                     typeStr = "收入";
-                }else if(type.equals(1)){
+                }else if(type.equals(EXPENSE_CATEGORY)){
                     typeStr = "支出";
                 }
 
@@ -839,9 +842,9 @@ public class MessageHandler {
             JSONObject transactionItem = transactionArray.getJSONObject(0);
             Integer totalCost = transactionItem.getInt("totalCost");
 
-            if(totalCost / budgetPrice >= 1){
+            if(totalCost / budgetPrice >= FULL_BUDGET){
                 sendLineMessage(lineUserId, "已超出 " + category + " 預算");
-            } else if ((double)totalCost / budgetPrice >= 0.5) {
+            } else if ((double)totalCost / budgetPrice >= HALF_BUDGET) {
                 sendLineMessage(lineUserId, "已超出 " + category + " 一半預算");
             }
         }catch (Exception e) {
