@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Map<String, Object> record(TransactionDto transactionDto) {
-
         Integer transactionId = transactionRepository.recordTransaction(transactionDto);
 
         Map<String, Object> result = new HashMap<>();
@@ -40,19 +38,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Map<String, Object> getTransaction(Integer type, String category, String time, String lineUserId) {
-
         ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
-        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        LocalDate today = LocalDate.now(taipeiZone);
         LocalDate startDate = null;
-        LocalDate endDate = today; // 預設結束時間為今天
+        LocalDate endDate = today;
 
         if (time.startsWith("custom:")) {
-            // 解析自訂時間區間，格式為 custom:YYYY-MM-DD,YYYY-MM-DD
+            // custom:YYYY-MM-DD,YYYY-MM-DD
             String[] dates = time.substring(7).split(",");
             if (dates.length == 2) {
                 try {
-                    startDate = LocalDate.parse(dates[0]); // 自訂的開始日期
-                    endDate = LocalDate.parse(dates[1]); // 自訂的結束日期
+                    startDate = LocalDate.parse(dates[0]);
+                    endDate = LocalDate.parse(dates[1]);
                 } catch (DateTimeParseException e) {
                     throw new IllegalArgumentException("Invalid custom date format");
                 }
@@ -109,26 +106,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         Map<String, Object> data = record(transactionDto);
 
-        Integer transactionId = (Integer) data.get("data");
-
-        return transactionId;
+        return (Integer) data.get("data");
     }
 
     @Override
     public String dateToString(LocalDate date) {
-        ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
-        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
-        // 定義日期格式
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // 將 LocalDate 轉換為 String
-        String dateStr = date.format(formatter);
-        return dateStr;
+        return date.format(formatter);
     }
 
     @Override
     public Map<String, Object> update(UpdateTransactionDto updatetransactionDto) {
-
         UpdateTransactionDto updatedTransaction = transactionRepository.updateTransaction(updatetransactionDto);
 
         Map<String, Object> result = new HashMap<>();
@@ -145,32 +134,23 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public BalanceDto balance(String lineUserId) {
         ZoneId taipeiZone = ZoneId.of("Asia/Taipei");
-        LocalDate today = LocalDate.now(taipeiZone); // 取得台灣時間的今天日期
+        LocalDate today = LocalDate.now(taipeiZone);
         LocalDate startDate = today.withDayOfMonth(1);
-        LocalDate endDate = today; // 預設結束時間為今天
-
-        log.info("startDate : " + startDate);
+        LocalDate endDate = today;
 
         String startDateStr = dateToString(startDate);
         String endDateStr = dateToString(endDate);
 
-        BalanceDto balanceDto = transactionRepository.balance(startDateStr, endDateStr, lineUserId);
-
-        return balanceDto;
+        return transactionRepository.balance(startDateStr, endDateStr, lineUserId);
     }
 
     @Override
     public List<GetAllTransactionDto> getAllTransaction(String startDate, String endDate, String lineUserId) {
-
-        List<GetAllTransactionDto> getAllTransactionDto = transactionRepository.getAllTransaction(startDate, endDate, lineUserId);
-
-        return getAllTransactionDto;
+        return transactionRepository.getAllTransaction(startDate, endDate, lineUserId);
     }
 
     @Override
     public GetAllTransactionDto getTransactionById(Integer id) {
-        GetAllTransactionDto getTransactionDto = transactionRepository.getTransactionById(id);
-
-        return getTransactionDto;
+        return transactionRepository.getTransactionById(id);
     }
 }
