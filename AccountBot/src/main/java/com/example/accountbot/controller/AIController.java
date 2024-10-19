@@ -19,13 +19,16 @@ public class AIController {
 
     private final TransactionService transactionService;
 
+    public static final int EXPENSE_CATEGORY = 1;
+    public static final int INCOME_CATEGORY = 0;
+
     @GetMapping("/feedback")
     public ResponseEntity<?> getFeedback(@RequestParam(value = "lineUserId") String lineUserId) {
 
         try {
 
-            Map<String, Object> expense = transactionService.getTransaction(1, "all", "lastMonth", lineUserId);
-            Map<String, Object> income = transactionService.getTransaction(0, "all", "lastMonth", lineUserId);
+            Map<String, Object> expense = transactionService.getTransaction(EXPENSE_CATEGORY, "all", "lastMonth", lineUserId);
+            Map<String, Object> income = transactionService.getTransaction(INCOME_CATEGORY, "all", "lastMonth", lineUserId);
 
             Map<String, Object> response = aiService.getFeedback(expense, income);
 
