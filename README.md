@@ -56,7 +56,7 @@ In addition, it includes thoughtful reminder features:
 
 # DEMO
 
-[![Watch the video](https://img.youtube.com/vi/MKKhimUhJNs/0.jpg)](https://www.youtube.com/watch?v=MKKhimUhJNs)
+[![DEMO](https://img.youtube.com/vi/pWtpJztA-XI/0.jpg)](https://youtu.be/pWtpJztA-XI)
 
 # Contact
 
