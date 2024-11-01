@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkLineUserId = setInterval(() => {
         if (lineUserId) {
             clearInterval(checkLineUserId);
-            console.log("lineUserId : " + lineUserId);
+            // console.log("lineUserId : " + lineUserId);
 
             // updateCalendar();
             initializeFullCalendar();
@@ -36,11 +36,11 @@ function initializeFullCalendar() {
 
             if (clickedDate.getMonth() !== currentStartMonth) {
                 // 如果點擊的日期不在當前月份，則直接返回，不執行任何操作
-                console.log("return");
+                // console.log("return");
                 return;
             }
 
-            console.log("info.dateStr : " + info.dateStr);
+            // console.log("info.dateStr : " + info.dateStr);
             // 如果是當月的日期，載入該日期的記帳資料
             loadExpensesForDay(info.dateStr);
         },
@@ -98,7 +98,7 @@ function loadExpensesForDay(day) {
     const date = ('0' + clickedDate.getDate()).slice(-2);
     const targetDate = `${year}-${('0' + month).slice(-2)}-${date}`;
 
-    console.log("targetDate : " + targetDate);
+    // console.log("targetDate : " + targetDate);
 
     fetch(`/api/1.0/transaction/get/details?startDate=${targetDate}&endDate=${targetDate}&lineUserId=${lineUserId}`)
         .then(response => {

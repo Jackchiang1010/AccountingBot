@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkLineUserId = setInterval(() => {
         if (lineUserId) {
             clearInterval(checkLineUserId); // 清除檢查
-            console.log("lineUserId : " + lineUserId);
+            // console.log("lineUserId : " + lineUserId);
             fetchAndRenderAlerts();
         }
     }, 100); // 每100毫秒檢查一次
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('新增定時提醒失敗');
             })
             .then(data => {
-                console.log("定時提醒新增成功: ", data);
+                // console.log("定時提醒新增成功: ", data);
                 fetchAndRenderAlerts(); // 重新載入提醒列表
             })
             .catch(error => {
@@ -124,7 +124,7 @@ function fetchAndRenderAlerts() {
                         })
                         .then(data => {
                             showPopup("定時提醒更新成功");
-                            console.log("定時提醒更新成功: ", data);
+                            // console.log("定時提醒更新成功: ", data);
                             fetchAndRenderAlerts();
                         })
                         .catch(error => {
@@ -154,7 +154,7 @@ function fetchAndRenderAlerts() {
                         })
                         .then(data => {
                             showPopup("定時提醒刪除成功");
-                            console.log("定時提醒刪除成功: ", data);
+                            // console.log("定時提醒刪除成功: ", data);
                             fetchAndRenderAlerts();
                         })
                         .catch(error => {

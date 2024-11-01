@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkLineUserId = setInterval(() => {
         if (lineUserId) {
             clearInterval(checkLineUserId); // 清除檢查
-            console.log("lineUserId : " + lineUserId);
+            // console.log("lineUserId : " + lineUserId);
             updateCategories();
         }
     }, 100); // 每100毫秒檢查一次
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const dateParam = urlParams.get('date');
 
-    console.log("dateParam : " + dateParam);
+    // console.log("dateParam : " + dateParam);
 
     // 設定預設日期為當天
     const today = new Date();
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     expenseButton.addEventListener('click', function() {
         currentMode = 'expense';
         type = 1;
-        console.log("type : " + type);
+        // console.log("type : " + type);
         updateCategories();
         incomeButton.style.backgroundColor = '';
     });
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     incomeButton.addEventListener('click', function() {
         currentMode = 'income';
         type = 0;
-        console.log("type : " + type);
+        // console.log("type : " + type);
         updateCategories();
         expenseButton.style.backgroundColor = '';
     });
@@ -97,12 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        console.log("type : " + type);
-        console.log("category : " + selectedCategory);
-        console.log("cost : " + cost);
-        console.log("description : " + description);
-        console.log("date : " + date);
-        console.log("lineUserId : " + lineUserId);
+        // console.log("type : " + type);
+        // console.log("category : " + selectedCategory);
+        // console.log("cost : " + cost);
+        // console.log("description : " + description);
+        // console.log("date : " + date);
+        // console.log("lineUserId : " + lineUserId);
 
         const recordData = {
             type: type,
@@ -169,7 +169,7 @@ function updateCategories() {
                     // 添加選中樣式
                     button.classList.add('selected');
                     button.style.backgroundColor = '#FFF2CC'; // 選中顏色
-                    console.log("Selected category: " + selectedCategory);
+                    // console.log("Selected category: " + selectedCategory);
                 });
 
                 categoriesDiv.appendChild(button);

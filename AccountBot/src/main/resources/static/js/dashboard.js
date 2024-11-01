@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(checkLineUserId); // 清除檢查
             setDateRange();
             updateChart();
-            console.log("lineUserId : " + lineUserId);
+            // console.log("lineUserId : " + lineUserId);
         }
     }, 100); // 每100毫秒檢查一次
 });
@@ -87,7 +87,7 @@ function updateTime() {
     }
 
     time = `custom:${startDate},${endDate}`;
-    console.log("Updated time:", time);
+    // console.log("Updated time:", time);
     updateChart();
 }
 
@@ -208,7 +208,7 @@ function updateChart() {
 
     const apiUrl = `/api/1.0/transaction/get?type=${type}&category=${category}&time=${time}&lineUserId=${lineUserId}`;
 
-    console.log("apiUrl : " + apiUrl);
+    // console.log("apiUrl : " + apiUrl);
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -399,7 +399,7 @@ function hslToHex(h, s, l) {
 }
 
 function editTransaction(lineUserId, transactionId) {
-    console.log(`Editing transaction`);
+    // console.log(`Editing transaction`);
     window.location.href = `transactionDetail.html?lineUserId=${lineUserId}&transactionId=${transactionId}&from=dashboard`;
 }
 
