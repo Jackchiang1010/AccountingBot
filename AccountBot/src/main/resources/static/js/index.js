@@ -78,8 +78,8 @@ function checkAndUseAccessToken() {
     let tokenExpireTime = localStorage.getItem('lineTokenExpireTime');
     let refreshToken = localStorage.getItem('lineRefreshToken');
 
-    console.log("accessToken : " + accessToken);
-    console.log("tokenExpireTime : " + tokenExpireTime);
+    // console.log("accessToken : " + accessToken);
+    // console.log("tokenExpireTime : " + tokenExpireTime);
 
     if (accessToken && tokenExpireTime && new Date().getTime() < parseInt(tokenExpireTime)) {
         // 如果有有效的 access token，直接使用它
@@ -123,7 +123,7 @@ function refreshAccessToken(refreshToken) {
 
 function startLineLogin() {
     if (isLoginInProgress) {
-        console.log('Login already in progress');
+        // console.log('Login already in progress');
         return;
     }
 
@@ -138,7 +138,7 @@ function startLineLogin() {
     // 儲存 state 用於後續驗證
     localStorage.setItem('lineLoginState', state);
 
-    console.log("state : " + state);
+    // console.log("state : " + state);
 
     // 構建授權 URL
     const authUrl = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;

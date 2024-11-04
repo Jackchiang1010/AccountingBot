@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkLineUserId = setInterval(() => {
         if (lineUserId) {
             clearInterval(checkLineUserId);
-            console.log("lineUserId : " + lineUserId);
+            // console.log("lineUserId : " + lineUserId);
 
             fetchCategories();
         }
@@ -125,7 +125,7 @@ function fetchBudgets(categories) {
                                     throw new Error('刪除預算失敗');
                                 })
                                 .then(data => {
-                                    console.log("預算刪除成功: ", data);
+                                    // console.log("預算刪除成功: ", data);
                                     alert("預算刪除成功");
                                     fetchCategories();
                                 })
@@ -133,7 +133,7 @@ function fetchBudgets(categories) {
                                     console.error("發生錯誤: ", error);
                                 });
                         } else {
-                            console.log("無預算可刪除");
+                            // console.log("無預算可刪除");
                         }
                     } else {
                         if (budget) {
@@ -158,7 +158,7 @@ function fetchBudgets(categories) {
                                     throw new Error('更新預算失敗');
                                 })
                                 .then(data => {
-                                    console.log("預算更新成功: ", data);
+                                    // console.log("預算更新成功: ", data);
                                     alert("預算更新成功");
                                     fetchCategories();
                                 })
@@ -186,7 +186,7 @@ function fetchBudgets(categories) {
                                     throw new Error('創建預算失敗');
                                 })
                                 .then(data => {
-                                    console.log("預算創建成功: ", data);
+                                    // console.log("預算創建成功: ", data);
                                     fetchCategories();
                                 })
                                 .catch(error => {
@@ -214,7 +214,7 @@ function addSelectableListener(li) {
 
         selectedCategory = li;
         selectedCategory.classList.add("selected");
-        console.log("選中的分類: ", selectedCategory.textContent);
+        // console.log("選中的分類: ", selectedCategory.textContent);
 
         if(selectedCategory.textContent !== "新增分類"){
             document.getElementById("category-name").value = selectedCategory.textContent;
@@ -258,7 +258,7 @@ document.querySelector('.save').addEventListener('click', function() {
                     throw new Error('新增失敗');
                 })
                 .then(data => {
-                    console.log("新增成功: ", data);
+                    // console.log("新增成功: ", data);
                     fetchCategories();
                 })
                 .catch(error => {
@@ -295,7 +295,7 @@ document.querySelector('.save').addEventListener('click', function() {
                     throw new Error('更新失敗');
                 })
                 .then(data => {
-                    console.log("更新成功: ", data);
+                    // console.log("更新成功: ", data);
                     fetchCategories();
                 })
                 .catch(error => {
@@ -362,7 +362,7 @@ document.querySelector('.delete').addEventListener('click', function() {
                 throw new Error('刪除分類失敗');
             })
             .then(data => {
-                console.log("刪除成功: ", data);
+                // console.log("刪除成功: ", data);
                 selectedCategory.remove();
                 selectedCategory = null;
                 fetchCategories();

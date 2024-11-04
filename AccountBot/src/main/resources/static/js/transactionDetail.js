@@ -116,7 +116,7 @@ function confirmUpdate(event) {
             return response.json();
         })
         .then(data => {
-            console.log('API 回應資料:', data);
+            // console.log('API 回應資料:', data);
             showPopup("記錄已更新");
         })
         .catch(error => {
